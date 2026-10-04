@@ -109,3 +109,25 @@ Format ADR court : contexte, décision, conséquences. Une décision n'est remis
 
 ## D-28 — Moteur de synchronisation chargé dès le démarrage
 - **Décision** : l'agent de synchronisation (et Dexie) fait partie du premier chargement pour synchroniser en arrière-plan quel que soit l'écran ouvert ; budget du bundle initial porté à 500 Ko non compressés (alerte) / 600 Ko (erreur), soit environ 125 Ko compressés, sous les 250 Ko du guide (ENF-03). La bibliothèque `qrcode` n'est chargée qu'avec l'écran Terminaux.
+
+## D-29 — Démarrage hors-ligne d'un terminal
+- **Contexte** : `onLoad: 'login-required'` renvoyait vers Keycloak à chaque démarrage, impossible sans réseau ; un jeton de session expire en quelques heures, alors que la caisse doit tenir 7 jours.
+- **Décision** : un terminal (Android, ou navigateur appairé) demande le scope `offline_access` (jeton de rafraîchissement hors-ligne, 30 jours d'inactivité) et conserve ses jetons (stockage sécurisé sur Android). Au démarrage sans réseau, l'application s'initialise avec ces jetons sans appeler Keycloak, et reprend le dernier contexte utilisateur connu. En ligne, un jeton refusé déclenche une nouvelle connexion sans perdre les opérations locales. Sur un terminal, le verrouillage se fait par code PIN plutôt que par déconnexion pour inactivité. Service worker Angular pour charger l'application sans réseau dans le navigateur. Les comptes du royaume reçoivent le rôle `offline_access`.
+
+## D-30 — Ouverture concurrente d'une session de caisse
+- **Contexte** : guide §8.5, « la seconde passe en conflit ». Rejeter l'opération ferait aussi rejeter toutes les ventes de cette session, faites hors-ligne, donc perdre de l'argent encaissé.
+- **Décision** : la seconde session est enregistrée avec le statut `EN_CONFLIT` (pas `OUVERTE`, l'index unique INV-14 reste respecté), une alerte `SESSION_CONCURRENTE` est inscrite au journal d'audit, et ses ventes sont acceptées. Les terminaux reçoivent l'état des sessions par le flux de changements et préviennent avant d'ouvrir une caisse déjà ouverte ailleurs.
+
+## D-31 — Code PIN de responsable vérifié par le serveur
+- **Décision** : code PIN de 6 chiffres par responsable, empreinte PBKDF2-SHA-256 (210 000 itérations, sel aléatoire) dans `socle.code_pin`, jamais envoyée aux terminaux : un PIN court serait retrouvé en quelques heures à partir de son empreinte. 5 échecs bloquent le code 15 minutes ; le compteur est mis à jour dans sa propre transaction. La validation d'un écart demande donc le réseau ; elle peut aussi se faire depuis le bureau (W-13).
+
+## D-32 — Plages de tickets de 2 000 numéros
+- **Contexte** : 7 jours hors-ligne d'une caisse active (150 à 300 tickets par jour) épuisaient une plage de 500 avant le retour du réseau.
+- **Décision** : tickets par plages de 2 000 (`ambawbio.sync.taille-plage-ticket`), factures et avoirs par plages de 500. Les numéros non utilisés d'une plage restent traçables (plage clôturée).
+
+## D-33 — Stockage local chiffré dans IndexedDB
+- **Contexte** : D-26 prévoyait SQLite chiffrée (SQLCipher) sur Android au LOT 5 ; cela imposait une seconde implémentation de `LocalStore`, impossible à tester hors d'un appareil.
+- **Décision** : une seule implémentation (Dexie / IndexedDB) qui chiffre en AES-GCM 256 la charge de chaque opération et les données de chaque entité (catalogue, clients, pièces de caisse). Clé conservée dans le stockage sécurisé adossé au Keystore sur Android, clé WebCrypto non exportable dans le navigateur. Testée par les tests unitaires : aucune donnée en clair au repos.
+
+## D-34 — Configuration lue à l'exécution
+- **Décision** : `public/config.js` (`window.AMBAWBIO_CONFIG`) donne les adresses de l'API et de Keycloak ; le conteneur nginx le régénère au démarrage à partir de `AMBAWBIO_API_URL` et `AMBAWBIO_KEYCLOAK_URL`, et le workflow **android** l'écrit avant de construire l'APK. Une seule image de l'application pour tous les environnements ; `config.js` n'est jamais mis en cache.

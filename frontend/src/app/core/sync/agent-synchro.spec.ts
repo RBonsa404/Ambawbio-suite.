@@ -121,6 +121,19 @@ describe('AgentSynchro (guide §8.7)', () => {
 });
 
 describe('DexieStore', () => {
+  it('chiffre les données et les charges au repos (AES-GCM, D-33)', async () => {
+    const store = new DexieStore(`test-${uuid7()}`);
+    await store.appliquerChangements([{ ...changement(1, 'a'), donnees: { id: 'a', nom: 'Riz parfumé' } }]);
+    await store.ajouterOperation({ idOperation: 'o', type: 'T', versionSchema: 1, horodatageLocal: 'h', utilisateurId: null,
+      charge: '{"client":"Aminata Ouédraogo"}', signature: 's', statut: 'EN_ATTENTE', motif: null, tentatives: 0 });
+    const base = (store as unknown as { base: { entites: { toArray(): Promise<unknown[]> }; operations: { toArray(): Promise<unknown[]> } } }).base;
+    const brut = JSON.stringify([...(await base.entites.toArray()), ...(await base.operations.toArray())]);
+    expect(brut).not.toContain('Riz');
+    expect(brut).not.toContain('Aminata');
+    expect((await store.entites('produit'))[0].donnees).toEqual({ id: 'a', nom: 'Riz parfumé' });
+    expect((await store.operationsAEnvoyer(1))[0].charge).toBe('{"client":"Aminata Ouédraogo"}');
+  });
+
   it('upsert puis suppression des entités, comptage par type', async () => {
     const store = new DexieStore(`test-${uuid7()}`);
     await store.appliquerChangements([changement(1, 'a'), changement(2, 'b'), { ...changement(3, 'a'), donnees: { id: 'a', nom: 'Riz' } }]);

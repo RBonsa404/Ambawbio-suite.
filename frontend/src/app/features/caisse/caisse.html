@@ -1,0 +1,223 @@
+@if (!agent.terminal()) {
+  <h1 class="titre-page">Caisse</h1>
+  <p class="mt-2">Cet appareil n'est pas encore un terminal de caisse.</p>
+  <a ambBouton variante="principal" routerLink="/appairage" class="mt-4">Appairer ce terminal</a>
+} @else if (!caisse.pret()) {
+  <p class="squelette h-40" aria-busy="true">Chargement de la caisse…</p>
+} @else if (!caisse.session()) {
+  <!-- A-05 Ouverture de session -->
+  <div class="mx-auto max-w-xl">
+    <h1 class="titre-page">Ouvrir la caisse</h1>
+    <p class="mt-1 text-texte-secondaire">{{ agent.terminal()!.code }} — {{ agent.terminal()!.nom }}</p>
+    @if (!caisse.pointsDeVente().length) {
+      <p class="alerte-erreur mt-4">Aucun point de vente reçu. Créez-le dans Caisses › Points de vente, puis synchronisez le terminal.</p>
+    }
+    <form class="carte mt-4 flex flex-col gap-4" (ngSubmit)="ouvrir()">
+      <fieldset class="min-w-0">
+        <legend class="champ-libelle">Caisse</legend>
+        <div class="mt-2 grid gap-2 petite-tablette:grid-cols-2">
+          @for (p of caisse.pointsDeVente(); track p.id) {
+            <label class="carte-lien cursor-pointer" [class.border-primaire]="pointDeVenteId === p.id">
+              <input type="radio" name="pdv" [value]="p.id" [(ngModel)]="pointDeVenteId" class="h-5 w-5" />
+              <span>{{ p.nom }} <span class="block text-sm font-normal text-texte-secondaire">{{ p.code }}</span></span>
+            </label>
+          }
+        </div>
+      </fieldset>
+      @if (pointDeVenteId && caisse.sessionOuverteAilleurs(pointDeVenteId)) {
+        <p class="alerte-erreur" role="alert">Une autre caisse a déjà une session ouverte sur ce point de vente. Clôturez-la d'abord : sinon le responsable sera alerté.</p>
+      }
+      <div class="flex flex-col gap-1">
+        <label class="champ-libelle" for="fonds">Fonds de caisse (espèces au départ)</label>
+        <amb-champ-montant identifiant="fonds" name="fonds" [(ngModel)]="fonds" />
+      </div>
+      @if (erreur()) { <p class="alerte-erreur" role="alert">{{ erreur() }}</p> }
+      <button ambBouton variante="caisse" type="submit">Ouvrir la caisse</button>
+    </form>
+  </div>
+} @else {
+  @switch (vue()) {
+    @case ('vente') {
+      <!-- A-06 Vente -->
+      <div class="-mx-4 -mt-6 flex min-h-[calc(100dvh-4rem)] flex-col tablette:flex-row">
+        <section class="flex min-w-0 flex-1 flex-col gap-3 p-4" aria-label="Produits">
+          <div class="flex items-center justify-between gap-2">
+            <h1 class="text-lg font-bold">{{ titrePointDeVente() }}</h1>
+            <span class="flex gap-1">
+              <a ambBouton variante="tertiaire" routerLink="/caisse/retour">Retour</a>
+              <a ambBouton variante="tertiaire" routerLink="/caisse/cloture">Clôturer</a>
+            </span>
+          </div>
+          <div class="flex gap-2">
+            <label class="flex min-w-0 flex-1 items-center gap-2 border-2 border-texte bg-surface px-3">
+              <amb-icone nom="search" />
+              <span class="sr-only">Rechercher un produit ou saisir un code-barres</span>
+              <input id="recherche-caisse" class="min-h-12 w-full bg-transparent outline-none" placeholder="Rechercher un produit ou scanner"
+                [ngModel]="recherche()" (ngModelChange)="recherche.set($event)" (keydown.enter)="rechercheEntree()" autocomplete="off" />
+            </label>
+            @if (scanner.camera) {
+              <button type="button" class="bouton-icone min-w-14 bg-texte text-blanc" (click)="scannerCamera()" aria-label="Scanner un code-barres">
+                <amb-icone nom="scan-barcode" />
+              </button>
+            }
+          </div>
+          @if (message()) { <p class="text-sm text-texte-secondaire" role="status">{{ message() }}</p> }
+          <div class="grid grid-cols-2 gap-3 petite-tablette:grid-cols-3 bureau:grid-cols-4 large:grid-cols-5">
+            @for (p of resultats(); track p.id) {
+              <button type="button" class="tuile-produit" [attr.aria-pressed]="quantites().has(p.id)" (click)="toucherProduit(p)">
+                <span>{{ p.nom }}</span>
+                <span class="prix">{{ p.prixVente | nombre }} F</span>
+                @if (quantites().get(p.id); as q) { <span class="pastille-quantite" aria-label="dans le panier">{{ q }}</span> }
+              </button>
+            } @empty {
+              <p class="col-span-full text-texte-secondaire">Aucun produit.</p>
+            }
+          </div>
+        </section>
+
+        <aside class="sticky bottom-0 flex flex-col border-t-2 border-texte bg-surface tablette:static tablette:w-96 tablette:border-l-2 tablette:border-t-0"
+          aria-label="Panier">
+          <ul class="flex-1 overflow-y-auto" [class.hidden]="!panierOuvert()" [class.tablette:block]="true">
+            @for (l of caisse.panier(); track l.id; let i = $index) {
+              <li class="flex items-start justify-between gap-2 border-b border-bordure px-4 py-3">
+                <span>
+                  <span class="font-semibold">{{ l.produit.nom }}</span>
+                  <span class="block text-sm text-texte-secondaire">{{ l.quantite.replace('.', ',') }} {{ l.conditionnement ?? '' }} × {{ l.prixUnitaire | nombre }}
+                    @if (l.remise) { · remise {{ l.remise | nombre }} }</span>
+                </span>
+                <span class="text-right">
+                  <span class="block font-bold tabular-nums">{{ caisse.lignes()[i].montantTtc | nombre }}</span>
+                  <button type="button" class="text-sm font-semibold text-primaire underline" (click)="editer(l)">Modifier</button>
+                </span>
+              </li>
+            }
+          </ul>
+          <div class="flex flex-col gap-2 p-4">
+            <div class="flex items-center justify-between text-sm text-texte-secondaire">
+              <button type="button" class="tablette:hidden underline" (click)="panierOuvert.set(!panierOuvert())" [attr.aria-expanded]="panierOuvert()">
+                {{ panierOuvert() ? 'Masquer le panier' : 'Voir le panier' }}</button>
+              <span class="hidden tablette:inline">Dont TVA</span><span class="tabular-nums">{{ caisse.taxes() | nombre }}</span>
+              @if (caisse.panier().length) { <button type="button" class="font-semibold text-primaire underline" (click)="caisse.vider()">Vider</button> }
+            </div>
+            <div class="flex items-end justify-between">
+              <span class="text-texte-secondaire">{{ caisse.articles() }} article(s)</span>
+              <span><span class="montant-geant text-5xl" data-testid="total-caisse">{{ caisse.total() | nombre }}</span> <span class="font-bold">FCFA</span></span>
+            </div>
+            <button ambBouton variante="caisse" type="button" [disabled]="!caisse.panier().length" (click)="allerEncaisser()">Encaisser</button>
+          </div>
+        </aside>
+      </div>
+
+      @if (ligneEditee(); as l) {
+        <!-- A-07 Ligne -->
+        <div class="fixed inset-0 z-50 flex items-end justify-center bg-noir/60 tablette:items-center" role="dialog" aria-modal="true" aria-labelledby="titre-ligne">
+          <div class="flex w-full max-w-lg flex-col gap-4 bg-surface p-5">
+            <div class="flex items-baseline justify-between gap-2">
+              <h2 id="titre-ligne" class="font-titre text-2xl font-extrabold">{{ l.produit.nom }}</h2>
+              <span class="text-texte-secondaire">{{ l.prixUnitaire | nombre }} F</span>
+            </div>
+            @if (l.produit.conditionnements.length) {
+              <div><p class="champ-libelle">Conditionnement</p>
+                <div class="segments mt-1">
+                  <button type="button" class="segment" [attr.aria-pressed]="!l.conditionnement" (click)="choisirConditionnement(null)">Unité</button>
+                  @for (c of l.produit.conditionnements; track c.code) {
+                    <button type="button" class="segment" [attr.aria-pressed]="l.conditionnement === c.code" (click)="choisirConditionnement(c.code)">
+                      {{ c.libelle }} ({{ c.quantite }})</button>
+                  }
+                </div>
+              </div>
+            }
+            <div class="flex items-center justify-between gap-3">
+              <div class="segments w-56">
+                <button type="button" class="segment text-2xl" (click)="changerQuantite(-1)" aria-label="Diminuer">−</button>
+                <span class="segment flex items-center justify-center text-2xl font-bold" aria-live="polite">{{ l.quantite.replace('.', ',') }}</span>
+                <button type="button" class="segment bg-primaire text-2xl text-primaire-texte" (click)="changerQuantite(1)" aria-label="Augmenter">+</button>
+              </div>
+              <span class="montant-geant text-3xl">{{ montantLigne(l) | nombre }}</span>
+            </div>
+            @if (remiseMaxPour(l) > 0) {
+              <div><p class="champ-libelle">Remise (maximum {{ caisse.pointDeVente()?.remiseMaxPourcent }} %)</p>
+                <div class="segments mt-1">
+                  @for (pc of [0, 5, 10]; track pc) {
+                    @if (pc <= (caisse.pointDeVente()?.remiseMaxPourcent ?? 0)) {
+                      <button type="button" class="segment" [attr.aria-pressed]="l.remise === 0 ? pc === 0 : false" (click)="remisePourcent(pc)">{{ pc }} %</button>
+                    }
+                  }
+                </div>
+              </div>
+            }
+            <div class="grid grid-cols-[1fr_2fr] gap-3">
+              <button ambBouton variante="danger" type="button" (click)="retirerLigne()">Retirer</button>
+              <button ambBouton variante="principal" type="button" (click)="validerLigne()">Valider la ligne</button>
+            </div>
+          </div>
+        </div>
+      }
+    }
+
+    @case ('encaissement') {
+      <!-- A-09 Encaisser / A-11 référence Mobile Money -->
+      <div class="mx-auto flex max-w-lg flex-col gap-4">
+        <div class="flex items-center gap-3">
+          <button type="button" class="bouton-icone" (click)="vue.set('vente')" aria-label="Retour à la vente"><amb-icone nom="arrow-left" /></button>
+          <h1 class="titre-page">Encaisser</h1>
+        </div>
+        <div class="flex items-end justify-between"><span class="text-texte-secondaire">À payer</span>
+          <span class="montant-geant text-5xl" data-testid="a-payer">{{ caisse.total() | fcfa }}</span></div>
+        <div class="segments" role="group" aria-label="Moyen de paiement">
+          @for (m of [['ESPECES', 'Espèces'], ['MOBILE_MONEY', 'Mobile Money'], ['MIXTE', 'Mixte'], ['CARTE', 'Carte']]; track m[0]) {
+            <button type="button" class="segment" [attr.aria-pressed]="mode() === m[0]" (click)="mode.set($any(m[0]))">{{ m[1] }}</button>
+          }
+        </div>
+        @if (mode() === 'MOBILE_MONEY' || mode() === 'MIXTE') {
+          <div class="carte flex flex-col gap-3">
+            <p class="text-sm">Saisissez la référence du <strong>SMS de confirmation</strong> reçu par le client. Le paiement sera vérifié auprès de l'opérateur (LOT 7).</p>
+            <div class="flex flex-wrap gap-2">
+              @for (o of operateurs; track o) {
+                <button type="button" class="segment border-2 border-texte" [attr.aria-pressed]="operateur === o" (click)="operateur = o">{{ o }}</button>
+              }
+            </div>
+            <label class="champ-libelle" for="reference-mm">Référence de la transaction</label>
+            <input id="reference-mm" class="champ-saisie font-code" [(ngModel)]="reference" autocomplete="off" />
+            @if (mode() === 'MIXTE') {
+              <label class="champ-libelle" for="part-mobile">Part payée en Mobile Money</label>
+              <amb-champ-montant identifiant="part-mobile" [ngModel]="partMobile()" (ngModelChange)="partMobile.set($event ?? 0)" />
+            }
+          </div>
+        }
+        @if (mode() === 'ESPECES' || mode() === 'MIXTE') {
+          <amb-pave-caisse [totalAPayer]="resteEspeces()" [valeur]="recu()" (valeurChange)="recu.set($event)" (valider)="validerPaiement()" />
+        }
+        <label class="flex items-center gap-2"><input type="checkbox" class="h-5 w-5" [(ngModel)]="factureDemandee" /> Le client demande une facture certifiée</label>
+        @if (erreur()) { <p class="alerte-erreur" role="alert">{{ erreur() }}</p> }
+        <button ambBouton variante="principal" type="button" class="min-h-14 text-lg" [disabled]="!peutValider()" [chargement]="enCours()"
+          (click)="validerPaiement()">Valider le paiement</button>
+      </div>
+    }
+
+    @case ('confirmation') {
+      <!-- A-12 Vente enregistrée -->
+      @if (caisse.derniere(); as d) {
+        <div class="mx-auto flex max-w-lg flex-col gap-4" (pointerdown)="suspendreRetourAuto()">
+          <div class="flex items-center gap-3">
+            <span class="flex h-14 w-14 items-center justify-center bg-vert-800 text-blanc"><amb-icone nom="check" [taille]="32" /></span>
+            <div><h1 class="font-titre text-3xl font-extrabold">Vente enregistrée</h1>
+              <p class="text-texte-secondaire" data-testid="numero-ticket">Ticket {{ d.numeroAffiche }}</p></div>
+          </div>
+          <div class="border-2 border-texte bg-surface p-4">
+            <p class="flex justify-between"><span>Total</span><strong>{{ d.totalTtc | fcfa }}</strong></p>
+            <p class="flex justify-between"><span>Reçu</span><span>{{ recuDerniere() | fcfa }}</span></p>
+            <p class="mt-2 flex items-end justify-between border-t-2 border-texte pt-2"><strong>Rendu</strong>
+              <span class="montant-geant text-5xl">{{ rendu() | nombre }} F</span></p>
+          </div>
+          @if (ticketImprime() === true) { <p class="alerte-succes">Ticket imprimé</p> }
+          @if (ticketImprime() === false) { <p class="alerte-erreur">Impression impossible : vérifiez l'imprimante, puis réimprimez.</p> }
+          @if (d.factureDemandee) { <p class="carte">Facture certifiée demandée : elle sera établie et certifiée au retour du réseau.</p> }
+          <button ambBouton variante="secondaire" type="button" (click)="imprimer(d)">Réimprimer</button>
+          <button ambBouton variante="caisse" type="button" (click)="nouvelleVente()">Nouvelle vente</button>
+          @if (retourAuto() > 0) { <p class="text-center text-sm text-texte-secondaire">Retour automatique à la vente dans {{ retourAuto() }} s</p> }
+        </div>
+      }
+    }
+  }
+}

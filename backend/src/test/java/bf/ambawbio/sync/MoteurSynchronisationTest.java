@@ -119,7 +119,7 @@ class MoteurSynchronisationTest extends TestIntegration {
                 .andExpect(jsonPath("$.plages[?(@.typePiece=='TICKET')].debut").value(hasItem(1)))
                 .andExpect(jsonPath("$.plages[?(@.typePiece=='TICKET')].prefixe").value(hasItem("TK-C01")));
         mvc.perform(get("/api/v1/sync/pull?terminalId={t}", second.id).with(admin))
-                .andExpect(jsonPath("$.plages[?(@.typePiece=='TICKET')].debut").value(hasItem(501)))
+                .andExpect(jsonPath("$.plages[?(@.typePiece=='TICKET')].debut").value(hasItem(2001)))
                 .andExpect(jsonPath("$.plages[?(@.typePiece=='TICKET')].prefixe").value(hasItem("TK-C02")));
         // Un code ne sert qu'une fois.
         mvc.perform(post("/api/v1/socle/terminaux/appairage").with(admin).contentType(MediaType.APPLICATION_JSON)
@@ -280,7 +280,7 @@ class MoteurSynchronisationTest extends TestIntegration {
                 .andReturn().getResponse().getContentAsString()).get("plages").valueStream()
                 .filter(p -> p.get("typePiece").asString().equals("TICKET")).findFirst().orElseThrow();
         mvc.perform(post("/api/v1/sync/push").with(admin).contentType(MediaType.APPLICATION_JSON).content(
-                        "{\"terminalId\":\"%s\",\"operations\":[],\"plages\":[{\"id\":\"%s\",\"prochain\":401}]}"
+                        "{\"terminalId\":\"%s\",\"operations\":[],\"plages\":[{\"id\":\"%s\",\"prochain\":1601}]}"
                                 .formatted(terminal.id, ticket.get("id").asString())))
                 .andExpect(status().isOk());
         mvc.perform(get("/api/v1/sync/pull?terminalId={t}&curseur={c}", terminal.id, curseur).with(admin))

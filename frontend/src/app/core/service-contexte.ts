@@ -6,6 +6,7 @@ import { configuration } from './configuration';
 import { Contexte } from './contexte';
 
 const CLE_ETABLISSEMENT = 'ambawbio.etablissement';
+const CLE_CONTEXTE = 'ambawbio.contexte';
 
 /**
  * Contexte de l'utilisateur (entreprise, établissements autorisés, permissions), toujours visible dans la barre du haut
@@ -29,10 +30,18 @@ export class ServiceContexte {
 
   async charger(): Promise<void> {
     try {
-      this.contexte.set(await firstValueFrom(this.http.get<Contexte>(`${configuration.api}/v1/socle/contexte`)));
+      const contexte = await firstValueFrom(this.http.get<Contexte>(`${configuration.api}/v1/socle/contexte`));
+      this.contexte.set(contexte);
       this.erreur.set(null);
+      ecrire(CLE_CONTEXTE, JSON.stringify(contexte));
       this.http.post(`${configuration.api}/v1/socle/connexions`, null).subscribe({ error: () => undefined });
     } catch (e) {
+      const enCache = lire(CLE_CONTEXTE);
+      if ((e as { status?: number }).status === 0 && enCache) {
+        // Démarrage hors-ligne d'un terminal (D-29) : dernier contexte connu, rafraîchi au retour du réseau.
+        this.contexte.set(JSON.parse(enCache) as Contexte);
+        return;
+      }
       const erreur = (e as { error?: { code?: string; detail?: string } }).error;
       this.erreur.set(erreur ?? { detail: undefined });
     }
@@ -40,11 +49,7 @@ export class ServiceContexte {
 
   choisirEtablissement(id: string): void {
     this.etablissementChoisi.set(id);
-    try {
-      localStorage.setItem(CLE_ETABLISSEMENT, id);
-    } catch {
-      // Stockage indisponible (navigation privée) : le choix vaut pour la session.
-    }
+    ecrire(CLE_ETABLISSEMENT, id);
   }
 
   peut(permission: string): boolean {
@@ -61,5 +66,13 @@ function lire(cle: string): string | null {
     return localStorage.getItem(cle);
   } catch {
     return null;
+  }
+}
+
+function ecrire(cle: string, valeur: string): void {
+  try {
+    localStorage.setItem(cle, valeur);
+  } catch {
+    // Stockage indisponible (navigation privée) : la valeur vaut pour la session.
   }
 }

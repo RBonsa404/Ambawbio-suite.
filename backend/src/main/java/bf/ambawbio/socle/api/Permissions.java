@@ -18,6 +18,8 @@ public final class Permissions {
     public static final String POS_VENDRE = "pos:vendre";
     public static final String POS_CLOTURER = "pos:cloturer";
     public static final String POS_VALIDER_ECART = "pos:valider-ecart";
+    public static final String POS_REMISER = "pos:remiser";
+    public static final String POS_PARAMETRER = "pos:parametrer";
     public static final String VENTES_GERER = "ventes:gerer";
     public static final String FACTURATION_CREER = "facturation:creer";
     public static final String FACTURATION_VALIDER = "facturation:valider";
@@ -31,7 +33,7 @@ public final class Permissions {
 
     public static final List<String> TOUTES = List.of(
             SOCLE_CONSULTER, SOCLE_PARAMETRER, SOCLE_UTILISATEURS, AUDIT_CONSULTER, DONNEES_PERSONNELLES_TRAITER,
-            TERMINAUX_GERER, REFERENTIEL_GERER, POS_VENDRE, POS_CLOTURER, POS_VALIDER_ECART, VENTES_GERER,
+            TERMINAUX_GERER, REFERENTIEL_GERER, POS_VENDRE, POS_CLOTURER, POS_VALIDER_ECART, POS_REMISER, POS_PARAMETRER, VENTES_GERER,
             FACTURATION_CREER, FACTURATION_VALIDER, PAIEMENT_ENCAISSER, PAIEMENT_RAPPROCHER, COMPTABILITE_SAISIR,
             COMPTABILITE_CLOTURER, STOCK_GERER, STOCK_INVENTORIER, ACHATS_GERER);
 

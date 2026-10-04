@@ -44,15 +44,19 @@ export class Coquille {
 
   private readonly menu: EntreeMenu[] = [
     { lien: '/', cle: 'menu.tableauDeBord', icone: 'layout-dashboard' },
+    { lien: '/caisse', cle: 'menu.caisse', icone: 'store', permission: 'pos:vendre' },
     { lien: '/produits', cle: 'menu.produits', icone: 'package', permission: 'socle:consulter' },
     { lien: '/tiers', cle: 'menu.tiers', icone: 'users', permission: 'socle:consulter' },
     { lien: '/import', cle: 'menu.import', icone: 'upload', permission: 'referentiel:gerer' },
+    { lien: '/caisses', cle: 'menu.caisses', icone: 'settings', permission: 'pos:parametrer' },
     { lien: '/synchronisation', cle: 'menu.synchronisation', icone: 'refresh-cw' },
     { lien: '/terminaux', cle: 'menu.terminaux', icone: 'smartphone', permission: 'terminaux:gerer' },
   ];
 
   protected readonly entrees = computed(() => this.menu.filter((e) => !e.permission || this.contexte.peut(e.permission)));
-  protected readonly entreesBasses = computed(() => this.entrees().slice(0, 4));
+  protected readonly entreesBasses = computed(() => (this.entrees().length > 4 ? this.entrees().slice(0, 3) : this.entrees()));
+  protected readonly entreesPlus = computed(() => (this.entrees().length > 4 ? this.entrees().slice(3) : []));
+  protected readonly menuPlus = signal(false);
   protected readonly initiales = computed(() =>
     (this.contexte.contexte()?.utilisateur.nomComplet ?? '')
       .split(' ')

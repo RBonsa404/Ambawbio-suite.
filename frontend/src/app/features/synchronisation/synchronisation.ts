@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 
+import { ServiceImpression } from '../../core/caisse/impression';
 import { ServiceReseau } from '../../core/service-reseau';
 import { AgentSynchro } from '../../core/sync/agent-synchro';
 import { OperationSortante } from '../../core/sync/local-store';
@@ -18,6 +19,17 @@ import { IndicateurSync } from '../../shared/ui/indicateur-sync';
 export class Synchronisation {
   protected readonly agent = inject(AgentSynchro);
   protected readonly reseau = inject(ServiceReseau);
+  protected readonly impression = inject(ServiceImpression);
+  protected readonly erreurImprimante = signal<string | null>(null);
+
+  protected async choisirImprimante(largeur: 32 | 48): Promise<void> {
+    this.erreurImprimante.set(null);
+    try {
+      await this.impression.choisir(largeur);
+    } catch {
+      this.erreurImprimante.set("Aucune imprimante choisie : allumez-la, activez le Bluetooth et réessayez.");
+    }
+  }
   protected readonly operations = signal<OperationSortante[]>([]);
   protected readonly enConflit = computed(() => this.operations().filter((o) => o.statut !== 'EN_ATTENTE'));
 

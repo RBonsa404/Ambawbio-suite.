@@ -9,6 +9,15 @@ async function verifierAccessibilite(page: Page, nom: string) {
   expect(violations, `Accessibilité WCAG AA — ${nom}`).toEqual([]);
 }
 
+/** Menu latéral sur tablette et bureau ; sur téléphone, entrées au-delà de la 3e dans « Plus ». */
+async function allerA(page: Page, entree: string) {
+  const lien = page.getByRole('link', { name: entree }).filter({ visible: true }).first();
+  if (!(await lien.isVisible())) {
+    await page.getByRole('button', { name: 'Plus' }).click();
+  }
+  await page.getByRole('link', { name: entree }).filter({ visible: true }).first().click();
+}
+
 test.describe('Référentiels (W-05, W-06, W-07)', () => {
   test('Aminata crée un produit et le retrouve sans accent', async ({ page }) => {
     await seConnecter(page, 'aminata', '/produits');
@@ -50,10 +59,10 @@ test.describe('Référentiels (W-05, W-06, W-07)', () => {
     await expect(page.getByRole('heading', { name: 'Ciment CPJ 45 — sac 50 kg', level: 2 })).toBeVisible();
     await verifierAccessibilite(page, 'produits (liste et fiche)');
     await page.screenshot({ path: `test-results/W-05-${test.info().project.name}.png`, fullPage: true });
-    await page.getByRole('link', { name: 'Clients et fournisseurs' }).filter({ visible: true }).first().click();
+    await allerA(page, 'Clients et fournisseurs');
     await page.getByRole('button', { name: 'Bâtir Faso SARL (démo)' }).click();
     await verifierAccessibilite(page, 'clients et fournisseurs');
-    await page.getByRole('link', { name: 'Import de données' }).filter({ visible: true }).first().click();
+    await allerA(page, 'Import de données');
     await verifierAccessibilite(page, 'import');
   });
 
