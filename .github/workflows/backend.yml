@@ -29,7 +29,7 @@ jobs:
           cache: maven
       # Tests (Testcontainers PostgreSQL), frontières des modules (Spring Modulith), Checkstyle.
       - run: ./mvnw -B verify
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: rapports-tests-backend

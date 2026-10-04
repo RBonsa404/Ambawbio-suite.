@@ -39,7 +39,7 @@ jobs:
         run: sed -i "s/const HOTE_DEV = 'localhost';/const HOTE_DEV = '${AMBAWBIO_HOTE_DEV}';/" src/app/core/configuration.ts
       - run: npm run android:sync
       - run: cd android && ./gradlew --no-daemon assembleDebug
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v7
         with:
           name: ambawbio-suite-demo-apk
           path: frontend/android/app/build/outputs/apk/debug/*.apk
