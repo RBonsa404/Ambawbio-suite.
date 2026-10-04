@@ -1,0 +1,16 @@
+{
+  "name": "ambawbio-scripts",
+  "private": true,
+  "type": "module",
+  "description": "Scripts d'outillage du dépôt (génération des icônes PNG à partir des SVG de docs/design).",
+  "scripts": {
+    "icones": "node generer-icones.mjs",
+    "polices": "node telecharger-polices.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "sharp": "0.35.5"
+  }
+}
