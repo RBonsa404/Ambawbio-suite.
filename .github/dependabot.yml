@@ -16,6 +16,10 @@ updates:
         patterns: ['@angular/*', '@angular-devkit/*', 'angular-eslint', '@angular-eslint/*']
       capacitor:
         patterns: ['@capacitor/*']
+    ignore:
+      # TypeScript suit la version exigée par Angular (@angular/build : peer typescript) ; montée avec Angular seulement.
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
   - package-ecosystem: npm
     directory: /infra/scripts
     schedule:
