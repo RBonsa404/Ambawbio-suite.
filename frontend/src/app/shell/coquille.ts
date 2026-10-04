@@ -9,6 +9,7 @@ import { ServiceContexte } from '../core/service-contexte';
 import { ServiceReseau } from '../core/service-reseau';
 import { VerrouPin } from '../core/verrou-pin';
 import { Icone } from '../shared/ui/icone';
+import { AgentSynchro } from '../core/sync/agent-synchro';
 import { IndicateurSync } from '../shared/ui/indicateur-sync';
 
 interface EntreeMenu {
@@ -35,6 +36,7 @@ const DELAI_VERROUILLAGE = 5 * 60 * 1000;
 export class Coquille {
   protected readonly contexte = inject(ServiceContexte);
   protected readonly reseau = inject(ServiceReseau);
+  protected readonly agent = inject(AgentSynchro);
   private readonly keycloak = inject(Keycloak);
 
   protected readonly replie = signal(lireRepli());
@@ -45,6 +47,8 @@ export class Coquille {
     { lien: '/produits', cle: 'menu.produits', icone: 'package', permission: 'socle:consulter' },
     { lien: '/tiers', cle: 'menu.tiers', icone: 'users', permission: 'socle:consulter' },
     { lien: '/import', cle: 'menu.import', icone: 'upload', permission: 'referentiel:gerer' },
+    { lien: '/synchronisation', cle: 'menu.synchronisation', icone: 'refresh-cw' },
+    { lien: '/terminaux', cle: 'menu.terminaux', icone: 'smartphone', permission: 'terminaux:gerer' },
   ];
 
   protected readonly entrees = computed(() => this.menu.filter((e) => !e.permission || this.contexte.peut(e.permission)));
@@ -65,6 +69,7 @@ export class Coquille {
 
   constructor() {
     void this.contexte.charger();
+    void this.agent.initialiser();
     if (Capacitor.isNativePlatform()) {
       void this.verrouillerAuDemarrage();
       void App.addListener('appStateChange', ({ isActive }) => {
@@ -92,6 +97,10 @@ export class Coquille {
     } catch {
       // préférence non mémorisée
     }
+  }
+
+  protected ouvrirSynchro(): void {
+    void this.router.navigateByUrl('/synchronisation');
   }
 
   protected seDeconnecter(): void {

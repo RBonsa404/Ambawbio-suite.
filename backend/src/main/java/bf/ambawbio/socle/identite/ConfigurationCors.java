@@ -19,7 +19,7 @@ class ConfigurationCors {
         var cors = new CorsConfiguration();
         cors.setAllowedOrigins(origines);
         cors.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        cors.setAllowedHeaders(List.of("Authorization", "Content-Type", "Idempotency-Key"));
+        cors.setAllowedHeaders(List.of("Authorization", "Content-Type", "Content-Encoding", "Idempotency-Key"));
         cors.setMaxAge(3600L);
         var source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/**", cors);

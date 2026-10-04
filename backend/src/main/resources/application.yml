@@ -20,8 +20,8 @@ spring:
         order_inserts: true
         order_updates: true
   flyway:
-    locations: classpath:db/migration/socle,classpath:db/migration/referentiel
-    schemas: socle,audit,referentiel
+    locations: classpath:db/migration/socle,classpath:db/migration/referentiel,classpath:db/migration/sync
+    schemas: socle,audit,referentiel,sync
     create-schemas: true
     # Migrations exécutées par le propriétaire des tables ; l'application utilise un rôle sans BYPASSRLS (guide §6.4).
     user: ${AMBAWBIO_BD_PROPRIETAIRE:ambawbio}
@@ -38,6 +38,13 @@ spring:
         jwt:
           issuer-uri: ${AMBAWBIO_KEYCLOAK_EMETTEUR:http://localhost:8180/realms/ambawbio}
           jwk-set-uri: ${AMBAWBIO_KEYCLOAK_JWKS:http://localhost:8180/realms/ambawbio/protocol/openid-connect/certs}
+
+server:
+  # Réponses compressées (pull de synchronisation, listes) : indispensable en 3G (ENF-02).
+  compression:
+    enabled: true
+    mime-types: application/json,application/problem+json,text/csv
+    min-response-size: 1KB
 
 management:
   endpoints:
@@ -56,6 +63,10 @@ springdoc:
     enabled: false
 
 ambawbio:
+  sync:
+    taille-plage: ${AMBAWBIO_TAILLE_PLAGE:500}
+    operations-par-lot: 100
+    changements-par-page: 500
   annuaire:
     mode: ${AMBAWBIO_ANNUAIRE_MODE:keycloak}
     url: ${AMBAWBIO_KEYCLOAK_URL:http://localhost:8180}

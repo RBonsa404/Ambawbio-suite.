@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import {
   ArrowLeft, Check, ChevronDown, ChevronLeft, CircleAlert, CircleCheck, Clock, CloudCheck, CloudOff, Delete, FileDown,
-  IconNode, LayoutDashboard, Lock, LogOut, Menu, Minus, Package, Plus, RefreshCw, ScanBarcode, Search, Settings, Store,
+  IconNode, LayoutDashboard, Lock, LogOut, Menu, Minus, Package, Plus, RefreshCw, ScanBarcode, Search, Settings, Smartphone, Store,
   Trash2, TriangleAlert, Upload, Users, X,
 } from 'lucide';
 
@@ -10,7 +10,7 @@ const ICONES: Record<string, IconNode> = {
   'arrow-left': ArrowLeft, check: Check, 'chevron-down': ChevronDown, 'chevron-left': ChevronLeft, 'circle-alert': CircleAlert,
   'circle-check': CircleCheck, clock: Clock, 'cloud-check': CloudCheck, 'cloud-off': CloudOff, delete: Delete, 'file-down': FileDown,
   'layout-dashboard': LayoutDashboard, lock: Lock, 'log-out': LogOut, menu: Menu, minus: Minus, package: Package, plus: Plus,
-  'refresh-cw': RefreshCw, 'scan-barcode': ScanBarcode, search: Search, settings: Settings, store: Store, 'trash-2': Trash2,
+  'refresh-cw': RefreshCw, 'scan-barcode': ScanBarcode, search: Search, settings: Settings, smartphone: Smartphone, store: Store, 'trash-2': Trash2,
   'triangle-alert': TriangleAlert, upload: Upload, users: Users, x: X,
 };
 

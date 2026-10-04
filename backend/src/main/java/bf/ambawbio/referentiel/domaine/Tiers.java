@@ -125,6 +125,14 @@ public class Tiers extends EntiteMetier {
         champsPerso().putAll(champsPerso);
     }
 
+    /** Modification venant d'un terminal : seules les coordonnées peuvent changer (guide §8.5). */
+    public void modifierCoordonnees(Coordonnees coordonnees) {
+        this.telephone = Telephone.normaliser(coordonnees.telephone());
+        this.courriel = coordonnees.courriel() == null || coordonnees.courriel().isBlank() ? null : coordonnees.courriel().trim();
+        this.adresse = coordonnees.adresse();
+        this.ville = coordonnees.ville();
+    }
+
     public void definirContacts(List<DonneesContact> donnees) {
         contacts.clear();
         donnees.forEach(d -> contacts.add(new Contact(Uuid7.nouveau(), d)));

@@ -62,9 +62,11 @@ public class ServiceImport {
     private final ImportDepot imports;
     private final ChampsPersonnalises champs;
     private final JournalAudit audit;
+    private final PublicationReferentiel publication;
 
     ServiceImport(ProduitDepot produits, TiersDepot tiers, TaxeDepot taxes, UniteDepot unites, CategorieDepot categories, RegimeDepot regimes,
-            ImportDepot imports, ChampsPersonnalises champs, JournalAudit audit) {
+            ImportDepot imports, ChampsPersonnalises champs, JournalAudit audit,
+            PublicationReferentiel publication) {
         this.produits = produits;
         this.tiers = tiers;
         this.taxes = taxes;
@@ -74,6 +76,7 @@ public class ServiceImport {
         this.imports = imports;
         this.champs = champs;
         this.audit = audit;
+        this.publication = publication;
     }
 
     @Transactional(readOnly = true)
@@ -201,7 +204,11 @@ public class ServiceImport {
             UUID categorieId = null;
             if (v.nomCategorie() != null) {
                 var categorie = categoriesParNom.computeIfAbsent(v.nomCategorie().toLowerCase(Locale.ROOT),
-                        n -> categories.save(new Categorie(Uuid7.nouveau(), v.nomCategorie(), null)));
+                        n -> {
+                            var nouvelle = categories.save(new Categorie(Uuid7.nouveau(), v.nomCategorie(), null));
+                            publication.categorie(nouvelle);
+                            return nouvelle;
+                        });
                 categorieId = categorie.getId();
             }
             var c = v.commande();
@@ -213,7 +220,7 @@ public class ServiceImport {
                     c.prixVente(), c.prixVenteTtc(), c.prixAchat(), c.suiviStock(), c.actif(), c.champsPerso());
             produit.definirConditionnements(c.conditionnements());
             produit.definirCodesBarres(c.codesBarres());
-            produits.save(produit);
+            publication.produit(produits.saveAndFlush(produit));
         }
         return valides.size();
     }
@@ -299,7 +306,7 @@ public class ServiceImport {
                 t = new Tiers(Uuid7.nouveau(), v.commande().code());
             }
             appliquerTiers(t, v.commande(), v.regime());
-            tiers.save(t);
+            publication.tiers(tiers.saveAndFlush(t));
         }
         return valides.size();
     }

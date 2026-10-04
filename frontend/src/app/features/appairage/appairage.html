@@ -1,0 +1,34 @@
+<div class="mx-auto max-w-xl">
+  <h1 class="titre-page">{{ 'appairage.titre' | transloco }}</h1>
+  @switch (etape()) {
+    @case ('saisie') {
+      <p class="mt-2 text-texte-secondaire">{{ 'appairage.explication' | transloco }}</p>
+      @if (agent.terminal(); as t) {
+        <p class="alerte-succes mt-4">{{ 'appairage.dejaAppaire' | transloco: { code: t.code, nom: t.nom } }}</p>
+      }
+      <form class="carte mt-4 flex flex-col gap-4" (ngSubmit)="appairer()">
+        <amb-champ [libelle]="'appairage.identifiant' | transloco" pour="appairage-terminal" [aide]="'appairage.identifiantAide' | transloco">
+          <input id="appairage-terminal" name="terminal" class="champ-saisie font-code" [(ngModel)]="saisie" autocomplete="off" />
+        </amb-champ>
+        <amb-champ [libelle]="'appairage.code' | transloco" pour="appairage-code">
+          <input id="appairage-code" name="code" class="champ-saisie font-code uppercase tracking-widest" [(ngModel)]="code" autocomplete="off" />
+        </amb-champ>
+        @if (erreur()) { <p class="alerte-erreur" role="alert">{{ erreur() }}</p> }
+        <button ambBouton variante="caisse" type="submit">{{ 'appairage.appairer' | transloco }}</button>
+      </form>
+    }
+    @case ('chargement') {
+      <div class="carte mt-6" role="status" aria-live="polite">
+        <p class="font-semibold">{{ 'appairage.chargement' | transloco }}</p>
+        <p class="mt-2 text-4xl font-bold tabular-nums">{{ recus() }}</p>
+        <p class="text-texte-secondaire">{{ 'appairage.elementsRecus' | transloco }}</p>
+      </div>
+    }
+    @case ('termine') {
+      <div class="carte mt-6 flex flex-col gap-3" role="status">
+        <p class="alerte-succes" data-testid="chargement-termine">{{ 'appairage.termine' | transloco: { n: recus(), produits: produits(), duree: duree() } }}</p>
+        <button ambBouton variante="principal" type="button" (click)="terminer()">{{ 'appairage.continuer' | transloco }}</button>
+      </div>
+    }
+  }
+</div>
