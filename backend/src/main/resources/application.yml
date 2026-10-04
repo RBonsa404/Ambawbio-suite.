@@ -20,7 +20,7 @@ spring:
         order_inserts: true
         order_updates: true
   flyway:
-    locations: classpath:db/migration/socle,classpath:db/migration/referentiel,classpath:db/migration/sync,classpath:db/migration/pos
+    locations: classpath:db/callback,classpath:db/migration/socle,classpath:db/migration/referentiel,classpath:db/migration/sync,classpath:db/migration/pos
     schemas: socle,audit,referentiel,sync,pos
     create-schemas: true
     # Migrations exécutées par le propriétaire des tables ; l'application utilise un rôle sans BYPASSRLS (guide §6.4).
@@ -28,6 +28,7 @@ spring:
     password: ${AMBAWBIO_BD_PROPRIETAIRE_MOT_DE_PASSE:}
     placeholders:
       role_application: ${AMBAWBIO_BD_UTILISATEUR:ambawbio_app}
+      role_application_mot_de_passe: ${spring.datasource.password:}
   servlet:
     multipart:
       max-file-size: 10MB

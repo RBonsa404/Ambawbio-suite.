@@ -131,3 +131,8 @@ Format ADR court : contexte, décision, conséquences. Une décision n'est remis
 
 ## D-34 — Configuration lue à l'exécution
 - **Décision** : `public/config.js` (`window.AMBAWBIO_CONFIG`) donne les adresses de l'API et de Keycloak ; le conteneur nginx le régénère au démarrage à partir de `AMBAWBIO_API_URL` et `AMBAWBIO_KEYCLOAK_URL`, et le workflow **android** l'écrit avant de construire l'APK. Une seule image de l'application pour tous les environnements ; `config.js` n'est jamais mis en cache.
+
+## D-39 — Le serveur garantit son rôle de base de données au démarrage
+- **Contexte** : sur Railway, le serveur s'arrêtait avec `password authentication failed for user "ambawbio_app"` quand le rôle applicatif n'avait pas été créé par le script d'initialisation de PostgreSQL (base créée sans lui, initialisation interrompue) ou avait un autre mot de passe.
+- **Décision** : un callback Flyway `beforeMigrate`, exécuté par le propriétaire des tables, crée le rôle s'il manque ou lui réapplique le mot de passe configuré pour le serveur, toujours sans superutilisateur ni BYPASSRLS (guide §6.4). Mot de passe vide (tests, initialisation externe) : rien n'est modifié. Testé sur une base PostgreSQL 18 vierge : migrations, données de démonstration, démarrage.
+
