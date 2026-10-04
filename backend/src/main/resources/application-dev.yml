@@ -1,0 +1,10 @@
+# Profil de développement local (infra/docker-compose.dev.yml). Simulateurs activés à partir du LOT 6.
+spring:
+  datasource:
+    password: ${AMBAWBIO_BD_MOT_DE_PASSE:ambawbio-dev}
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true

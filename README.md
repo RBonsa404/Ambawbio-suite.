@@ -41,9 +41,22 @@ ambawbio-suite/
 │   │                      gabarits, fiches composants, maquettes de référence
 │   └── QUESTIONS.md       Questions ouvertes au porteur du projet
 ├── infra/
+│   ├── docker-compose.dev.yml  PostgreSQL, Keycloak, Mailpit (développement)
+│   ├── keycloak/          Royaume de démonstration
 │   └── scripts/           Outillage : génération des icônes PNG, téléchargement des polices
-├── backend/               (à venir)
-└── frontend/              (à venir)
+├── backend/               Serveur Spring Boot (monolithe modulaire)
+├── frontend/              Application Angular + Android (Capacitor)
+└── .github/               CI, Dependabot, modèle de pull request
+```
+
+## Démarrage rapide
+
+Prérequis : Java 25, Node.js 24, Docker. Détails et démonstration Android : `docs/lots/LOT-00.md`.
+
+```bash
+docker compose -f infra/docker-compose.dev.yml up -d
+cd backend && SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run
+cd frontend && npm ci && npm start   # http://localhost:4200 — awa / demo-ambawbio
 ```
 
 ## Licence

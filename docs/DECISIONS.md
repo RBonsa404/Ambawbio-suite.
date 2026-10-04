@@ -32,3 +32,19 @@ Format ADR court : contexte, décision, conséquences. Une décision n'est remis
 
 ## D-07 — Captures de référence fournies par le porteur du projet (écart E-07)
 - **Décision** : les captures manquantes (documents D-01 à D-08, site vitrine, écrans complétés plus tard) seront faites à la main par le porteur du projet, à la demande de Claude Code au début du lot concerné, et rangées dans `docs/design/references/captures/` sous le code de l'écran.
+
+## D-08 — Versions retenues au LOT 0
+- **Décision** : dernières versions stables au 2026-10-04 (guide §4) : Java 25, Spring Boot 4.1.1, Spring Modulith 2.1.1, springdoc 3.1.1, PostgreSQL 18, Keycloak 26.8, Angular 22.2, Tailwind CSS 4.3, Transloco 8.4, keycloak-angular 22, Capacitor 8.5, Vitest 5, Playwright 1.63, Node.js 24 LTS (exigé par Angular 22). Les jalons (4.2.0-M2…) sont exclus.
+- **Conséquences** : Dependabot propose les mises à jour chaque semaine.
+
+## D-09 — Dépendances ajoutées lot par lot
+- **Contexte** : la section 4 liste toute la pile ; le guide interdit d'ajouter une dépendance sans justification.
+- **Décision** : le LOT 0 n'ajoute que ce qu'il utilise (web, sécurité OAuth2, JPA, Flyway, Modulith, Actuator, springdoc ; Angular, Tailwind, Transloco, keycloak-angular, Capacitor). Les autres entrent dans le lot qui en a besoin, justifiées dans la pull request.
+
+## D-10 — Jetons et ressources de design : source unique `docs/design`
+- **Décision** : `frontend/src/styles.css` importe directement `docs/design/theme.css` (dont la ligne `@import "tailwindcss"` a été déplacée dans ce point d'entrée). Les polices, logos et icônes sont copiés depuis `docs/design` par `frontend/scripts/synchroniser-design.mjs` avant `start`, `build` et `test` (Angular refuse les ressources hors du projet) ; les copies sont ignorées par git.
+- **Conséquences** : aucune duplication des jetons (R-16) ; toute évolution du design passe par `docs/design`.
+
+## D-11 — Un seul client Keycloak public pour le web et Android
+- **Décision** : client `ambawbio-web`, code d'autorisation + PKCE S256, origines `http://localhost:4200` et `https://localhost` (WebView Capacitor). Le serveur valide le jeton (émetteur + clés JWKS, sans découverte au démarrage) et convertit les rôles du royaume en autorités `ROLE_*`.
+- **Conséquences** : l'authentification hors-ligne de la caisse (PIN, D-01) s'appuiera sur ce client au LOT 4.

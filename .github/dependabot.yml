@@ -1,0 +1,34 @@
+version: 2
+updates:
+  - package-ecosystem: maven
+    directory: /backend
+    schedule:
+      interval: weekly
+    groups:
+      spring:
+        patterns: ['org.springframework*']
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: weekly
+    groups:
+      angular:
+        patterns: ['@angular/*', '@angular-devkit/*', 'angular-eslint', '@angular-eslint/*']
+      capacitor:
+        patterns: ['@capacitor/*']
+  - package-ecosystem: npm
+    directory: /infra/scripts
+    schedule:
+      interval: monthly
+  - package-ecosystem: gradle
+    directory: /frontend/android
+    schedule:
+      interval: monthly
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+  - package-ecosystem: docker-compose
+    directory: /infra
+    schedule:
+      interval: monthly

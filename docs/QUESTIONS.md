@@ -17,6 +17,7 @@ Règle : ne jamais inventer une spécification officielle (DGI, opérateurs). En
 | Q-07 | Barèmes IUTS, CNSS, taxe patronale (Release 2) | Paie | Ne pas commencer la paie sans validation | 2026-10 |
 | Q-08 | Prix des packs en FCFA (Essentiel, Business, Enterprise, Institution) | Abonnement, site vitrine (Tarifs), écrans W-01, W-02, W-22 | Prix paramétrables depuis la console de l'éditeur (W-23). Dans l'interface et le site, zone réservée **« [PRIX À DÉFINIR] »**, jamais de montant en dur | 2026-10 |
 | Q-09 | IFU et RCCM de la société éditrice d'Ambawbio Suite (société non encore créée) | En-tête de lettre, factures d'abonnement, mentions légales du site, pied des courriels | Paramètres de la plateforme. Zones réservées **« [IFU EN COURS] »** et **« [RCCM EN COURS] »**, jamais en dur | 2026-10 |
+| Q-14 | Stockage d'objets : MinIO ne publie plus d'image communautaire sur Docker Hub. Garder MinIO (image quay.io ou construite depuis les sources), ou passer à une alternative compatible S3 (Garage, SeaweedFS) ? | Documents (PDF des factures), LOT 6 ; exploitation sur site | Code écrit contre l'API S3 standard ; service MinIO en profil Compose « documents » ; décision au LOT 6 | 2026-10-04 |
 
 ## Réglées
 

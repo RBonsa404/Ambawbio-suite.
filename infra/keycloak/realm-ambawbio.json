@@ -1,0 +1,187 @@
+{
+  "realm": "ambawbio",
+  "displayName": "Ambawbio Suite",
+  "enabled": true,
+  "sslRequired": "external",
+  "internationalizationEnabled": true,
+  "supportedLocales": [
+    "fr"
+  ],
+  "defaultLocale": "fr",
+  "loginWithEmailAllowed": true,
+  "resetPasswordAllowed": true,
+  "bruteForceProtected": true,
+  "accessTokenLifespan": 300,
+  "ssoSessionIdleTimeout": 28800,
+  "offlineSessionIdleTimeout": 2592000,
+  "roles": {
+    "realm": [
+      {
+        "name": "caissier",
+        "description": "Caissier ou caissière : vente au comptoir"
+      },
+      {
+        "name": "gerant",
+        "description": "Gérant : supervision, validation des écarts"
+      },
+      {
+        "name": "comptable",
+        "description": "Comptable : écritures et états financiers"
+      },
+      {
+        "name": "magasinier",
+        "description": "Magasinier : réceptions, transferts, inventaires"
+      },
+      {
+        "name": "commercial",
+        "description": "Commercial : devis et clients"
+      },
+      {
+        "name": "administrateur",
+        "description": "Administrateur de l'entreprise : paramètres et utilisateurs"
+      },
+      {
+        "name": "admin-plateforme",
+        "description": "Éditeur : console de la plateforme"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "ambawbio-web",
+      "name": "Ambawbio Suite (web et Android)",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "implicitFlowEnabled": false,
+      "redirectUris": [
+        "http://localhost:4200/*",
+        "https://localhost/*",
+        "http://localhost/*"
+      ],
+      "webOrigins": [
+        "http://localhost:4200",
+        "https://localhost",
+        "http://localhost"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:4200/*##https://localhost/*##http://localhost/*"
+      },
+      "protocol": "openid-connect",
+      "fullScopeAllowed": true
+    }
+  ],
+  "users": [
+    {
+      "username": "awa",
+      "firstName": "Awa",
+      "lastName": "Kaboré",
+      "email": "awa@demo.ambawbio.bf",
+      "emailVerified": true,
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "demo-ambawbio",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "caissier"
+      ]
+    },
+    {
+      "username": "moussa",
+      "firstName": "Moussa",
+      "lastName": "Sawadogo",
+      "email": "moussa@demo.ambawbio.bf",
+      "emailVerified": true,
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "demo-ambawbio",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "gerant",
+        "administrateur"
+      ]
+    },
+    {
+      "username": "mariam",
+      "firstName": "Mariam",
+      "lastName": "Ilboudo",
+      "email": "mariam@demo.ambawbio.bf",
+      "emailVerified": true,
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "demo-ambawbio",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "comptable"
+      ]
+    },
+    {
+      "username": "issouf",
+      "firstName": "Issouf",
+      "lastName": "Ouédraogo",
+      "email": "issouf@demo.ambawbio.bf",
+      "emailVerified": true,
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "demo-ambawbio",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "magasinier"
+      ]
+    },
+    {
+      "username": "boukary",
+      "firstName": "Boukary",
+      "lastName": "Compaoré",
+      "email": "boukary@demo.ambawbio.bf",
+      "emailVerified": true,
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "demo-ambawbio",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "commercial"
+      ]
+    },
+    {
+      "username": "editeur",
+      "firstName": "Équipe",
+      "lastName": "Ambawbio",
+      "email": "editeur@demo.ambawbio.bf",
+      "emailVerified": true,
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "demo-ambawbio",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "admin-plateforme"
+      ]
+    }
+  ]
+}

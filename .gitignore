@@ -26,3 +26,6 @@ node_modules/
 *.class
 *.jar
 *.war
+
+# Wrappers Gradle (nécessaires à la compilation)
+!gradle-wrapper.jar

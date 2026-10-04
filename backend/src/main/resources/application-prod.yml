@@ -1,0 +1,5 @@
+# Production : toute la configuration vient des variables d'environnement (aucun secret dans le dépôt).
+management:
+  endpoint:
+    health:
+      show-details: never
