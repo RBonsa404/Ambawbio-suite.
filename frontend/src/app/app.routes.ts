@@ -15,6 +15,7 @@ export const routes: Routes = [
       { path: 'caisse', loadComponent: () => import('./features/caisse/caisse').then((m) => m.EcranCaisse), title: 'Caisse — Ambawbio Suite' },
       { path: 'caisse/retour', loadComponent: () => import('./features/caisse/retour').then((m) => m.EcranRetour), title: 'Retour — Ambawbio Suite' },
       { path: 'caisse/cloture', loadComponent: () => import('./features/caisse/cloture').then((m) => m.EcranCloture), title: 'Clôture — Ambawbio Suite' },
+      { path: 'factures', loadComponent: () => import('./features/factures/factures').then((m) => m.Factures), title: 'Factures et avoirs — Ambawbio Suite' },
       { path: 'caisses', loadComponent: () => import('./features/caisses/caisses').then((m) => m.Caisses), title: 'Caisses — Ambawbio Suite' },
       { path: 'terminaux', loadComponent: () => import('./features/terminaux/terminaux').then((m) => m.Terminaux), title: 'Terminaux — Ambawbio Suite' },
       { path: 'appairage', loadComponent: () => import('./features/appairage/appairage').then((m) => m.Appairage), title: 'Appairage — Ambawbio Suite' },

@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import {
-  ArrowLeft, Check, ChevronDown, ChevronLeft, CircleAlert, CircleCheck, Clock, CloudCheck, CloudOff, Delete, FileDown,
+  ArrowLeft, BadgeCheck, Check, ChevronDown, ChevronLeft, CircleAlert, CircleCheck, CircleX, Clock, CloudCheck, CloudOff, Delete, FileDown, FileText, FlaskConical,
   IconNode, LayoutDashboard, Lock, LogOut, Menu, Minus, Package, Plus, RefreshCw, ScanBarcode, Search, Settings, Smartphone, Store,
   Trash2, TriangleAlert, Upload, Users, X,
 } from 'lucide';
 
 /** Icônes Lucide (licence ISC) utilisées par l'application ; trait 2 px, grille 24 (docs/design/icones/README.md). */
 const ICONES: Record<string, IconNode> = {
-  'arrow-left': ArrowLeft, check: Check, 'chevron-down': ChevronDown, 'chevron-left': ChevronLeft, 'circle-alert': CircleAlert,
-  'circle-check': CircleCheck, clock: Clock, 'cloud-check': CloudCheck, 'cloud-off': CloudOff, delete: Delete, 'file-down': FileDown,
+  'arrow-left': ArrowLeft, 'badge-check': BadgeCheck, check: Check, 'chevron-down': ChevronDown, 'chevron-left': ChevronLeft, 'circle-alert': CircleAlert,
+  'circle-check': CircleCheck, 'circle-x': CircleX, clock: Clock, 'cloud-check': CloudCheck, 'cloud-off': CloudOff, delete: Delete, 'file-down': FileDown, 'file-text': FileText, 'flask-conical': FlaskConical,
   'layout-dashboard': LayoutDashboard, lock: Lock, 'log-out': LogOut, menu: Menu, minus: Minus, package: Package, plus: Plus,
   'refresh-cw': RefreshCw, 'scan-barcode': ScanBarcode, search: Search, settings: Settings, smartphone: Smartphone, store: Store, 'trash-2': Trash2,
   'triangle-alert': TriangleAlert, upload: Upload, users: Users, x: X,

@@ -65,6 +65,19 @@ test.describe('Caisse hors-ligne (A-05 à A-16, W-13)', () => {
     await expect(page.getByTestId('numero-ticket')).toContainText(/TK-C\d+-\d{4}-\d{6}/);
     await page.screenshot({ path: test.info().outputPath('A-12.png') });
 
+    // Facture demandée en caisse (RG-03) : client choisi, numéro de la plage FACTURE du terminal
+    await page.getByRole('button', { name: 'Nouvelle vente' }).click();
+    await recherche.fill('CIM-50');
+    await recherche.press('Enter');
+    await page.getByRole('button', { name: 'Encaisser' }).click();
+    await page.getByRole('button', { name: 'Carte' }).click();
+    await page.getByLabel('Le client demande une facture certifiée').check();
+    await page.locator('#client-facture').fill('batir');
+    await page.getByRole('button', { name: /Bâtir Faso SARL/ }).click();
+    await page.getByRole('button', { name: 'Valider le paiement' }).click();
+    await expect(page.getByTestId('facture-caisse')).toContainText(/Facture FA-C\d+-\d{4}-\d{6}/);
+    const numeroFacture = (await page.getByTestId('facture-caisse').textContent())!.match(/FA-C\d+-\d{4}-\d{6}/)![0];
+
     // Hors-ligne : deux ventes restent sur l'appareil puis partent au retour du réseau
     await context.setOffline(true);
     for (let i = 0; i < 2; i++) {
@@ -93,6 +106,10 @@ test.describe('Caisse hors-ligne (A-05 à A-16, W-13)', () => {
     await page.locator('#motif').fill('Test de clôture e2e');
     await page.getByRole('button', { name: "Valider l'écart" }).click();
     await expect(page.getByText('Écart validé par le responsable.')).toBeVisible({ timeout: 30_000 });
+
+    // W-10 : la facture de caisse est établie et certifiée (simulateur)
+    await page.goto('/factures');
+    await expect(page.getByRole('button', { name: numeroFacture })).toBeVisible();
 
     // W-13 : la session apparaît avec son écart validé
     await page.goto('/caisses');

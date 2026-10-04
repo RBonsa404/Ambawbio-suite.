@@ -145,6 +145,8 @@
     display: inline-flex; align-items: center; justify-content: center; }
   .touche-pin:active { background: var(--color-banco-700); }
 
+  .badge-fec-simulee { background: repeating-linear-gradient(135deg, var(--color-banco-50) 0 6px, var(--color-banco-100) 6px 12px); }
+
   /* Caisse (A-06 à A-12) */
   .tuile-produit { display: flex; flex-direction: column; justify-content: space-between; gap: calc(var(--spacing) * 2); min-height: 5.5rem;
     padding: calc(var(--spacing) * 3); text-align: left; background: var(--color-surface); border: var(--border-width-epais) solid var(--color-texte);

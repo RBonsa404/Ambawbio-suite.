@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import bf.ambawbio.shared.domaine.CalculLigne;
 import bf.ambawbio.shared.domaine.EntiteMetier;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -61,6 +62,8 @@ public class Vente extends EntiteMetier {
     private long remise;
     @Column(name = "facture_demandee")
     private boolean factureDemandee;
+    @Column(name = "numero_facture")
+    private String numeroFacture;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "vente_id", nullable = false, updatable = false)
@@ -77,7 +80,8 @@ public class Vente extends EntiteMetier {
     }
 
     public record Entete(UUID id, UUID sessionId, UUID societeId, UUID etablissementId, UUID terminalId, UUID caissierId, Type type,
-            String typePiece, int annee, long sequence, String numero, Instant horodatage, UUID clientId, UUID venteOrigineId, boolean factureDemandee) {
+            String typePiece, int annee, long sequence, String numero, Instant horodatage, UUID clientId, UUID venteOrigineId, boolean factureDemandee,
+            String numeroFacture) {
     }
 
     public Vente(Entete e, List<Ligne> lignes, List<Encaissement> encaissements) {
@@ -96,6 +100,7 @@ public class Vente extends EntiteMetier {
         this.clientId = e.clientId();
         this.venteOrigineId = e.venteOrigineId();
         this.factureDemandee = e.factureDemandee();
+        this.numeroFacture = e.numeroFacture();
         this.lignes.addAll(lignes);
         this.encaissements.addAll(encaissements);
         this.totalHt = lignes.stream().mapToLong(Ligne::montantHt).sum();
@@ -123,6 +128,7 @@ public class Vente extends EntiteMetier {
     public long totalTtc() { return totalTtc; }
     public long remise() { return remise; }
     public boolean factureDemandee() { return factureDemandee; }
+    public String numeroFacture() { return numeroFacture; }
     public List<Ligne> lignes() { return List.copyOf(lignes); }
     public List<Encaissement> encaissements() { return List.copyOf(encaissements); }
 
@@ -164,7 +170,7 @@ public class Vente extends EntiteMetier {
 
         public Ligne(Donnees d) {
             super(d.id());
-            var montants = CalculVente.ligne(d.quantite(), d.prixUnitaire(), d.prixTtc(), d.remise(), d.taux());
+            var montants = CalculLigne.ligne(d.quantite(), d.prixUnitaire(), d.prixTtc(), d.remise(), d.taux());
             this.rang = d.rang();
             this.produitId = d.produitId();
             this.libelle = d.libelle();
@@ -185,6 +191,7 @@ public class Vente extends EntiteMetier {
 
         public UUID produitId() { return produitId; }
         public String libelle() { return libelle; }
+        public boolean prixTtc() { return prixTtc; }
         public BigDecimal quantite() { return quantite; }
         public BigDecimal quantiteUniteStock() { return quantiteUniteStock; }
         public long prixUnitaire() { return prixUnitaire; }
