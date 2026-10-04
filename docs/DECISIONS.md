@@ -144,6 +144,7 @@ Format ADR court : contexte, décision, conséquences. Une décision n'est remis
 
 ## D-38 — Facture de caisse numérotée par le terminal
 - **Décision** : quand le client demande une facture en caisse, le terminal prend un numéro dans sa plage FACTURE (`FA-C01-2026-000001`, guide §6.7 et §8.6), obligatoirement avec un client du catalogue local. La facture est établie par le serveur à la réception de la vente (déjà payée) puis certifiée. Les factures du bureau gardent la série centrale `FA-2026-…` ; la contrainte d'unicité porte sur le numéro complet. Le format exigé par la DGI sera appliqué dès réception des spécifications (Q-01).
+
 ## D-39 — Le serveur garantit son rôle de base de données au démarrage
 - **Contexte** : sur Railway, le serveur s'arrêtait avec `password authentication failed for user "ambawbio_app"` quand le rôle applicatif n'avait pas été créé par le script d'initialisation de PostgreSQL (base créée sans lui, initialisation interrompue) ou avait un autre mot de passe.
 - **Décision** : un callback Flyway `beforeMigrate`, exécuté par le propriétaire des tables, crée le rôle s'il manque ou lui réapplique le mot de passe configuré pour le serveur, toujours sans superutilisateur ni BYPASSRLS (guide §6.4). Mot de passe vide (tests, initialisation externe) : rien n'est modifié. Testé sur une base PostgreSQL 18 vierge : migrations, données de démonstration, démarrage.
