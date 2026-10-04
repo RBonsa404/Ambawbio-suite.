@@ -149,3 +149,9 @@ Format ADR court : contexte, décision, conséquences. Une décision n'est remis
 - **Contexte** : sur Railway, le serveur s'arrêtait avec `password authentication failed for user "ambawbio_app"` quand le rôle applicatif n'avait pas été créé par le script d'initialisation de PostgreSQL (base créée sans lui, initialisation interrompue) ou avait un autre mot de passe.
 - **Décision** : un callback Flyway `beforeMigrate`, exécuté par le propriétaire des tables, crée le rôle s'il manque ou lui réapplique le mot de passe configuré pour le serveur, toujours sans superutilisateur ni BYPASSRLS (guide §6.4). Mot de passe vide (tests, initialisation externe) : rien n'est modifié. Testé sur une base PostgreSQL 18 vierge : migrations, données de démonstration, démarrage.
 
+
+## D-40 — Base Railway : comptes resynchronisés à chaque démarrage
+
+- **Contexte** : sur Railway, le script d'initialisation de l'image PostgreSQL ne s'exécute que sur un volume vide. Changer `POSTGRES_PASSWORD`, `AMBAWBIO_BD_MOT_DE_PASSE` ou `KEYCLOAK_BD_MOT_DE_PASSE` après coup laissait les anciens mots de passe en base, d'où des refus de connexion (`password authentication failed`) pour `ambawbio`, `ambawbio_app` et `keycloak`.
+- **Décision** : l'image `infra/railway/postgres` démarre par `demarrer.sh`, qui lance PostgreSQL puis, une fois le serveur définitif à l'écoute, réapplique par la socket locale les trois comptes, leurs mots de passe et la base `keycloak`.
+- **Conséquence** : modifier un mot de passe dans les variables puis redéployer la base suffit ; vider le volume n'est plus nécessaire.
