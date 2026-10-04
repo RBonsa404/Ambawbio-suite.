@@ -17,12 +17,15 @@
     <h1 class="font-titre text-4xl font-extrabold uppercase [font-stretch:118%]">
       {{ 'accueil.bonjour' | transloco: { nom: nom() } }}
     </h1>
-    <p class="mt-2 text-lg text-texte-secondaire">{{ 'accueil.sousTitre' | transloco }}</p>
+    @if (contexte(); as c) {
+      <p class="mt-2 text-lg font-semibold">{{ c.entreprise.nom }}</p>
+    }
+    <p class="mt-1 text-lg text-texte-secondaire">{{ 'accueil.sousTitre' | transloco }}</p>
 
     <section class="mt-8 grid gap-4 sm:grid-cols-2">
       <div class="border border-bordure bg-surface p-4">
         <h2 class="text-sm font-semibold uppercase tracking-wide text-texte-secondaire">{{ 'accueil.roles' | transloco }}</h2>
-        @if (utilisateur(); as u) {
+        @if (contexte(); as u) {
           @if (u.roles.length) {
             <ul class="mt-2 flex flex-wrap gap-2">
               @for (role of u.roles; track role) {
@@ -44,7 +47,7 @@
             <p class="mt-2 font-semibold text-etat-certifie">✓ {{ 'accueil.serveurOk' | transloco }}</p>
           }
           @case ('erreur') {
-            <p class="mt-2 font-semibold text-danger">✕ {{ 'accueil.serveurErreur' | transloco }}</p>
+            <p class="mt-2 font-semibold text-danger">✕ {{ messageErreur() ?? ('accueil.serveurErreur' | transloco) }}</p>
           }
           @default {
             <p class="mt-2 text-texte-secondaire">{{ 'accueil.serveurAttente' | transloco }}</p>
@@ -52,5 +55,18 @@
         }
       </div>
     </section>
+
+    @if (contexte(); as c) {
+      <section class="mt-4 border border-bordure bg-surface p-4">
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-texte-secondaire">{{ 'accueil.etablissements' | transloco }}</h2>
+        <ul class="mt-2 divide-y divide-bordure">
+          @for (e of c.etablissements; track e.id) {
+            <li class="flex items-center justify-between gap-4 py-2">
+              <span>{{ e.nom }}</span><span class="font-code text-sm text-texte-secondaire">{{ e.code }}</span>
+            </li>
+          }
+        </ul>
+      </section>
+    }
   </main>
 </div>

@@ -42,22 +42,31 @@ describe('Accueil', () => {
 
   it("affiche l'utilisateur et ses rôles renvoyés par le serveur", async () => {
     const fixture = TestBed.createComponent(Accueil);
-    http.expectOne('/api/moi').flush({
-      identifiant: 'u1',
-      nomUtilisateur: 'awa',
-      nomComplet: 'Awa Kaboré',
-      courriel: null,
+    http.expectOne('/api/v1/socle/contexte').flush({
+      utilisateur: { id: 'u1', nomUtilisateur: 'awa', nomComplet: 'Awa Kaboré', courriel: 'awa@demo.bf' },
+      entreprise: { id: 't1', nom: 'Quincaillerie Wend-Panga', pack: 'BUSINESS', statut: 'ACTIVE' },
+      societes: [],
+      etablissements: [{ id: 'e1', societeId: 's1', code: 'SIEGE', nom: 'Ouaga — Zogona' }],
       roles: ['caissier'],
+      permissions: ['pos:vendre'],
+      modules: ['pos'],
     });
+    http.expectOne('/api/v1/socle/connexions').flush(null);
     await fixture.whenStable();
     const page = fixture.nativeElement as HTMLElement;
     expect(page.textContent).toContain('caissier');
+    expect(page.textContent).toContain('Quincaillerie Wend-Panga');
+    expect(page.textContent).toContain('Ouaga — Zogona');
   });
 
-  it('signale clairement un serveur injoignable', async () => {
+  it('affiche le message du serveur quand l\'accès est refusé', async () => {
     const fixture = TestBed.createComponent(Accueil);
-    http.expectOne('/api/moi').flush(null, { status: 0, statusText: 'Erreur réseau' });
+    http.expectOne('/api/v1/socle/contexte').flush(
+      { code: 'ENTREPRISE_SUSPENDUE', detail: "L'abonnement de votre entreprise est suspendu." },
+      { status: 403, statusText: 'Forbidden' },
+    );
     await fixture.whenStable();
     expect(fixture.componentInstance['etatServeur']()).toBe('erreur');
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('abonnement de votre entreprise est suspendu');
   });
 });

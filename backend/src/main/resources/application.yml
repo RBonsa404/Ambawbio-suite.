@@ -6,7 +6,7 @@ spring:
       enabled: true
   datasource:
     url: ${AMBAWBIO_BD_URL:jdbc:postgresql://localhost:5432/ambawbio}
-    username: ${AMBAWBIO_BD_UTILISATEUR:ambawbio}
+    username: ${AMBAWBIO_BD_UTILISATEUR:ambawbio_app}
     password: ${AMBAWBIO_BD_MOT_DE_PASSE:}
   jpa:
     open-in-view: false
@@ -17,8 +17,13 @@ spring:
         default_schema: socle
   flyway:
     locations: classpath:db/migration/socle
-    schemas: socle
+    schemas: socle,audit
     create-schemas: true
+    # Migrations exécutées par le propriétaire des tables ; l'application utilise un rôle sans BYPASSRLS (guide §6.4).
+    user: ${AMBAWBIO_BD_PROPRIETAIRE:ambawbio}
+    password: ${AMBAWBIO_BD_PROPRIETAIRE_MOT_DE_PASSE:}
+    placeholders:
+      role_application: ${AMBAWBIO_BD_UTILISATEUR:ambawbio_app}
   security:
     oauth2:
       resourceserver:
@@ -43,5 +48,11 @@ springdoc:
     enabled: false
 
 ambawbio:
+  annuaire:
+    mode: ${AMBAWBIO_ANNUAIRE_MODE:keycloak}
+    url: ${AMBAWBIO_KEYCLOAK_URL:http://localhost:8180}
+    royaume: ambawbio
+    client-id: ambawbio-serveur
+    secret: ${AMBAWBIO_KEYCLOAK_SECRET:}
   cors:
     origines: ${AMBAWBIO_CORS_ORIGINES:http://localhost:4200,https://localhost}

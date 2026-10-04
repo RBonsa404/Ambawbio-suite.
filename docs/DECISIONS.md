@@ -48,3 +48,23 @@ Format ADR court : contexte, décision, conséquences. Une décision n'est remis
 ## D-11 — Un seul client Keycloak public pour le web et Android
 - **Décision** : client `ambawbio-web`, code d'autorisation + PKCE S256, origines `http://localhost:4200` et `https://localhost` (WebView Capacitor). Le serveur valide le jeton (émetteur + clés JWKS, sans découverte au démarrage) et convertit les rôles du royaume en autorités `ROLE_*`.
 - **Conséquences** : l'authentification hors-ligne de la caisse (PIN, D-01) s'appuiera sur ce client au LOT 4.
+
+## D-12 — Organisation du module `socle` par sous-domaine
+- **Contexte** : le guide (§6.1) décrit `api/` + `internal/{web,application,domaine,infrastructure}` par module ; le socle regroupe huit sous-domaines.
+- **Décision** : `bf.ambawbio.socle.api` (interface publique nommée pour Spring Modulith : `Permissions`, `JournalAudit`, `AccesEtablissement`) ; sous-paquets internes par sous-domaine (`tenancy`, `identite`, `parametrage`, `audit`, `plateforme`, `donnees`), chacun avec ses entités, dépôts, service et contrôleur. Module `shared` déclaré ouvert.
+- **Conséquences** : frontières vérifiées par `ModularityTest` ; les autres modules n'utilisent que `socle.api`.
+
+## D-13 — Mise en œuvre du multi-tenant (guide §6.4)
+- **Décision** : (1) entreprise lue dans la revendication `tenant_id` du jeton, ajoutée par Keycloak depuis un attribut utilisateur ; (2) Hibernate `@TenantId` + `CurrentTenantIdentifierResolver` ; (3) RLS PostgreSQL sur toutes les tables métier, `app.tenant_id` positionné **à chaque emprunt de connexion** (enveloppe de la source de données, valeur réécrite à chaque emprunt) ; rôle applicatif `ambawbio_app` sans `BYPASSRLS` ni propriété des tables, migrations exécutées par le propriétaire. Mode plateforme (éditeur) : politique RLS supplémentaire limitée à `socle.entreprise`, activée par `app.plateforme`.
+- **Conséquences** : en production, deux comptes PostgreSQL (`AMBAWBIO_BD_PROPRIETAIRE` pour Flyway, `AMBAWBIO_BD_UTILISATEUR` pour l'application). Les tests d'intégration reproduisent cette configuration.
+
+## D-14 — Permissions fines en base, rôles Keycloak pour la MFA
+- **Décision** : Keycloak porte l'identité, `tenant_id` et des rôles « grossiers » ; les permissions `module:action` et les établissements autorisés viennent des affectations en base (rôles par entreprise, modifiables), chargées à chaque requête. Les codes de rôle sont répercutés sur les rôles du royaume, ce qui déclenche la MFA conditionnelle (rôle composite `mfa-obligatoire` dans `comptable`, `administrateur`, `dirigeant`).
+- **Conséquences** : un cache (Caffeine) pourra être ajouté si le coût par requête devient sensible (mesure au LOT 13).
+
+## D-15 — Empreinte du journal d'audit calculée par PostgreSQL
+- **Contexte** : `jsonb` réécrit le JSON (ordre des clés, espaces) : une empreinte calculée en Java sur le texte envoyé ne serait pas recalculable.
+- **Décision** : fonction `audit.calculer_empreinte(...)` (SHA-256 sur la forme canonique `jsonb::text`, horodatage en microsecondes) utilisée à l'insertion et à la vérification ; verrou consultatif par entreprise ; déclencheur + absence de droits UPDATE/DELETE ; vérification nocturne (ShedLock) avec compteur `ambawbio.audit.ruptures`.
+
+## D-16 — Pas de dépendance pour l'UUID v7 ni pour le client Keycloak
+- **Décision** : générateur UUID v7 interne (`Uuid7`, RFC 9562, 30 lignes testées) au lieu d'`uuid-creator` ; API d'administration Keycloak appelée avec `RestClient` (pas de `keycloak-admin-client`, qui embarque RESTEasy). Seule dépendance ajoutée au LOT 1 : ShedLock (prévu par le guide §4).
