@@ -12,7 +12,9 @@
     "tableauDeBord": "Tableau de bord",
     "produits": "Produits",
     "tiers": "Clients et fournisseurs",
-    "import": "Import de données"
+    "import": "Import de données",
+    "synchronisation": "Synchronisation",
+    "terminaux": "Terminaux"
   },
   "coquille": {
     "allerAuContenu": "Aller au contenu",
@@ -126,13 +128,82 @@
   },
   "systeme": {
     "retourAccueil": "Retour au tableau de bord",
-    "introuvable": { "code": "404", "titre": "Page introuvable", "message": "Cette page n'existe pas ou a été déplacée. Vérifiez l'adresse ou revenez au tableau de bord." },
-    "refuse": { "code": "403", "titre": "Accès refusé", "message": "Vous n'avez pas le droit d'ouvrir cette page. Demandez l'accès à l'administrateur de votre entreprise." },
-    "suspendu": { "code": "Abonnement", "titre": "Abonnement suspendu", "message": "L'abonnement de votre entreprise est suspendu. Vos données sont conservées : renouvelez l'abonnement par Mobile Money pour retrouver l'accès." }
+    "introuvable": {
+      "code": "404",
+      "titre": "Page introuvable",
+      "message": "Cette page n'existe pas ou a été déplacée. Vérifiez l'adresse ou revenez au tableau de bord."
+    },
+    "refuse": {
+      "code": "403",
+      "titre": "Accès refusé",
+      "message": "Vous n'avez pas le droit d'ouvrir cette page. Demandez l'accès à l'administrateur de votre entreprise."
+    },
+    "suspendu": {
+      "code": "Abonnement",
+      "titre": "Abonnement suspendu",
+      "message": "L'abonnement de votre entreprise est suspendu. Vos données sont conservées : renouvelez l'abonnement par Mobile Money pour retrouver l'accès."
+    }
   },
   "pin": {
     "saisir": "Saisissez votre code PIN",
     "definir": "Choisissez un code PIN de 4 à 6 chiffres",
     "deverrouiller": "Déverrouiller"
+  },
+  "terminaux": {
+    "titre": "Terminaux",
+    "explication": "Chaque téléphone ou tablette de caisse est enregistré ici, puis appairé en scannant son QR code. Un terminal révoqué ne peut plus synchroniser.",
+    "code": "Code",
+    "nom": "Nom",
+    "nomAide": "Exemple : Caisse comptoir, Téléphone de Moussa",
+    "etablissement": "Établissement",
+    "statut": "Statut",
+    "statuts": {
+      "EN_ATTENTE_APPAIRAGE": "En attente d'appairage",
+      "ACTIF": "Actif",
+      "REVOQUE": "Révoqué"
+    },
+    "afficherQr": "Nouveau QR code",
+    "revoquer": "Révoquer",
+    "aucun": "Aucun terminal enregistré.",
+    "nouveau": "Nouveau terminal",
+    "creer": "Enregistrer et afficher le QR code",
+    "qrTitre": "Appairer {{code}}",
+    "qrAlt": "QR code d'appairage du terminal",
+    "codeManuel": "Ou saisissez ce code sur le terminal :",
+    "expire": "Le code est valable 15 minutes et ne sert qu’une fois."
+  },
+  "appairage": {
+    "titre": "Appairer ce terminal",
+    "explication": "Dans Paramètres › Terminaux, sur un ordinateur, enregistrez ce terminal : un QR code s'affiche. Collez son contenu ci-dessous, ou saisissez l'identifiant et le code affichés.",
+    "dejaAppaire": "Ce terminal est déjà appairé ({{code}} — {{nom}}). Un nouvel appairage le remplace.",
+    "identifiant": "Contenu du QR code ou identifiant du terminal",
+    "identifiantAide": "Le contenu du QR code suffit : le code est alors rempli tout seul.",
+    "code": "Code d'appairage",
+    "appairer": "Appairer",
+    "chargement": "Chargement des données du point de vente…",
+    "elementsRecus": "éléments reçus",
+    "termine": "Terminal prêt : {{n}} éléments reçus, dont {{produits}} produits, en {{duree}} s. Il peut fonctionner sans connexion.",
+    "continuer": "Voir la synchronisation"
+  },
+  "synchro": {
+    "titre": "Synchronisation",
+    "enAttente": "En attente d’envoi",
+    "conflits": "À traiter",
+    "derniere": "Dernière synchronisation",
+    "jamais": "Jamais",
+    "synchroniser": "Synchroniser maintenant",
+    "plages": "Plages de numérotation",
+    "type": "Pièce",
+    "numeros": "Numéros",
+    "consommation": "Consommés",
+    "types": {
+      "TICKET": "Tickets",
+      "FACTURE": "Factures",
+      "AVOIR": "Avoirs"
+    },
+    "alertePlage": "Nouvelle plage demandée",
+    "aTraiter": "Opérations refusées par le serveur",
+    "nonAppaire": "Cet appareil n'est pas encore appairé comme terminal de caisse.",
+    "appairer": "Appairer ce terminal"
   }
 }

@@ -1,0 +1,50 @@
+<h1 class="titre-page">{{ 'synchro.titre' | transloco }}</h1>
+@if (agent.terminal(); as t) {
+  <p class="mt-1 text-texte-secondaire">{{ t.code }} — {{ t.nom }}</p>
+  <amb-indicateur-sync class="mt-4 block" variante="bandeau" [etat]="agent.etat()" [enAttente]="agent.enAttente()"
+    [envoyees]="agent.envoyees()" [derniereSynchro]="agent.derniereSynchro()" (ouvrir)="synchroniser()" />
+  @if (agent.erreur()) { <p class="alerte-erreur mt-3" role="alert">{{ agent.erreur() }}</p> }
+
+  <div class="mt-6 grid gap-4 petite-tablette:grid-cols-3">
+    <div class="carte"><p class="etiquette">{{ 'synchro.enAttente' | transloco }}</p><p class="text-3xl font-bold tabular-nums">{{ agent.enAttente() }}</p></div>
+    <div class="carte"><p class="etiquette">{{ 'synchro.conflits' | transloco }}</p>
+      <p class="text-3xl font-bold tabular-nums" [class.text-danger]="agent.conflits()">{{ agent.conflits() }}</p></div>
+    <div class="carte"><p class="etiquette">{{ 'synchro.derniere' | transloco }}</p>
+      <p class="text-lg font-semibold">{{ agent.derniereSynchro() ? heure(agent.derniereSynchro()!.toISOString()) : ('synchro.jamais' | transloco) }}</p></div>
+  </div>
+
+  <button ambBouton variante="caisse" type="button" class="mt-6 w-full petite-tablette:w-auto" [disabled]="agent.enCours() || !reseau.enLigne()"
+    (click)="synchroniser()">{{ 'synchro.synchroniser' | transloco }}</button>
+
+  <h2 class="sous-titre mt-8">{{ 'synchro.plages' | transloco }}</h2>
+  <table class="tableau">
+    <thead><tr>
+      <th scope="col">{{ 'synchro.type' | transloco }}</th><th scope="col">{{ 'synchro.numeros' | transloco }}</th>
+      <th scope="col" class="nombre">{{ 'synchro.consommation' | transloco }}</th>
+    </tr></thead>
+    <tbody>
+      @for (p of agent.plages(); track p.id) {
+        <tr>
+          <td>{{ 'synchro.types.' + p.typePiece | transloco }}</td>
+          <td class="font-code">{{ p.prefixe }}-{{ p.annee }}-{{ p.debut }} → {{ p.fin }}</td>
+          <td class="nombre" [class.text-danger]="pourcentage(p.debut, p.fin, p.prochain) >= 80">
+            {{ pourcentage(p.debut, p.fin, p.prochain) }} %
+            @if (pourcentage(p.debut, p.fin, p.prochain) >= 80) { <span class="badge ml-1">{{ 'synchro.alertePlage' | transloco }}</span> }
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  @if (enConflit().length) {
+    <h2 class="sous-titre mt-8">{{ 'synchro.aTraiter' | transloco }}</h2>
+    <ul class="flex flex-col gap-2">
+      @for (o of enConflit(); track o.idOperation) {
+        <li class="alerte-erreur"><span class="font-code">{{ o.type }}</span> · {{ heure(o.horodatageLocal) }} — {{ o.motif }}</li>
+      }
+    </ul>
+  }
+} @else {
+  <p class="mt-4">{{ 'synchro.nonAppaire' | transloco }}</p>
+  <a ambBouton variante="principal" routerLink="/appairage" class="mt-4">{{ 'synchro.appairer' | transloco }}</a>
+}

@@ -3,7 +3,7 @@
   <!-- Barre latérale (tablette et bureau) -->
   <aside class="hidden shrink-0 flex-col bg-banco-950 text-blanc petite-tablette:flex" [class.w-60]="!replie()" [class.w-16]="replie()"
     [attr.aria-label]="'coquille.navigation' | transloco">
-    <div class="flex h-16 items-center px-4">
+    <div class="flex h-16 items-center px-4 shadow-[inset_0_-2px_0_var(--color-laterite-600)]">
       @if (replie()) {
         <img src="logo/ambawbio-symbole-blanc.svg" alt="Ambawbio Suite" class="h-8 w-8" />
       } @else {
@@ -27,18 +27,17 @@
 
   <div class="flex min-w-0 flex-1 flex-col">
     <!-- Barre du haut : contexte toujours visible -->
-    <header class="border-b border-bordure bg-surface">
+    <header class="border-b-2 border-texte bg-surface">
       <div class="flex min-h-16 flex-wrap items-center gap-x-6 gap-y-2 px-4 py-2">
         <img src="logo/ambawbio-symbole-couleur.svg" alt="" class="h-8 w-8 petite-tablette:hidden" />
-        <div class="flex flex-col">
-          <span class="etiquette">{{ 'coquille.entreprise' | transloco }}</span>
-          <span class="font-semibold">{{ contexte.contexte()?.entreprise?.nom ?? '…' }}</span>
+        <div class="selecteur-contexte">
+          <span class="etiquette font-code">{{ 'coquille.entreprise' | transloco }}</span>
+          <strong>{{ contexte.contexte()?.entreprise?.nom ?? '…' }}</strong>
         </div>
         @if (contexte.contexte(); as c) {
-          <div class="flex flex-col">
-            <label class="etiquette" for="choix-etablissement">{{ 'coquille.etablissement' | transloco }}</label>
-            <select id="choix-etablissement" class="choix-discret" [value]="contexte.etablissement()?.id"
-              (change)="contexte.choisirEtablissement($any($event.target).value)">
+          <div class="selecteur-contexte">
+            <label class="etiquette font-code" for="choix-etablissement">{{ 'coquille.etablissement' | transloco }}</label>
+            <select id="choix-etablissement" [value]="contexte.etablissement()?.id" (change)="contexte.choisirEtablissement($any($event.target).value)">
               @for (e of c.etablissements; track e.id) {
                 <option [value]="e.id">{{ e.nom }}</option>
               }
@@ -46,8 +45,8 @@
           </div>
         }
         <div class="ml-auto flex items-center gap-3">
-          <amb-indicateur-sync class="hidden tablette:block" [etat]="reseau.enLigne() ? 'en-ligne' : 'hors-ligne'"
-            [derniereSynchro]="reseau.derniereSynchro()" />
+          <amb-indicateur-sync class="hidden tablette:block" [etat]="agent.etat()" [enAttente]="agent.enAttente()" [envoyees]="agent.envoyees()"
+            [derniereSynchro]="agent.derniereSynchro() ?? reseau.derniereSynchro()" (ouvrir)="ouvrirSynchro()" />
           <div class="relative">
             <button type="button" class="avatar" (click)="menuProfil.set(!menuProfil())" [attr.aria-expanded]="menuProfil()"
               [attr.aria-label]="'coquille.profil' | transloco">{{ initiales() }}</button>
@@ -64,11 +63,10 @@
           </div>
         </div>
       </div>
-      <div class="frise h-1.5" aria-hidden="true"></div>
     </header>
 
-    <amb-indicateur-sync class="tablette:hidden" variante="bandeau" [etat]="reseau.enLigne() ? 'en-ligne' : 'hors-ligne'"
-      [derniereSynchro]="reseau.derniereSynchro()" />
+    <amb-indicateur-sync class="tablette:hidden" variante="bandeau" [etat]="agent.etat()" [enAttente]="agent.enAttente()" [envoyees]="agent.envoyees()"
+      [derniereSynchro]="agent.derniereSynchro() ?? reseau.derniereSynchro()" (ouvrir)="ouvrirSynchro()" />
 
     <main id="contenu" class="min-w-0 flex-1 px-4 pb-24 pt-6 petite-tablette:pb-8" tabindex="-1">
       <router-outlet />

@@ -94,3 +94,18 @@ Format ADR court : contexte, décision, conséquences. Une décision n'est remis
 
 ## D-24 — Code PIN du terminal
 - **Décision** : empreinte PBKDF2-SHA-256 (150 000 itérations, sel aléatoire de 16 octets) conservée dans le stockage sécurisé Android (`@aparajita/capacitor-secure-storage`, Keystore) ; 5 essais au plus, puis reconnexion complète obligatoire ; verrouillage au démarrage et après 5 minutes en arrière-plan.
+
+## D-25 — Charge des opérations signée sous forme de texte JSON
+- **Contexte** : la signature ECDSA (guide §8.2) porte sur `idOperation|type|horodatageLocal|sha256(charge)`. Si la charge circulait comme objet JSON, le serveur devrait recalculer exactement la même sérialisation que le terminal (ordre des clés, nombres, échappements), source d'échecs de vérification.
+- **Décision** : le terminal envoie la charge comme **chaîne JSON** (le texte exact qui a été signé) ; le serveur vérifie l'empreinte de cette chaîne puis la lit. Signature au format r‖s (P1363), clé privée WebCrypto non exportable.
+
+## D-26 — Stockage local : IndexedDB (Dexie) sur navigateur et Android jusqu'au LOT 5
+- **Contexte** : le guide prévoit SQLite chiffrée sur Android et Dexie sur navigateur, derrière une interface unique `LocalStore`.
+- **Décision** : au LOT 4, une seule implémentation (`DexieStore`), utilisée aussi dans la WebView Android ; le stockage ne contient encore que des référentiels non sensibles et des opérations signées. L'implémentation SQLite chiffrée (SQLCipher, clé dans le Keystore) arrive au LOT 5 avec les ventes, sans changement des appelants.
+
+## D-27 — Alerte « sans synchronisation » à 24 heures
+- **Contexte** : le guide §8.7 fixe l'alerte à 24 h ; la fiche composant de l'indicateur (paquet de design) parle de 48 h.
+- **Décision** : 24 h (le guide fait foi) ; valeur centralisée dans `agent-synchro.ts`.
+
+## D-28 — Moteur de synchronisation chargé dès le démarrage
+- **Décision** : l'agent de synchronisation (et Dexie) fait partie du premier chargement pour synchroniser en arrière-plan quel que soit l'écran ouvert ; budget du bundle initial porté à 500 Ko non compressés (alerte) / 600 Ko (erreur), soit environ 125 Ko compressés, sous les 250 Ko du guide (ENF-03). La bibliothèque `qrcode` n'est chargée qu'avec l'écran Terminaux.

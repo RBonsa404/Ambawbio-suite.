@@ -28,15 +28,17 @@ public class ServiceParametres {
     private final TypeConditionnementDepot typesConditionnement;
     private final CategorieDepot categories;
     private final JournalAudit audit;
+    private final PublicationReferentiel publication;
 
     ServiceParametres(RegimeDepot regimes, TaxeDepot taxes, UniteDepot unites, TypeConditionnementDepot typesConditionnement,
-            CategorieDepot categories, JournalAudit audit) {
+            CategorieDepot categories, JournalAudit audit, PublicationReferentiel publication) {
         this.regimes = regimes;
         this.taxes = taxes;
         this.unites = unites;
         this.typesConditionnement = typesConditionnement;
         this.categories = categories;
         this.audit = audit;
+        this.publication = publication;
     }
 
     /**
@@ -67,6 +69,9 @@ public class ServiceParametres {
                 .entrySet()) {
             typesConditionnement.save(new TypeConditionnement(Uuid7.nouveau(), t.getKey(), t.getValue()));
         }
+        taxes.flush();
+        taxes.findAll().forEach(publication::taxe);
+        unites.findAll().forEach(publication::unite);
     }
 
     @Transactional(readOnly = true)
@@ -92,6 +97,7 @@ public class ServiceParametres {
     public Taxe creerTaxe(UUID id, String code, String libelle, BigDecimal taux) {
         return taxes.findById(id).orElseGet(() -> {
             var taxe = taxes.save(new Taxe(id, code, libelle, taux, false));
+            publication.taxe(taxe);
             audit.enregistrer("TAXE_CREEE", "taxe", id, null, Map.of("code", code, "taux", taux));
             return taxe;
         });
@@ -103,6 +109,7 @@ public class ServiceParametres {
         var taxe = taxes.findById(id).orElseThrow(() -> new RessourceIntrouvableException("Taxe introuvable."));
         var avant = Map.of("taux", taxe.taux(), "actif", taxe.actif());
         taxe.modifier(libelle, taux, actif);
+        publication.taxe(taxe);
         audit.enregistrer("TAXE_MODIFIEE", "taxe", id, avant, Map.of("taux", taux, "actif", actif));
         return taxe;
     }
@@ -114,7 +121,11 @@ public class ServiceParametres {
 
     @Transactional
     public UniteMesure creerUnite(UUID id, String code, String libelle, UniteMesure.Categorie categorie) {
-        return unites.findById(id).orElseGet(() -> unites.save(new UniteMesure(id, code, libelle, categorie)));
+        return unites.findById(id).orElseGet(() -> {
+            var unite = unites.save(new UniteMesure(id, code, libelle, categorie));
+            publication.unite(unite);
+            return unite;
+        });
     }
 
     @Transactional(readOnly = true)
@@ -133,7 +144,9 @@ public class ServiceParametres {
             if (categories.findByNomIgnoreCase(nom).isPresent()) {
                 throw new RegleMetierException("CATEGORIE_EXISTANTE", "La catégorie « " + nom + " » existe déjà.");
             }
-            return categories.save(new Categorie(id, nom, parentId));
+            var categorie = categories.save(new Categorie(id, nom, parentId));
+            publication.categorie(categorie);
+            return categorie;
         });
     }
 
@@ -144,6 +157,7 @@ public class ServiceParametres {
             throw new RegleMetierException("CATEGORIE_PARENT", "Une catégorie ne peut pas être sa propre parente.");
         }
         categorie.modifier(nom, parentId);
+        publication.categorie(categorie);
         return categorie;
     }
 }

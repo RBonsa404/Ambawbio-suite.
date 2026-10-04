@@ -5,7 +5,7 @@
       <span class="tabular-nums text-texte-secondaire">{{ resultat()?.total ?? 0 }}</span>
       @if (peutModifier()) {
         <div class="ml-auto flex gap-2">
-          <a ambBouton variante="tertiaire" routerLink="/import" [queryParams]="{ type: 'produits' }">{{ 'produits.importer' | transloco }}</a>
+          <a ambBouton variante="secondaire" routerLink="/import" [queryParams]="{ type: 'produits' }">{{ 'produits.importer' | transloco }}</a>
           <button ambBouton variante="principal" type="button" (click)="nouveau()"><amb-icone nom="plus" /> {{ 'produits.nouveau' | transloco }}</button>
         </div>
       }

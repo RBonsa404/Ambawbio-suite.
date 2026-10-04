@@ -32,14 +32,17 @@ public class ServiceTiers {
     private final ChampsPersonnalises champs;
     private final JournalAudit audit;
     private final JsonMapper json;
+    private final PublicationReferentiel publication;
 
-    ServiceTiers(TiersDepot tiers, RegimeDepot regimes, ListePrixDepot listes, ChampsPersonnalises champs, JournalAudit audit, JsonMapper json) {
+    ServiceTiers(TiersDepot tiers, RegimeDepot regimes, ListePrixDepot listes, ChampsPersonnalises champs, JournalAudit audit, JsonMapper json,
+            PublicationReferentiel publication) {
         this.tiers = tiers;
         this.regimes = regimes;
         this.listes = listes;
         this.champs = champs;
         this.audit = audit;
         this.json = json;
+        this.publication = publication;
     }
 
     @Transactional(readOnly = true)
@@ -67,6 +70,7 @@ public class ServiceTiers {
         var nouveau = new Tiers(id, c.code());
         appliquer(nouveau, c);
         tiers.save(nouveau);
+        publication.tiers(nouveau);
         audit.enregistrer("TIERS_CREE", "tiers", id, null, Map.of("code", c.code()));
         return nouveau;
     }
@@ -75,6 +79,8 @@ public class ServiceTiers {
     public Tiers modifier(UUID id, Commande c) {
         var existant = tiers(id);
         appliquer(existant, c);
+        tiers.flush();
+        publication.tiers(existant);
         return existant;
     }
 

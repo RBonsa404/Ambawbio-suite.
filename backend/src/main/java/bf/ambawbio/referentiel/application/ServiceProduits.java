@@ -35,9 +35,10 @@ public class ServiceProduits {
     private final ChampsPersonnalises champs;
     private final JournalAudit audit;
     private final JsonMapper json;
+    private final PublicationReferentiel publication;
 
     ServiceProduits(ProduitDepot produits, UniteDepot unites, TaxeDepot taxes, CategorieDepot categories, ChampsPersonnalises champs,
-            JournalAudit audit, JsonMapper json) {
+            JournalAudit audit, JsonMapper json, PublicationReferentiel publication) {
         this.produits = produits;
         this.unites = unites;
         this.taxes = taxes;
@@ -45,6 +46,7 @@ public class ServiceProduits {
         this.champs = champs;
         this.audit = audit;
         this.json = json;
+        this.publication = publication;
     }
 
     @Transactional(readOnly = true)
@@ -78,6 +80,7 @@ public class ServiceProduits {
         var produit = new Produit(id, c.code());
         appliquer(produit, c);
         produits.save(produit);
+        publication.produit(produit);
         audit.enregistrer("PRODUIT_CREE", "produit", id, null, Map.of("code", c.code(), "prixVente", c.prixVente()));
         return produit;
     }
@@ -88,6 +91,8 @@ public class ServiceProduits {
         var produit = produit(id);
         var ancienPrix = produit.prixVente();
         appliquer(produit, c);
+        produits.flush();
+        publication.produit(produit);
         if (ancienPrix != c.prixVente()) {
             audit.enregistrer("PRIX_MODIFIE", "produit", id, Map.of("prixVente", ancienPrix), Map.of("prixVente", c.prixVente()));
         }

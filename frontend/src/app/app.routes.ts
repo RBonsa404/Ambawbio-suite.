@@ -12,6 +12,13 @@ export const routes: Routes = [
       { path: 'produits', loadComponent: () => import('./features/produits/produits').then((m) => m.Produits), title: 'Produits — Ambawbio Suite' },
       { path: 'tiers', loadComponent: () => import('./features/tiers/tiers').then((m) => m.ListeTiers), title: 'Clients et fournisseurs — Ambawbio Suite' },
       { path: 'import', loadComponent: () => import('./features/import/import').then((m) => m.AssistantImport), title: 'Import — Ambawbio Suite' },
+      { path: 'terminaux', loadComponent: () => import('./features/terminaux/terminaux').then((m) => m.Terminaux), title: 'Terminaux — Ambawbio Suite' },
+      { path: 'appairage', loadComponent: () => import('./features/appairage/appairage').then((m) => m.Appairage), title: 'Appairage — Ambawbio Suite' },
+      {
+        path: 'synchronisation',
+        loadComponent: () => import('./features/synchronisation/synchronisation').then((m) => m.Synchronisation),
+        title: 'Synchronisation — Ambawbio Suite',
+      },
       {
         path: 'abonnement-suspendu',
         loadComponent: () => import('./features/systeme/page-systeme').then((m) => m.PageSysteme),

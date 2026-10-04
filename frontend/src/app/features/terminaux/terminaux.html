@@ -1,0 +1,62 @@
+<h1 class="titre-page">{{ 'terminaux.titre' | transloco }}</h1>
+<p class="mt-1 text-texte-secondaire">{{ 'terminaux.explication' | transloco }}</p>
+
+<div class="mt-6 grid gap-6 bureau:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+  <section>
+    <table class="tableau">
+      <thead>
+        <tr>
+          <th scope="col">{{ 'terminaux.code' | transloco }}</th>
+          <th scope="col">{{ 'terminaux.nom' | transloco }}</th>
+          <th scope="col">{{ 'terminaux.etablissement' | transloco }}</th>
+          <th scope="col">{{ 'terminaux.statut' | transloco }}</th>
+          <th scope="col"><span class="sr-only">{{ 'commun.actions' | transloco }}</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (t of terminaux(); track t.id) {
+          <tr>
+            <td class="font-code">{{ t.code }}</td>
+            <td>{{ t.nom }}</td>
+            <td>{{ nomEtablissement(t.etablissementId) }}</td>
+            <td><span class="badge">{{ 'terminaux.statuts.' + t.statut | transloco }}</span></td>
+            <td class="whitespace-nowrap text-right">
+              @if (t.statut === 'EN_ATTENTE_APPAIRAGE') {
+                <button ambBouton variante="tertiaire" type="button" (click)="nouveauCode(t)">{{ 'terminaux.afficherQr' | transloco }}</button>
+              }
+              @if (t.statut !== 'REVOQUE') {
+                <button ambBouton variante="tertiaire" type="button" (click)="revoquer(t)">{{ 'terminaux.revoquer' | transloco }}</button>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5" class="text-texte-secondaire">{{ 'terminaux.aucun' | transloco }}</td></tr>
+        }
+      </tbody>
+    </table>
+  </section>
+
+  <section class="carte flex flex-col gap-4" [attr.aria-label]="'terminaux.nouveau' | transloco">
+    @if (appairage(); as a) {
+      <h2 class="sous-titre">{{ 'terminaux.qrTitre' | transloco: { code: a.terminal.code } }}</h2>
+      <img [src]="a.image" [alt]="'terminaux.qrAlt' | transloco" class="h-60 w-60 self-center border border-bordure" />
+      <p class="text-center">{{ 'terminaux.codeManuel' | transloco }}</p>
+      <p class="text-center font-code text-2xl font-bold tracking-widest" data-testid="code-appairage">{{ a.code }}</p>
+      <p class="text-center font-code text-xs text-texte-secondaire" data-testid="terminal-id">{{ a.terminal.id }}</p>
+      <p class="text-center text-sm text-texte-secondaire">{{ 'terminaux.expire' | transloco }}</p>
+      <button ambBouton variante="secondaire" type="button" (click)="appairage.set(null)">{{ 'commun.fermer' | transloco }}</button>
+    } @else {
+      <h2 class="sous-titre">{{ 'terminaux.nouveau' | transloco }}</h2>
+      <amb-champ [libelle]="'terminaux.nom' | transloco" pour="terminal-nom" [aide]="'terminaux.nomAide' | transloco">
+        <input id="terminal-nom" class="champ-saisie" [(ngModel)]="nom" />
+      </amb-champ>
+      <amb-champ [libelle]="'terminaux.etablissement' | transloco" pour="terminal-etablissement">
+        <select id="terminal-etablissement" class="champ-saisie" [(ngModel)]="etablissementId">
+          @for (e of contexte.contexte()?.etablissements ?? []; track e.id) { <option [value]="e.id">{{ e.nom }}</option> }
+        </select>
+      </amb-champ>
+      @if (erreur()) { <p class="alerte-erreur" role="alert">{{ erreur() }}</p> }
+      <button ambBouton variante="principal" type="button" (click)="creer()">{{ 'terminaux.creer' | transloco }}</button>
+    }
+  </section>
+</div>
