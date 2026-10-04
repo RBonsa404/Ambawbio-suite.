@@ -117,6 +117,7 @@ AMBAWBIO_BD_MOT_DE_PASSE=<MDP_APPLICATION>
 KEYCLOAK_BD_MOT_DE_PASSE=<MDP_KEYCLOAK_BD>
 ```
 
+- Le serveur crée ou met à jour lui-même le rôle `ambawbio_app` à chaque démarrage (D-39) : il fonctionne aussi avec la base PostgreSQL proposée par Railway, à condition de créer à la main la base de Keycloak.
 - Au **premier** démarrage seulement (volume vide), le script `infra/railway/postgres/initialiser.sh` crée le rôle `ambawbio_app` (sans superutilisateur ni BYPASSRLS, guide §6.4) ainsi que l'utilisateur et la base `keycloak`. **Changer ces mots de passe plus tard ne modifie pas la base** : voir § 16 et § 18.
 
 ### 5.2 Volume (indispensable)
@@ -425,7 +426,8 @@ Pour réduire les coûts quand vous ne testez pas, utilisez **Settings → Serve
 |---|---|---|
 | La construction échoue : « Dockerfile does not exist » | `RAILWAY_DOCKERFILE_PATH` absent, ou *Root Directory* rempli | Vérifier la variable (avec le `/` initial) ; vider *Root Directory* |
 | `postgres` : `initdb: directory … exists but is not empty` | Volume monté au mauvais endroit | Monter le volume sur `/var/lib/postgresql` exactement |
-| `serveur` : `password authentication failed for user "ambawbio_app"` | Mots de passe changés après le premier démarrage de `postgres` | Remettre l'ancienne valeur, ou réinitialiser (§ 16) |
+| `serveur` : `password authentication failed for user "ambawbio_app"` | Version antérieure au correctif D-39 et rôle absent ou mot de passe changé | Depuis D-39, le serveur crée ou met à jour ce rôle lui-même au démarrage : redéployez `serveur`. Vérifiez que `AMBAWBIO_BD_MOT_DE_PASSE` n'est pas vide et que `AMBAWBIO_BD_PROPRIETAIRE_MOT_DE_PASSE` est bien le mot de passe de `POSTGRES_PASSWORD` |
+| `serveur` : `password authentication failed for user "ambawbio"` | Mot de passe du propriétaire faux | `AMBAWBIO_BD_PROPRIETAIRE_MOT_DE_PASSE` = `${{postgres.POSTGRES_PASSWORD}}` ; si `POSTGRES_PASSWORD` a changé après le premier démarrage, remettez l'ancien ou réinitialisez (§ 16) |
 | `keycloak` : `password authentication failed for user "keycloak"` | Idem pour `KEYCLOAK_BD_MOT_DE_PASSE` | Idem |
 | Page blanche, la console du navigateur signale `config.js` | Variables de `application` manquantes : le conteneur refuse de démarrer | Renseigner `AMBAWBIO_API_URL` et `AMBAWBIO_KEYCLOAK_URL` ; voir les logs |
 | Keycloak affiche « Invalid parameter: redirect_uri » | `AMBAWBIO_URL_APPLICATION` faux au moment de l'import | Console Keycloak → *Clients → ambawbio-web* : ajouter `https://<application>/*` dans *Valid redirect URIs* et `https://<application>` dans *Web origins* |
