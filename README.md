@@ -36,12 +36,14 @@ Ambawbio Suite est un ERP tout-en-un inspiré d'Odoo, conçu pour les entreprise
 ambawbio-suite/
 ├── CLAUDE.md              Instructions pour l'agent de développement
 ├── docs/
-│   ├── conception/        Livrables AMB-CONC-01 à 09
-│   └── design/            Identité visuelle, tokens, maquettes
-├── logo/                  Symboles SVG (variantes)
+│   ├── conception/        Guide AMB-CONC-09, livrables Word/PDF, diagrammes PlantUML
+│   ├── design/            Paquet Claude Design (AMB-CONC-10) : jetons, logos, icônes, polices,
+│   │                      gabarits, fiches composants, maquettes de référence
+│   └── QUESTIONS.md       Questions ouvertes au porteur du projet
+├── infra/
+│   └── scripts/           Outillage : génération des icônes PNG, téléchargement des polices
 ├── backend/               (à venir)
-├── frontend/              (à venir)
-└── infra/                 (à venir)
+└── frontend/              (à venir)
 ```
 
 ## Licence

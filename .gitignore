@@ -26,6 +26,3 @@ node_modules/
 *.class
 *.jar
 *.war
-
-# Dependencies
-package-lock.json
