@@ -4,7 +4,7 @@
 #   PostgreSQL 18 : localhost:5432 (base ambawbio, utilisateur ambawbio / ambawbio-dev)
 #   Keycloak     : http://localhost:8180 (console : admin / admin-dev ; royaume « ambawbio » importé)
 #   Mailpit      : http://localhost:8025 (SMTP localhost:1025)
-#   MinIO        : profil « documents » (LOT 6) : docker compose -f infra/docker-compose.dev.yml --profile documents up -d
+#   Stockage S3  : SeaweedFS, profil « documents » (LOT 6) : docker compose -f infra/docker-compose.dev.yml --profile documents up -d
 name: ambawbio-dev
 
 services:
@@ -51,20 +51,16 @@ services:
       - "8025:8025"
       - "1025:1025"
 
-  minio:
-    # MinIO ne publie plus d'image sur Docker Hub : voir docs/QUESTIONS.md (Q-14).
-    image: quay.io/minio/minio:latest
+  stockage:
+    # Q-14 : SeaweedFS (Apache 2.0, compatible S3) à la place de MinIO.
+    image: chrislusf/seaweedfs:latest
     profiles: ["documents"]
-    command: ["server", "/data", "--console-address", ":9001"]
-    environment:
-      MINIO_ROOT_USER: ambawbio
-      MINIO_ROOT_PASSWORD: ambawbio-dev
+    command: ["server", "-s3", "-dir=/data"]
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "8333:8333"
     volumes:
-      - minio:/data
+      - stockage:/data
 
 volumes:
   postgres:
-  minio:
+  stockage:

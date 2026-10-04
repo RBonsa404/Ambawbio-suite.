@@ -15,15 +15,23 @@ spring:
     properties:
       hibernate:
         default_schema: socle
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
   flyway:
-    locations: classpath:db/migration/socle
-    schemas: socle,audit
+    locations: classpath:db/migration/socle,classpath:db/migration/referentiel
+    schemas: socle,audit,referentiel
     create-schemas: true
     # Migrations exécutées par le propriétaire des tables ; l'application utilise un rôle sans BYPASSRLS (guide §6.4).
     user: ${AMBAWBIO_BD_PROPRIETAIRE:ambawbio}
     password: ${AMBAWBIO_BD_PROPRIETAIRE_MOT_DE_PASSE:}
     placeholders:
       role_application: ${AMBAWBIO_BD_UTILISATEUR:ambawbio_app}
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   security:
     oauth2:
       resourceserver:

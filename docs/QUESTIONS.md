@@ -1,28 +1,34 @@
 # Questions ouvertes au porteur du projet
 
-Reprises de la section 17 du guide (AMB-CONC-09), complétées au fil des lots. Une question tranchée passe en « Réglée » avec la date et la réponse, et la décision correspondante est consignée dans `docs/DECISIONS.md`.
+Reprises de la section 17 du guide (AMB-CONC-09), complétées au fil des lots. Le 2026-10-04, le porteur du projet a délégué les réponses : « réponds toi-même avec les solutions les plus recommandées, en t'appuyant sur des recherches ». Chaque réponse ci-dessous est donc une **décision par défaut**, paramétrable dans l'application, que le porteur peut remplacer à tout moment.
 
-Règle : ne jamais inventer une spécification officielle (DGI, opérateurs). En attendant la réponse, on applique la conduite indiquée et on continue.
+Règle maintenue : aucune spécification officielle n'est inventée. Quand un document officiel manque, on retient l'option la plus prudente et on la rend paramétrable.
 
-## En attente
+## En attente d'un fait extérieur
 
-| ID | Question | Impact | Conduite à tenir en attendant | Ouverte le |
-|---|---|---|---|---|
-| Q-01 | Spécifications techniques officielles de la FEC (format, API, procédure d'agrément des logiciels, traitement hors-ligne), **dont la liste des mentions légales obligatoires sur la facture certifiée** | Adaptateur DGI, format de numérotation, mentions des factures D-01 et avoirs D-02 | Simulateur FEC, port isolé, tests de contrat préparés. Sur les gabarits, zone réservée **« [MENTIONS DGI À CONFIRMER] »** (`{mentions_dgi[]}`), liste paramétrable, jamais en dur | 2026-10 |
-| Q-02 | Agrégateur Mobile Money retenu (contrat, documentation, environnement de test) | Adaptateur réel | Simulateur de paiement | 2026-10 |
-| Q-03 | Liste des régimes fiscaux, taux de TVA, exonérations, retenues | Paramétrage par défaut | Valeurs paramétrables, marquées « à valider » | 2026-10 |
-| Q-04 | Comptes par défaut et tables de correspondance des états financiers SYSCOHADA | Comptabilisation, états | Comptes de la section 11.4 du guide, paramétrables | 2026-10 |
-| Q-05 | Hébergeur au Burkina Faso retenu (capacités, sauvegardes, site de secours) | Déploiement | Développement sur Docker Compose | 2026-10 |
-| Q-06 | Durée légale de conservation exacte | Archivage, purge | Aucune purge de pièces comptables | 2026-10 |
-| Q-07 | Barèmes IUTS, CNSS, taxe patronale (Release 2) | Paie | Ne pas commencer la paie sans validation | 2026-10 |
-| Q-08 | Prix des packs en FCFA (Essentiel, Business, Enterprise, Institution) | Abonnement, site vitrine (Tarifs), écrans W-01, W-02, W-22 | Prix paramétrables depuis la console de l'éditeur (W-23). Dans l'interface et le site, zone réservée **« [PRIX À DÉFINIR] »**, jamais de montant en dur | 2026-10 |
-| Q-09 | IFU et RCCM de la société éditrice d'Ambawbio Suite (société non encore créée) | En-tête de lettre, factures d'abonnement, mentions légales du site, pied des courriels | Paramètres de la plateforme. Zones réservées **« [IFU EN COURS] »** et **« [RCCM EN COURS] »**, jamais en dur | 2026-10 |
-| Q-14 | Stockage d'objets : MinIO ne publie plus d'image communautaire sur Docker Hub. Garder MinIO (image quay.io ou construite depuis les sources), ou passer à une alternative compatible S3 (Garage, SeaweedFS) ? | Documents (PDF des factures), LOT 6 ; exploitation sur site | Code écrit contre l'API S3 standard ; service MinIO en profil Compose « documents » ; décision au LOT 6 | 2026-10-04 |
-| Q-15 | Format officiel de l'IFU (longueur, lettre finale, clé de contrôle éventuelle) | Validation des fiches entreprise, clients, fournisseurs | Format guidé « 8 chiffres + 1 lettre », sans clé de contrôle | 2026-10-04 |
-| Q-16 | Contenu exact de chaque pack (modules inclus, limites : utilisateurs, établissements, terminaux) | Activation des modules (F-SOC-05), abonnement (LOT 11) | Valeurs par défaut dans `Pack.java`, paramétrables : Essentiel = caisse, ventes, facturation, paiement, stock ; Business et Enterprise = + achats, comptabilité ; Institution = sans caisse | 2026-10-04 |
-| Q-17 | Délai légal de réponse aux demandes sur les données personnelles (loi n° 001-2021/AN) et formalités auprès de la CIL | Échéance des demandes (UC-SOC-11) | Échéance à 30 jours, paramètre unique dans le code | 2026-10-04 |
+| ID | Question | Pourquoi elle reste ouverte | Conduite retenue |
+|---|---|---|---|
+| Q-09 | IFU et RCCM de la société éditrice | La société n'est pas encore créée : ces numéros n'existent pas | Paramètres de la plateforme ; zones « [IFU EN COURS] » et « [RCCM EN COURS] » jusqu'à l'immatriculation |
 
 ## Réglées
+
+| ID | Question | Réponse retenue (2026-10-04) | Source / justification |
+|---|---|---|---|
+| Q-01 | Spécifications de la FEC | La FEC est en vigueur depuis le 06/01/2026 et obligatoire depuis le 01/07/2026 pour les grandes et moyennes entreprises du régime normal (petites entreprises en 2027, micro-entreprises en 2028). Chaque facture porte un **identifiant unique, un QR code vérifiable et un horodatage**, émis par un dispositif certifié (SECeF) ou un **système de facturation commerciale certifié** par la DGI. Décision : Ambawbio vise l'agrément « système de facturation commerciale certifié » ; l'adaptateur DGI reste derrière `PortCertificationFiscale`, le simulateur sert jusqu'à l'obtention du cahier des charges technique (à demander à la DGI lors de la demande d'agrément). Mentions par défaut (paramétrables) : identifiant FEC, QR code, date et heure de certification, IFU et régime du vendeur, IFU du client assujetti, numéro de facture, détail des taxes | [Comarch](https://www.comarch.com/trade-and-services/data-management/legal-regulation-changes/burkina-faso-officially-launches-the-certified-electronic-invoice-system/), [Burkina24](https://burkina24.com/?p=429083), [Lookuptax](https://lookuptax.com/tax-changes/burkina-faso/facture-electronique-certifiee-2026) |
+| Q-02 | Agrégateur Mobile Money | **LigdiCash** en premier adaptateur (acteur burkinabè, Orange Money et Moov Money, API facture → redirection → rappel), **pawaPay** en second (Orange, Moov). Wave : adaptateur dédié quand l'offre marchande sera disponible au Burkina. Le simulateur reste l'adaptateur par défaut en développement | [Kolonell — LigdiCash](https://kolonell.com/fr/blog/ligdicash-burkina-faso-paiement-orange-moov-ouagadougou-2026), [pawaPay](https://pawapay.io/blog/pawapay-live-in-burkina-faso) |
+| Q-03 | Régimes fiscaux et taxes | Régimes par défaut : **RNI** (réel normal), **RSI** (réel simplifié), **CME** (contribution des micro-entreprises), tous paramétrables. Taxes par défaut : **TVA 18 %** (taux normal), **TVA 10 %** (taux réduit, cas limités), **Exonéré 0 %**. Valeurs marquées « à valider » par l'expert-comptable de chaque client | [vatcalc](https://www.vatcalc.com/?p=41782), [DGI — CGI 2023](https://dgi.bf/wp-content/uploads/2023/10/CODE-GENERAL-DES-IMPOTS-2023-A-JOUR-AVEC-LA-LOI-DE-FINANCE-2023.pdf) |
+| Q-04 | Comptes par défaut SYSCOHADA | Plan comptable SYSCOHADA révisé (2017) et comptes de la section 11.4 du guide, chargés à la création de l'entreprise au LOT 10, modifiables | Acte uniforme OHADA relatif au droit comptable |
+| Q-05 | Hébergeur au Burkina Faso | Les datacenters publics inaugurés en janvier 2026 sont réservés à l'État ; un datacenter national ouvert au privé est annoncé pour 2028. Décision : **colocation ou serveurs dédiés chez un opérateur installé au Burkina** (sélection sur cahier des charges : Tier III ou équivalent, double alimentation, sauvegarde hors site dans le pays), installation par `docker-compose.prod.yml` ; bascule possible vers le datacenter national en 2028 | [APA News](https://fr.apanews.net/news/le-burkina-inaugure-deux-datacenters-pour-securiser-ses-donnees-publiques/), [DCD](https://datacenterdynamics.com/en/news/govt-of-burkina-faso-launches-two-mini-data-centers-to-support-data-sovereignty/) |
+| Q-06 | Durée de conservation | **10 ans** pour les pièces et livres comptables (droit comptable OHADA) ; aucune purge automatique ; l'effacement d'une personne anonymise sans supprimer les pièces (RG-12) | Acte uniforme OHADA relatif au droit comptable et à l'information financière |
+| Q-07 | Barèmes IUTS, CNSS, taxe patronale | Reporté à la Release 2 (paie) ; barèmes versionnés (`socle.bareme`), saisis avec l'expert-comptable au démarrage du lot paie | Guide §17 |
+| Q-08 | Prix des packs | Prix indicatifs de lancement, paramétrables (console éditeur) : **Essentiel 15 000 FCFA/mois**, **Business 45 000 FCFA/mois**, **Enterprise 150 000 FCFA/mois**, **Institution sur devis** ; −2 mois si paiement annuel. Positionnement sous les ERP importés, au niveau des caisses locales | Décision commerciale par défaut, à confirmer par le porteur |
+| Q-10 à Q-13 | Points de conception | Voir décisions D-01 à D-04 | — |
+| Q-14 | Stockage d'objets | **SeaweedFS** (licence Apache 2.0, compatible S3, images publiées) à la place de MinIO ; le code n'utilise que l'API S3 | MinIO ne publie plus d'image communautaire |
+| Q-15 | Format de l'IFU | **8 chiffres suivis d'une lettre** (ex. 00012345A), saisie normalisée (espaces, minuscules) ; pas de clé de contrôle tant qu'aucune règle publique n'existe | [Lookuptax — IFU](https://lookuptax.com/validate/burkina-faso/ifu) |
+| Q-16 | Contenu des packs | Essentiel : caisse, ventes, facturation, paiement, stock ; Business et Enterprise : + achats, comptabilité (Enterprise : plusieurs sociétés) ; Institution : sans caisse. Limites par défaut : Essentiel 3 utilisateurs, 1 établissement, 2 terminaux ; Business 15 / 5 / 10 ; Enterprise et Institution illimités (appliquées au LOT 11) | Décision par défaut |
+| Q-17 | Délai de réponse aux demandes (loi n° 001-2021/AN) | **30 jours** (pratique alignée sur les autorités de protection francophones) ; déclaration des traitements à la CIL avant la mise en production (guide §16.3) | [Assemblée nationale — loi 001-2021](https://assembleenationale.bf/storage/Loi/kDsWHXOTUCQFVESChh8BlBdiZnCrdTsOpXe1rzmH.pdf), [DataGuidance](https://www.DataGuidance.com/jurisdiction/burkina-faso) |
+
+### Détail des points de conception (Q-10 à Q-13)
 
 | ID | Question | Réponse (2026-10-04) | Décision |
 |---|---|---|---|
@@ -31,4 +37,4 @@ Règle : ne jamais inventer une spécification officielle (DGI, opérateurs). En
 | Q-12 | Un ou deux téléphones pour le magasinier et le commercial ? | Une seule application, menus selon le rôle, changement d'utilisateur par PIN | D-03 |
 | Q-13 | Liste + fiche côte à côte pour toutes les listes web ? | Oui à partir de 1280 px | D-04 |
 
-Le porteur du projet a délégué ces choix (« choisis l'approche la plus recommandée »). Justifications dans `docs/DECISIONS.md`.
+Justifications dans `docs/DECISIONS.md`.

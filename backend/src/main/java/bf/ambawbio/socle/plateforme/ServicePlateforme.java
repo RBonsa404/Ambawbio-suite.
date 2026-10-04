@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -12,6 +13,7 @@ import bf.ambawbio.shared.domaine.RessourceIntrouvableException;
 import bf.ambawbio.shared.domaine.Uuid7;
 import bf.ambawbio.shared.tenant.ContexteTenant;
 import bf.ambawbio.socle.api.JournalAudit;
+import bf.ambawbio.socle.api.evenements.EntrepriseCreee;
 import bf.ambawbio.socle.identite.ServiceIdentite;
 import bf.ambawbio.socle.parametrage.ServiceBaremes;
 import bf.ambawbio.socle.tenancy.Entreprise;
@@ -33,15 +35,17 @@ public class ServicePlateforme {
     private final ServiceBaremes baremes;
     private final JournalAudit audit;
     private final TransactionTemplate transaction;
+    private final ApplicationEventPublisher evenements;
 
     ServicePlateforme(ServicePlateformeEntreprises entreprises, ServiceEntreprise parametrage, ServiceIdentite identite,
-            ServiceBaremes baremes, JournalAudit audit, TransactionTemplate transaction) {
+            ServiceBaremes baremes, JournalAudit audit, TransactionTemplate transaction, ApplicationEventPublisher evenements) {
         this.entreprises = entreprises;
         this.parametrage = parametrage;
         this.identite = identite;
         this.baremes = baremes;
         this.audit = audit;
         this.transaction = transaction;
+        this.evenements = evenements;
     }
 
     public List<Entreprise> entreprises() {
@@ -72,6 +76,7 @@ public class ServicePlateforme {
                     n.adminCourriel(), null);
             identite.affecter(Uuid7.nouveau(), admin.getId(), roles.get("administrateur").getId(), null);
             audit.enregistrer("ENTREPRISE_CREEE", "entreprise", n.id(), null, Map.of("nom", n.nom(), "pack", n.pack().name()));
+            evenements.publishEvent(new EntrepriseCreee(n.id(), n.pack().name()));
             return entreprise;
         }));
     }
