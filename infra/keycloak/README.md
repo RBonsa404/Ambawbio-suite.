@@ -9,8 +9,11 @@
 | mariam | Quincaillerie Wend-Panga | comptable | **oui** |
 | issouf | Quincaillerie Wend-Panga | magasinier | non |
 | boukary | Quincaillerie Wend-Panga | commercial | non |
+| aminata | Quincaillerie Wend-Panga | gerant (gère produits, clients, import) | non |
 | salimata | Pharmacie du Progrès (démo) | administrateur | **oui** |
 | editeur | — (plateforme) | admin-plateforme | non |
+
+Thème de connexion aux couleurs de la marque : `themes/ambawbio` (écrans A-03, W-24).
 
 Mot de passe de tous les comptes : `demo-ambawbio`. Les utilisateurs soumis à la MFA configurent une application d'authentification (FreeOTP, Google Authenticator…) à la première connexion.
 

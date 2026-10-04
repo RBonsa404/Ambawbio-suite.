@@ -7,8 +7,142 @@
     font-family: var(--font-interface);
     color: var(--color-texte);
     background-color: var(--color-fond);
+    font-size: calc(16px + var(--decalage-texte));
+  }
+  /* Un fieldset garde par défaut la largeur de son contenu : sans cela, un tableau large élargit toute la page. */
+  fieldset { min-width: 0; }
+  :focus-visible {
+    outline: 2px solid var(--color-primaire);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    a, button { transition: background-color var(--duree-rapide) var(--ease-standard), color var(--duree-rapide) var(--ease-standard); }
   }
 }
+
+/* Composants du système de conception (Phase 3). Couleurs et tailles : jetons uniquement (R-16). */
+@layer components {
+  .titre-page { font-family: var(--font-titre); font-weight: var(--font-weight-extra-gras); font-size: var(--text-4xl);
+    line-height: var(--text-4xl--line-height); font-stretch: var(--largeur-titre); text-transform: uppercase; letter-spacing: var(--tracking-titre); }
+  .sous-titre { font-size: var(--text-sm); font-weight: var(--font-weight-semi-gras); text-transform: uppercase;
+    letter-spacing: var(--tracking-libelle); color: var(--color-texte-secondaire); margin-bottom: calc(var(--spacing) * 2); }
+  .etiquette { font-size: var(--text-xs); font-weight: var(--font-weight-semi-gras); text-transform: uppercase;
+    letter-spacing: var(--tracking-libelle); color: var(--color-texte-secondaire); }
+  .carte { background: var(--color-surface); border: var(--border-width-fin) solid var(--color-bordure); padding: calc(var(--spacing) * 5); }
+  .carte-lien { display: flex; align-items: center; gap: calc(var(--spacing) * 3); min-height: 5rem; padding: calc(var(--spacing) * 4);
+    background: var(--color-surface); border: var(--border-width-fin) solid var(--color-bordure); font-weight: var(--font-weight-semi-gras); font-size: var(--text-lg); }
+  .carte-lien:hover { border-color: var(--color-primaire); color: var(--color-primaire); }
+
+  .bouton { display: inline-flex; align-items: center; justify-content: center; gap: calc(var(--spacing) * 2); min-height: 3rem;
+    padding: 0 calc(var(--spacing) * 5); border-radius: var(--radius-sm); font-weight: var(--font-weight-semi-gras);
+    border: var(--border-width-normal) solid transparent; white-space: nowrap; cursor: pointer; }
+  .bouton:disabled { opacity: 0.5; cursor: not-allowed; }
+  .bouton-principal { background: var(--color-primaire); color: var(--color-primaire-texte); }
+  .bouton-principal:hover:not(:disabled) { background: var(--color-primaire-survol); }
+  .bouton-secondaire { background: var(--color-surface); color: var(--color-texte); border-color: var(--color-texte); }
+  .bouton-secondaire:hover:not(:disabled) { background: var(--color-surface-elevee); }
+  .bouton-tertiaire { background: transparent; color: var(--color-laterite-700); text-decoration: underline; padding: 0 calc(var(--spacing) * 3); }
+  .bouton-danger { background: var(--color-danger); color: var(--color-blanc); }
+  .bouton-caisse { min-height: 4rem; background: var(--color-primaire); color: var(--color-primaire-texte); font-family: var(--font-titre);
+    font-weight: var(--font-weight-extra-gras); font-size: var(--text-2xl); text-transform: uppercase; font-stretch: var(--largeur-titre); }
+  .bouton[aria-busy='true'] { cursor: progress; }
+  .bouton-icone { display: inline-flex; align-items: center; justify-content: center; min-width: 3rem; min-height: 3rem; color: var(--color-texte); }
+  .bouton-icone:hover:not(:disabled) { background: var(--color-surface-elevee); }
+  .bouton-icone:disabled { opacity: 0.4; }
+  .bouton-icone-petit { display: inline-flex; align-items: center; justify-content: center; min-width: 2rem; min-height: 2rem; }
+
+  .champ-libelle { font-size: var(--text-sm); font-weight: var(--font-weight-semi-gras); }
+  .champ-saisie { width: 100%; min-width: 0; min-height: 3rem; padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3); background: var(--color-surface);
+    border: var(--border-width-normal) solid var(--color-banco-500); border-radius: var(--radius-sm); color: var(--color-texte); }
+  .champ-saisie:disabled { background: var(--color-surface-elevee); color: var(--color-texte-secondaire); }
+  input.champ-saisie.ng-invalid.ng-touched, select.champ-saisie.ng-invalid.ng-touched { border-color: var(--color-danger); }
+  .champ-aide { font-size: var(--text-sm); color: var(--color-texte-secondaire); }
+  .champ-erreur { font-size: var(--text-sm); font-weight: var(--font-weight-semi-gras); color: var(--color-danger); }
+  .case { width: 1.5rem; height: 1.5rem; accent-color: var(--color-primaire); }
+  .choix-discret { min-height: 2.25rem; background: transparent; font-weight: var(--font-weight-semi-gras); border-bottom: var(--border-width-normal) solid var(--color-bordure); }
+
+  .tableau td, .tableau th { overflow-wrap: anywhere; }
+  .tableau { width: 100%; border-collapse: collapse; background: var(--color-surface); font-size: var(--text-base); }
+  .tableau th { text-align: left; font-size: var(--text-xs); font-weight: var(--font-weight-semi-gras); text-transform: uppercase;
+    letter-spacing: var(--tracking-libelle); color: var(--color-texte-secondaire); padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
+    border-bottom: var(--border-width-epais) solid var(--color-texte); }
+  .tableau td { padding: calc(var(--spacing) * 2.5) calc(var(--spacing) * 3); border-bottom: var(--border-width-fin) solid var(--color-bordure); }
+  .tableau tbody tr { cursor: pointer; }
+  .tableau tbody tr:hover { background: var(--color-surface-elevee); }
+  .tableau .nombre { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .ligne-selectionnee { background: var(--color-laterite-50); box-shadow: inset 4px 0 0 var(--color-primaire); }
+
+  .badge { display: inline-block; padding: 0 calc(var(--spacing) * 2); font-size: var(--text-xs); font-weight: var(--font-weight-semi-gras);
+    border: var(--border-width-fin) solid var(--color-bordure); background: var(--color-surface-elevee); }
+  .onglet { min-height: 2.75rem; padding: 0 calc(var(--spacing) * 4); border-bottom: 3px solid transparent; font-weight: var(--font-weight-semi-gras);
+    color: var(--color-texte-secondaire); }
+  .onglet-actif { color: var(--color-texte); border-bottom-color: var(--color-primaire); }
+
+  .alerte-erreur { padding: calc(var(--spacing) * 3); background: var(--color-rouge-50); color: var(--color-danger);
+    border-left: 4px solid var(--color-danger); font-weight: var(--font-weight-semi-gras); }
+  .alerte-succes { padding: calc(var(--spacing) * 3); background: var(--color-etat-certifie-fond); color: var(--color-etat-certifie);
+    border-left: 4px solid var(--color-etat-certifie); font-weight: var(--font-weight-semi-gras); }
+  .notification { display: flex; align-items: center; gap: calc(var(--spacing) * 3); padding: calc(var(--spacing) * 3) calc(var(--spacing) * 4);
+    background: var(--color-banco-950); color: var(--color-blanc); box-shadow: var(--shadow-2); }
+  .notification-erreur { background: var(--color-rouge-800); }
+  .modale { margin: auto; width: min(32rem, calc(100% - 2rem)); padding: calc(var(--spacing) * 6); background: var(--color-surface);
+    color: var(--color-texte); border: var(--border-width-fin) solid var(--color-bordure); box-shadow: var(--shadow-2); }
+  .modale::backdrop { background: rgb(30 27 24 / 0.5); }
+  .squelette { background: var(--color-surface-elevee); }
+  .zone-depot { display: flex; flex-direction: column; align-items: center; gap: calc(var(--spacing) * 2); padding: calc(var(--spacing) * 10);
+    border: var(--border-width-epais) dashed var(--color-banco-500); background: var(--color-fond); cursor: pointer; text-align: center; }
+  .zone-depot:focus-within, .zone-depot:hover { border-color: var(--color-primaire); }
+  .etapes { display: flex; flex-wrap: wrap; gap: calc(var(--spacing) * 2); }
+  .etapes li { display: inline-flex; align-items: center; gap: calc(var(--spacing) * 1); padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
+    border: var(--border-width-fin) solid var(--color-bordure); color: var(--color-texte-secondaire); font-weight: var(--font-weight-semi-gras); }
+  .etapes .etape-faite { color: var(--color-etat-certifie); background: var(--color-etat-certifie-fond); }
+  .etapes .etape-courante { color: var(--color-texte); border-color: var(--color-texte); }
+  .lien-retour { display: inline-flex; align-items: center; gap: calc(var(--spacing) * 1); color: var(--color-laterite-700); font-weight: var(--font-weight-semi-gras); }
+  .lien-evitement { position: absolute; left: -999px; top: 0; z-index: 60; padding: calc(var(--spacing) * 3); background: var(--color-surface); }
+  .lien-evitement:focus { left: calc(var(--spacing) * 2); }
+
+  /* Coquille */
+  .menu-entree { display: flex; align-items: center; gap: calc(var(--spacing) * 3); min-height: 3rem; padding: 0 calc(var(--spacing) * 3);
+    color: var(--color-banco-200); font-weight: var(--font-weight-semi-gras); border-left: 3px solid transparent; }
+  .menu-entree:hover { color: var(--color-blanc); background: var(--color-banco-900); }
+  .menu-actif { color: var(--color-blanc); background: var(--color-banco-900); border-left-color: var(--color-laterite-400); }
+  .avatar { display: inline-flex; align-items: center; justify-content: center; width: 3rem; height: 3rem; border-radius: var(--radius-pilule);
+    background: var(--color-banco-950); color: var(--color-blanc); font-weight: var(--font-weight-gras); }
+  .menu-profil-action { display: flex; width: 100%; align-items: center; gap: calc(var(--spacing) * 2); min-height: 3rem; font-weight: var(--font-weight-semi-gras); }
+  .navigation-basse { position: fixed; inset: auto 0 0 0; z-index: 30; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+    background: var(--color-surface); border-top: var(--border-width-epais) solid var(--color-texte); }
+  .navigation-basse a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 4rem;
+    font-size: var(--text-xs); font-weight: var(--font-weight-semi-gras); color: var(--color-texte-secondaire); text-align: center; padding: 0 2px; line-height: 1.15; }
+  .navigation-basse .navigation-basse-active { color: var(--color-primaire); box-shadow: inset 0 3px 0 var(--color-primaire); }
+
+  /* Liste + fiche côte à côte à partir de 1280 px (D-04), fiche en pleine page en dessous */
+  .liste-fiche { display: grid; gap: calc(var(--spacing) * 6); }
+  .liste-fiche > * { min-width: 0; }
+  .fiche-ouverte .liste-fiche-liste { display: none; }
+  @media (width >= 80rem) {
+    .fiche-ouverte { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); align-items: start; }
+    .fiche-ouverte .liste-fiche-liste { display: block; }
+    .liste-fiche-fiche { position: sticky; top: calc(var(--spacing) * 4); max-height: calc(100dvh - 2rem); overflow: auto; }
+  }
+
+  /* Indicateur de synchronisation (docs/design/composants/indicateur-synchronisation.md) */
+  .indicateur-sync { display: flex; align-items: center; gap: calc(var(--spacing) * 2); font-weight: var(--font-weight-semi-gras); width: 100%; }
+  .indicateur-pastille { min-height: 2rem; padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2.5); font-size: 13px; }
+  .indicateur-bandeau { min-height: 2rem; padding: 7px 14px; font-size: var(--text-sm); }
+  .etat-en-ligne { background: var(--color-etat-certifie-fond); color: var(--color-etat-certifie); }
+  .etat-hors-ligne { background: var(--color-etat-hors-ligne-fond); color: var(--color-etat-hors-ligne); }
+  .etat-envoi { background: var(--color-etat-synchronisation-fond); color: var(--color-etat-synchronisation); }
+  .etat-en-attente { background: var(--color-etat-en-attente-fond); color: var(--color-etat-en-attente); }
+  .etat-alerte { background: var(--color-rouge-100); color: var(--color-rouge-800); }
+
+  /* Clavier PIN (A-04) */
+  .touche-pin { min-height: 4rem; font-family: var(--font-titre); font-size: var(--text-3xl); font-weight: var(--font-weight-gras);
+    background: var(--color-banco-900); color: var(--color-blanc); border: var(--border-width-fin) solid var(--color-banco-700);
+    display: inline-flex; align-items: center; justify-content: center; }
+  .touche-pin:active { background: var(--color-banco-700); }
+}
+
+[data-theme="plein-soleil"] .indicateur-sync { background: var(--color-blanc); color: var(--color-noir); border-bottom: 3px solid var(--color-noir); font-weight: var(--font-weight-gras); }
 
 /* Frise de chevrons de la marque (docs/design/README.md « Motif de marque ») : une par écran, supprimée en plein soleil. */
 @utility frise {

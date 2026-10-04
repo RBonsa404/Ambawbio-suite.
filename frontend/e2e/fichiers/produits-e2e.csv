@@ -1,0 +1,5 @@
+code;nom;prix_vente;taxe;code_barre
+E2E-1;Ciment test e2e;5500;TVA18;6139990000011
+E2E-2;Riz test e2e;17500;TVA18;6139990000028
+E2E-3;Savon test e2e;trois cents;TVA18;6139990000035
+E2E-4;Huile test e2e;24000;TVA99;6139990000042

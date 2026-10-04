@@ -101,6 +101,18 @@
   --font-interface: "IBM Plex Sans", sans-serif;
   --font-code: "IBM Plex Mono", monospace;
 
+  /* Graisses, espacement des lettres, largeur des titres (ajout LOT 3, décision D-06 ; valeurs des maquettes). */
+  --font-weight-normal: 400;
+  --font-weight-moyen: 500;
+  --font-weight-semi-gras: 600;
+  --font-weight-gras: 700;
+  --font-weight-extra-gras: 800;
+  --tracking-serre: -0.01em;
+  --tracking-normal: 0em;
+  --tracking-titre: 0.02em;
+  --tracking-libelle: 0.06em;
+  --tracking-descripteur: 0.42em;
+
   --text-xs: 0.75rem;
   --text-xs--line-height: 1.333;
   --text-sm: 0.875rem;
@@ -125,6 +137,9 @@
   --text-6xl--line-height: 1.000;
 
   --spacing: 0.25rem;
+  --border-width-fin: 1px;
+  --border-width-normal: 1.5px;
+  --border-width-epais: 2px;
   --radius-sm: 2px;
   --radius-md: 4px;
   --radius-lg: 8px;
@@ -132,9 +147,7 @@
   --shadow-1: 0 1px 2px rgb(30 27 24 / 0.12);
   --shadow-2: 0 2px 6px rgb(30 27 24 / 0.16);
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
-  --duration-rapide: 150ms;
-  --duration-normale: 200ms;
-  --duration-lente: 250ms;
+
 
   --breakpoint-*: initial;
   --breakpoint-telephone: 22.5rem;
@@ -142,6 +155,15 @@
   --breakpoint-tablette: 56.25rem;
   --breakpoint-bureau: 80rem;
   --breakpoint-large: 100rem;
+}
+
+/* Durées : hors des espaces de noms du thème Tailwind, déclarées sur :root pour être toujours disponibles (écart E-04). */
+:root {
+  --duree-rapide: 150ms;
+  --duree-normale: 200ms;
+  --duree-lente: 250ms;
+  --largeur-titre: 118%;
+  --decalage-texte: 0px;
 }
 
 /* Variante plein soleil (caisse) : <html data-theme="plein-soleil"> */
@@ -168,6 +190,11 @@
   --color-etat-a-verifier-fond: #FFFFFF;
   --color-etat-certifie: var(--color-vert-950);
   --color-etat-certifie-fond: #FFFFFF;
+  /* Bordures épaissies et textes +2 px (écart E-02). */
+  --border-width-fin: 2px;
+  --border-width-normal: 2px;
+  --border-width-epais: 3px;
+  --decalage-texte: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {

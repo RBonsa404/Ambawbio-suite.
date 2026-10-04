@@ -1,0 +1,153 @@
+<div class="liste-fiche" [class.fiche-ouverte]="ficheOuverte()">
+  <section class="liste-fiche-liste" [attr.aria-label]="'tiers.titre' | transloco">
+    <div class="flex flex-wrap items-end gap-3">
+      <h1 class="titre-page">{{ 'tiers.titre' | transloco }}</h1>
+      <span class="tabular-nums text-texte-secondaire">{{ resultat()?.total ?? 0 }}</span>
+      @if (peutModifier()) {
+        <button ambBouton variante="principal" type="button" class="ml-auto" (click)="nouveau()">
+          <amb-icone nom="plus" /> {{ 'tiers.nouveau' | transloco }}</button>
+      }
+    </div>
+    <div class="mt-4 flex flex-wrap gap-3">
+      <div class="champ-saisie flex min-w-60 flex-1 items-center gap-2">
+        <amb-icone nom="search" class="text-texte-secondaire" />
+        <label class="sr-only" for="recherche-tiers">{{ 'tiers.rechercher' | transloco }}</label>
+        <input #recherche id="recherche-tiers" class="w-full bg-transparent outline-none" type="search"
+          [placeholder]="'tiers.rechercher' | transloco" [value]="q()" (input)="q.set($any($event.target).value); rechercher()" />
+      </div>
+      <div class="flex" role="group" [attr.aria-label]="'tiers.filtre' | transloco">
+        @for (f of ['tous', 'clients', 'fournisseurs']; track f) {
+          <button type="button" class="onglet" [class.onglet-actif]="filtre() === f" [attr.aria-pressed]="filtre() === f"
+            (click)="filtre.set($any(f)); rechercher()">{{ 'tiers.' + f | transloco }}</button>
+        }
+      </div>
+    </div>
+
+    @if (resultat(); as r) {
+      @if (r.total === 0 && !q() && filtre() === 'tous') {
+        <amb-etat-vide class="mt-4 block" [titre]="'tiers.videTitre' | transloco" [message]="'tiers.videMessage' | transloco">
+          @if (peutModifier()) {
+            <button ambBouton variante="principal" type="button" (click)="nouveau()">{{ 'tiers.nouveau' | transloco }}</button>
+          }
+        </amb-etat-vide>
+      } @else {
+        <table class="tableau mt-4">
+          <thead>
+            <tr>
+              <th scope="col">{{ 'tiers.code' | transloco }}</th>
+              <th scope="col">{{ 'tiers.nom' | transloco }}</th>
+              <th scope="col">{{ 'tiers.telephone' | transloco }}</th>
+              <th scope="col">{{ 'tiers.ifu' | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (t of r.elements; track t.id) {
+              <tr [class.ligne-selectionnee]="selection()?.id === t.id" (click)="ouvrir(t)">
+                <td class="font-code">{{ t.code }}</td>
+                <td>
+                  <button type="button" class="text-left hover:underline" (click)="ouvrir(t)">{{ t.nom }}</button>
+                  @if (t.estFournisseur) { <span class="badge ml-2">{{ 'tiers.fournisseur' | transloco }}</span> }
+                </td>
+                <td class="tabular-nums whitespace-nowrap">{{ t.telephone ?? '—' }}</td>
+                <td class="font-code">{{ t.ifu ?? '—' }}</td>
+              </tr>
+            } @empty {
+              <tr><td colspan="4" class="text-texte-secondaire">{{ 'tiers.aucunResultat' | transloco }}</td></tr>
+            }
+          </tbody>
+        </table>
+        <amb-pagination class="mt-3 block" [page]="page()" [total]="r.total" (changer)="rechercher($event)" />
+      }
+    } @else {
+      <div class="squelette mt-4 h-64" aria-hidden="true"></div>
+    }
+  </section>
+
+  @if (ficheOuverte()) {
+    <section class="liste-fiche-fiche carte" [attr.aria-label]="'tiers.fiche' | transloco">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <p class="etiquette">{{ (creation() ? 'tiers.nouveau' : 'tiers.fiche') | transloco }}</p>
+          <h2 class="font-titre text-2xl font-extrabold">{{ selection()?.nom ?? ('tiers.nouveau' | transloco) }}</h2>
+        </div>
+        <button type="button" class="bouton-icone" (click)="fermer()" [attr.aria-label]="'commun.fermer' | transloco"><amb-icone nom="x" /></button>
+      </div>
+      <form class="mt-4 flex flex-col gap-6" [formGroup]="formulaire" (ngSubmit)="enregistrer()" novalidate>
+        <fieldset class="grid gap-4 petite-tablette:grid-cols-2">
+          <legend class="sous-titre">{{ 'tiers.identification' | transloco }}</legend>
+          <amb-champ [libelle]="'tiers.code' | transloco" pour="t-code" [obligatoire]="true"
+            [erreur]="formulaire.controls.code.touched && formulaire.controls.code.invalid ? ('commun.obligatoire' | transloco) : null">
+            <input id="t-code" class="champ-saisie font-code" formControlName="code" />
+          </amb-champ>
+          <amb-champ [libelle]="'tiers.nom' | transloco" pour="t-nom" [obligatoire]="true"
+            [erreur]="formulaire.controls.nom.touched && formulaire.controls.nom.invalid ? ('commun.obligatoire' | transloco) : null">
+            <input id="t-nom" class="champ-saisie" formControlName="nom" />
+          </amb-champ>
+          <div class="flex flex-wrap gap-6 petite-tablette:col-span-2">
+            <label class="flex min-h-12 items-center gap-3"><input type="checkbox" class="case" formControlName="estClient" /> {{ 'tiers.client' | transloco }}</label>
+            <label class="flex min-h-12 items-center gap-3"><input type="checkbox" class="case" formControlName="estFournisseur" /> {{ 'tiers.fournisseur' | transloco }}</label>
+          </div>
+          <amb-champ [libelle]="'tiers.ifu' | transloco" pour="t-ifu" [aide]="'tiers.ifuAide' | transloco"
+            [erreur]="formulaire.controls.ifu.touched && formulaire.controls.ifu.invalid ? ('tiers.ifuAide' | transloco) : null">
+            <input id="t-ifu" class="champ-saisie font-code uppercase" formControlName="ifu" maxlength="12" autocomplete="off" />
+          </amb-champ>
+          <amb-champ [libelle]="'tiers.regime' | transloco" pour="t-regime" [aide]="'tiers.regimeAide' | transloco">
+            <select id="t-regime" class="champ-saisie" formControlName="regimeCode">
+              <option value="">—</option>
+              @for (r of regimes(); track r.id) { <option [value]="r.code">{{ r.libelle }}</option> }
+            </select>
+          </amb-champ>
+          <amb-champ [libelle]="'tiers.rccm' | transloco" pour="t-rccm">
+            <input id="t-rccm" class="champ-saisie font-code" formControlName="rccm" />
+          </amb-champ>
+        </fieldset>
+
+        <fieldset class="grid gap-4 petite-tablette:grid-cols-2">
+          <legend class="sous-titre">{{ 'tiers.coordonnees' | transloco }}</legend>
+          <amb-champ [libelle]="'tiers.telephone' | transloco" pour="t-tel" [aide]="'tiers.telephoneAide' | transloco">
+            <div class="champ-saisie flex items-center gap-2"><span class="text-texte-secondaire">+226</span>
+              <input id="t-tel" class="w-full bg-transparent tabular-nums outline-none" formControlName="telephone" inputmode="tel" /></div>
+          </amb-champ>
+          <amb-champ [libelle]="'tiers.courriel' | transloco" pour="t-courriel">
+            <input id="t-courriel" class="champ-saisie" type="email" formControlName="courriel" />
+          </amb-champ>
+          <amb-champ [libelle]="'tiers.adresse' | transloco" pour="t-adresse"><input id="t-adresse" class="champ-saisie" formControlName="adresse" /></amb-champ>
+          <amb-champ [libelle]="'tiers.ville' | transloco" pour="t-ville"><input id="t-ville" class="champ-saisie" formControlName="ville" /></amb-champ>
+        </fieldset>
+
+        <fieldset class="grid gap-4 petite-tablette:grid-cols-2">
+          <legend class="sous-titre">{{ 'tiers.paiement' | transloco }}</legend>
+          <amb-champ [libelle]="'tiers.operateur' | transloco" pour="t-operateur">
+            <select id="t-operateur" class="champ-saisie" formControlName="operateur">
+              <option value="">—</option>
+              @for (o of operateurs; track o.code) { <option [value]="o.code">{{ o.libelle }}</option> }
+            </select>
+          </amb-champ>
+          <amb-champ [libelle]="'tiers.numeroMobileMoney' | transloco" pour="t-mm">
+            <input id="t-mm" class="champ-saisie tabular-nums" formControlName="numeroMobileMoney" inputmode="tel" />
+          </amb-champ>
+          <amb-champ [libelle]="'tiers.delai' | transloco" pour="t-delai">
+            <input id="t-delai" class="champ-saisie text-right tabular-nums" type="number" min="0" formControlName="delaiPaiementJours" />
+          </amb-champ>
+          <amb-champ [libelle]="'tiers.plafond' | transloco" pour="t-plafond">
+            <amb-champ-montant identifiant="t-plafond" formControlName="plafondCredit" />
+          </amb-champ>
+        </fieldset>
+
+        @if (definitions().length) {
+          <fieldset>
+            <legend class="sous-titre">{{ 'commun.champsPersonnalises' | transloco }}</legend>
+            <amb-champs-dynamiques [definitions]="definitions()" [groupe]="champs" />
+          </fieldset>
+        }
+        @if (erreur()) { <p class="alerte-erreur" role="alert">{{ erreur() }}</p> }
+        @if (peutModifier()) {
+          <div class="flex justify-end gap-3">
+            <button ambBouton variante="secondaire" type="button" (click)="fermer()">{{ 'commun.annuler' | transloco }}</button>
+            <button ambBouton variante="principal" type="submit" [disabled]="enregistrement()">{{ 'commun.enregistrer' | transloco }}</button>
+          </div>
+        }
+      </form>
+    </section>
+  }
+</div>

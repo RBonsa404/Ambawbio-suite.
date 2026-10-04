@@ -1,0 +1,87 @@
+<a href="#contenu" class="lien-evitement">{{ 'coquille.allerAuContenu' | transloco }}</a>
+<div class="flex min-h-dvh bg-fond text-texte">
+  <!-- Barre latérale (tablette et bureau) -->
+  <aside class="hidden shrink-0 flex-col bg-banco-950 text-blanc petite-tablette:flex" [class.w-60]="!replie()" [class.w-16]="replie()"
+    [attr.aria-label]="'coquille.navigation' | transloco">
+    <div class="flex h-16 items-center px-4">
+      @if (replie()) {
+        <img src="logo/ambawbio-symbole-blanc.svg" alt="Ambawbio Suite" class="h-8 w-8" />
+      } @else {
+        <img src="logo/ambawbio-horizontal-blanc.svg" alt="Ambawbio Suite" class="h-9 w-auto" />
+      }
+    </div>
+    <nav class="flex flex-1 flex-col gap-1 px-2 py-2">
+      @for (e of entrees(); track e.lien) {
+        <a [routerLink]="e.lien" routerLinkActive="menu-actif" [routerLinkActiveOptions]="{ exact: e.lien === '/' }" class="menu-entree"
+          [attr.title]="replie() ? (e.cle | transloco) : null">
+          <amb-icone [nom]="e.icone" />
+          <span [class.sr-only]="replie()">{{ e.cle | transloco }}</span>
+        </a>
+      }
+    </nav>
+    <button type="button" class="menu-entree m-2" (click)="basculerMenu()" [attr.aria-expanded]="!replie()">
+      <amb-icone [nom]="replie() ? 'menu' : 'chevron-left'" />
+      <span [class.sr-only]="replie()">{{ (replie() ? 'coquille.deplier' : 'coquille.replier') | transloco }}</span>
+    </button>
+  </aside>
+
+  <div class="flex min-w-0 flex-1 flex-col">
+    <!-- Barre du haut : contexte toujours visible -->
+    <header class="border-b border-bordure bg-surface">
+      <div class="flex min-h-16 flex-wrap items-center gap-x-6 gap-y-2 px-4 py-2">
+        <img src="logo/ambawbio-symbole-couleur.svg" alt="" class="h-8 w-8 petite-tablette:hidden" />
+        <div class="flex flex-col">
+          <span class="etiquette">{{ 'coquille.entreprise' | transloco }}</span>
+          <span class="font-semibold">{{ contexte.contexte()?.entreprise?.nom ?? '…' }}</span>
+        </div>
+        @if (contexte.contexte(); as c) {
+          <div class="flex flex-col">
+            <label class="etiquette" for="choix-etablissement">{{ 'coquille.etablissement' | transloco }}</label>
+            <select id="choix-etablissement" class="choix-discret" [value]="contexte.etablissement()?.id"
+              (change)="contexte.choisirEtablissement($any($event.target).value)">
+              @for (e of c.etablissements; track e.id) {
+                <option [value]="e.id">{{ e.nom }}</option>
+              }
+            </select>
+          </div>
+        }
+        <div class="ml-auto flex items-center gap-3">
+          <amb-indicateur-sync class="hidden tablette:block" [etat]="reseau.enLigne() ? 'en-ligne' : 'hors-ligne'"
+            [derniereSynchro]="reseau.derniereSynchro()" />
+          <div class="relative">
+            <button type="button" class="avatar" (click)="menuProfil.set(!menuProfil())" [attr.aria-expanded]="menuProfil()"
+              [attr.aria-label]="'coquille.profil' | transloco">{{ initiales() }}</button>
+            @if (menuProfil()) {
+              <div class="absolute right-0 z-40 mt-2 w-64 border border-bordure bg-surface p-3 shadow-2" role="menu">
+                <p class="font-semibold">{{ contexte.contexte()?.utilisateur?.nomComplet }}</p>
+                <p class="text-sm text-texte-secondaire">{{ contexte.contexte()?.utilisateur?.courriel }}</p>
+                <p class="mt-1 font-code text-xs text-texte-secondaire">{{ contexte.contexte()?.roles?.join(', ') }}</p>
+                <button type="button" role="menuitem" class="menu-profil-action mt-3" (click)="seDeconnecter()">
+                  <amb-icone nom="log-out" [taille]="18" /> {{ 'coquille.deconnexion' | transloco }}
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+      <div class="frise h-1.5" aria-hidden="true"></div>
+    </header>
+
+    <amb-indicateur-sync class="tablette:hidden" variante="bandeau" [etat]="reseau.enLigne() ? 'en-ligne' : 'hors-ligne'"
+      [derniereSynchro]="reseau.derniereSynchro()" />
+
+    <main id="contenu" class="min-w-0 flex-1 px-4 pb-24 pt-6 petite-tablette:pb-8" tabindex="-1">
+      <router-outlet />
+    </main>
+  </div>
+</div>
+
+<!-- Navigation basse (téléphone) : 4 entrées, libellés toujours visibles -->
+<nav class="navigation-basse petite-tablette:hidden" [attr.aria-label]="'coquille.navigation' | transloco">
+  @for (e of entreesBasses(); track e.lien) {
+    <a [routerLink]="e.lien" routerLinkActive="navigation-basse-active" [routerLinkActiveOptions]="{ exact: e.lien === '/' }">
+      <amb-icone [nom]="e.icone" [taille]="22" />
+      <span>{{ e.cle | transloco }}</span>
+    </a>
+  }
+</nav>

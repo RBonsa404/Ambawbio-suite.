@@ -5,6 +5,7 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions [Sem
 ## [Non publié]
 
 ### Ajouté
+- LOT 3 : application — jetons complétés, bibliothèque de composants (boutons, champs, montant FCFA, quantité et conditionnement, tableau, notifications, confirmation, indicateur de synchronisation, champs personnalisés dynamiques), coquille (barre latérale, contexte entreprise/établissement, navigation basse), écrans Produits, Clients et fournisseurs, Import, pages système, thème de connexion Keycloak, verrouillage par code PIN sur Android ; accessibilité WCAG AA vérifiée automatiquement.
 - LOT 2 : référentiels (tiers, produits, conditionnements, codes-barres, catégories, unités, taxes, régimes fiscaux, listes de prix), recherche rapide sans accents, champs personnalisés du Studio (typés, filtrables), import CSV/Excel avec rapport d'erreurs ligne par ligne, données de démarrage par événement, catalogue de démonstration.
 - Questions ouvertes tranchées (Q-01 à Q-17, sauf Q-09) avec sources ; stockage S3 de développement : SeaweedFS.
 - LOT 1 : socle technique — multi-tenant à triple barrière (jeton, Hibernate, RLS PostgreSQL), entreprises, sociétés (INV-15), établissements, dépôts, modules par pack, utilisateurs synchronisés avec Keycloak, rôles et permissions « module:action » par établissement (RG-14), barèmes versionnés (RG-10), journal d'audit chaîné et vérifié chaque nuit (RG-11), administration de la plateforme, demandes sur les données personnelles, MFA conditionnelle dans Keycloak, données de démonstration.
