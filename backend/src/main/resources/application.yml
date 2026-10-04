@@ -20,8 +20,8 @@ spring:
         order_inserts: true
         order_updates: true
   flyway:
-    locations: classpath:db/callback,classpath:db/migration/socle,classpath:db/migration/referentiel,classpath:db/migration/sync,classpath:db/migration/pos
-    schemas: socle,audit,referentiel,sync,pos
+    locations: classpath:db/callback,classpath:db/migration/socle,classpath:db/migration/referentiel,classpath:db/migration/sync,classpath:db/migration/pos,classpath:db/migration/facturation,classpath:db/migration/conformite
+    schemas: socle,audit,referentiel,sync,pos,facturation,conformite
     create-schemas: true
     # Migrations exécutées par le propriétaire des tables ; l'application utilise un rôle sans BYPASSRLS (guide §6.4).
     user: ${AMBAWBIO_BD_PROPRIETAIRE:ambawbio}

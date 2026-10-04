@@ -73,6 +73,7 @@ export class Caisse {
   private readonly http = inject(HttpClient);
 
   readonly produits = signal<ProduitCaisse[]>([]);
+  readonly clients = signal<{ id: string; nom: string; ifu: string | null; nomRecherche: string }[]>([]);
   readonly pointsDeVente = signal<PointDeVenteLocal[]>([]);
   readonly sessionsDistantes = signal<{ id: string; pointDeVenteId: string; terminalId: string; statut: string }[]>([]);
   readonly session = signal<SessionLocale | null>(null);
@@ -98,9 +99,16 @@ export class Caisse {
   /** Données locales : catalogue, taxes, points de vente, session en cours, pièces de la session. */
   async charger(): Promise<void> {
     const store = this.agent.store;
-    const [produits, taxes, pdv, sessions] = await Promise.all([
-      store.entites('produit'), store.entites('taxe'), store.entites('point_de_vente'), store.entites('session_caisse'),
+    const [produits, taxes, pdv, sessions, clients] = await Promise.all([
+      store.entites('produit'), store.entites('taxe'), store.entites('point_de_vente'), store.entites('session_caisse'), store.entites('client'),
     ]);
+    this.clients.set(
+      clients
+        .map((c) => ({ id: c.id, ...(c.donnees as { nom: string; ifu: string | null; actif?: boolean; code?: string }) }))
+        .filter((c) => c.actif !== false)
+        .map((c) => ({ id: c.id, nom: c.nom, ifu: c.ifu ?? null, nomRecherche: sansAccents(`${c.code ?? ''} ${c.nom} ${c.ifu ?? ''}`) }))
+        .sort((a, b) => a.nom.localeCompare(b.nom, 'fr')),
+    );
     const parTaxe = new Map(taxes.map((t) => [t.id, t.donnees as { code: string; taux: number | string }]));
     this.produits.set(
       produits
@@ -141,6 +149,11 @@ export class Caisse {
     const id = this.session()?.id;
     const toutes = (await this.agent.store.entites('piece')).map((p) => p.donnees as unknown as PieceCaisse);
     this.pieces.set(toutes.filter((p) => p.sessionId === id).sort((a, b) => b.horodatage.localeCompare(a.horodatage)));
+  }
+
+  rechercherClients(texte: string): { id: string; nom: string; ifu: string | null }[] {
+    const t = sansAccents(texte.trim());
+    return (t ? this.clients().filter((c) => c.nomRecherche.includes(t)) : this.clients()).slice(0, 8);
   }
 
   rechercher(texte: string, limite = 60): ProduitCaisse[] {
@@ -234,6 +247,9 @@ export class Caisse {
     if (encaissements.reduce((s, e) => s + e.montant, 0) !== total) {
       throw new Error('Le paiement ne correspond pas au total.');
     }
+    if (options.factureDemandee && !options.clientId) {
+      throw new Error('Choisissez le client à facturer.');
+    }
     const piece = await this.creerPiece('VENTE', lignes, encaissements, options.clientId ?? null, options.factureDemandee ?? false);
     this.vider();
     return piece;
@@ -319,6 +335,7 @@ export class Caisse {
     }
     const typePiece = type === 'VENTE' ? 'TICKET' : 'AVOIR';
     const { plage, sequence } = await this.agent.consommerNumero(typePiece);
+    const facture = type === 'VENTE' && factureDemandee ? await this.agent.consommerNumero('FACTURE') : null;
     const piece: PieceCaisse = {
       venteId: uuid7(), type, sessionId: session.id, caissierId: this.caissier(),
       numero: { typePiece, annee: plage.annee, sequence },
@@ -327,9 +344,16 @@ export class Caisse {
       totalHt: lignes.reduce((s, l) => s + l.montantHt, 0), totalTaxes: lignes.reduce((s, l) => s + l.montantTaxe, 0),
       totalTtc: lignes.reduce((s, l) => s + l.montantTtc, 0),
       ...(venteOrigineId ? { venteOrigineId } : {}),
+      ...(facture
+        ? {
+            facture: { typePiece: 'FACTURE' as const, annee: facture.plage.annee, sequence: facture.sequence },
+            numeroFacture: `${facture.plage.prefixe}-${facture.plage.annee}-${String(facture.sequence).padStart(6, '0')}`,
+          }
+        : {}),
     };
     const charge: Record<string, unknown> = { ...piece };
     delete charge['numeroAffiche'];
+    delete charge['numeroFacture'];
     delete charge['type'];
     await this.agent.enregistrer(type === 'VENTE' ? 'VENTE_ENREGISTREE' : 'RETOUR_ENREGISTRE', charge, piece.caissierId);
     await this.agent.store.enregistrerLocale('piece', piece.venteId, piece as unknown as Record<string, unknown>);

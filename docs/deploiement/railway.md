@@ -337,7 +337,17 @@ Sur un téléphone, on peut appairer en collant le contenu du QR code, `{"t":"�
 3. Identifiant `aminata`, code PIN choisi au § 12.2, raison → **Valider l'écart**.
 4. Menu **Caisses** : la session apparaît dans « Sessions récentes ». **Voir** ouvre le **rapport Z** (ventes, retours, ventilation espèces / Mobile Money / carte, taxes, écart).
 
-### 12.8 Isolation entre entreprises (LOT 1)
+### 12.8 Factures et avoirs (LOT 6, W-10)
+
+1. Menu **Factures et avoirs** → **Nouvelle facture** : client « Bâtir Faso SARL (démo) », ajoutez « Ciment CPJ 45 » (quantité 10) et une ligne libre (« Livraison », 15 000) → **Enregistrer le brouillon**.
+2. **Valider la facture** : numéro `FA-2026-000001`, badge « Simulée — sans valeur fiscale » au bout d'une seconde ; l'aperçu PDF montre le QR code et le filigrane de démonstration. **Télécharger le PDF**.
+3. Certification différée : dans le bandeau « Mode démonstration », passez le service en **indisponible**, validez une autre facture → badge « En file de certification » et compteur en haut. Repassez en **disponible** → **Relancer la certification**.
+4. **Créer un avoir** sur la première facture : motif, quantités → **Avoir partiel** (`AV-2026-000001`). Il est impossible d'annuler plus que le reste.
+5. En caisse : **Encaisser** → cochez « Le client demande une facture certifiée », choisissez le client → l'écran de confirmation affiche « Facture FA-C01-2026-000001 en attente de certification » ; elle apparaît ensuite dans **Factures et avoirs**.
+
+Une facture validée ne peut plus être modifiée ni supprimée (même en base) : on la corrige par un avoir.
+
+### 12.9 Isolation entre entreprises (LOT 1)
 
 Déconnectez-vous (avatar en haut à droite), puis connectez-vous avec `salimata`. Vous êtes dans la Pharmacie du Progrès : aucune donnée de la quincaillerie n'est visible.
 
@@ -354,7 +364,7 @@ npx playwright install chromium
 AMBAWBIO_E2E_URL=https://<application> npx playwright test
 ```
 
-Attendu : 14 scénarios réussis, 2 ignorés (scénarios réservés au bureau). Les scénarios créent des données de test (produits `TST-…`, caisses `CE…`, terminaux) : réinitialisez ensuite si vous voulez une démonstration propre (§ 16).
+Attendu : 15 scénarios réussis, 3 ignorés (scénarios réservés au bureau). Les scénarios créent des données de test (produits `TST-…`, caisses `CE…`, terminaux) : réinitialisez ensuite si vous voulez une démonstration propre (§ 16).
 
 ---
 

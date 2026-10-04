@@ -63,6 +63,8 @@ export class EcranCaisse implements OnDestroy {
   protected operateur = 'Orange Money';
   protected reference = '';
   protected factureDemandee = false;
+  protected rechercheClient = '';
+  protected readonly clientFacture = signal<{ id: string; nom: string; ifu: string | null } | null>(null);
   protected readonly enCours = signal(false);
   protected readonly ticketImprime = signal<boolean | null>(null);
   protected readonly retourAuto = signal(0);
@@ -191,12 +193,17 @@ export class EcranCaisse implements OnDestroy {
     this.partMobile.set(0);
     this.reference = '';
     this.factureDemandee = false;
+    this.clientFacture.set(null);
+    this.rechercheClient = '';
     this.erreur.set(null);
     this.vue.set('encaissement');
   }
 
   protected peutValider(): boolean {
     const total = this.caisse.total();
+    if (this.factureDemandee && !this.clientFacture()) {
+      return false;
+    }
     switch (this.mode()) {
       case 'ESPECES':
         return this.recu() >= total;
@@ -224,7 +231,7 @@ export class EcranCaisse implements OnDestroy {
     }[this.mode()]();
     this.enCours.set(true);
     try {
-      const piece = await this.caisse.encaisser(encaissements, { factureDemandee: this.factureDemandee });
+      const piece = await this.caisse.encaisser(encaissements, { factureDemandee: this.factureDemandee, clientId: this.clientFacture()?.id ?? null });
       this.vue.set('confirmation');
       void this.imprimer(piece);
       this.demarrerRetourAuto();

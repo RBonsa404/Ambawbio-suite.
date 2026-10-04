@@ -1,24 +1,21 @@
-package bf.ambawbio.pos.domaine;
+package bf.ambawbio.shared.domaine;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import bf.ambawbio.shared.domaine.Montant;
-import bf.ambawbio.shared.domaine.RegleMetierException;
-
 /**
- * Calcul d'une ligne de caisse (guide §11.3) : taxe calculée par ligne, arrondie au franc (demi supérieur).
+ * Calcul d'une ligne de pièce — caisse, facture, avoir (guide §11.3) : taxe calculée par ligne, arrondie au franc (demi supérieur).
  * Prix TTC (D-17) : {@code ht = ttc × 100 / (100 + taux)} ; prix HT : {@code taxe = ht × taux / 100}.
  * Le même calcul est fait par le terminal ({@code calcul-vente.ts}) ; le serveur le refait et refuse tout écart.
  */
-public final class CalculVente {
+public final class CalculLigne {
 
     public record Montants(Montant ht, Montant taxe, Montant ttc) {
     }
 
     private static final BigDecimal CENT = BigDecimal.valueOf(100);
 
-    private CalculVente() {
+    private CalculLigne() {
     }
 
     public static Montants ligne(BigDecimal quantite, long prixUnitaire, boolean prixTtc, long remise, BigDecimal tauxPourcent) {

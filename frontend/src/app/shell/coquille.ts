@@ -45,6 +45,7 @@ export class Coquille {
   private readonly menu: EntreeMenu[] = [
     { lien: '/', cle: 'menu.tableauDeBord', icone: 'layout-dashboard' },
     { lien: '/caisse', cle: 'menu.caisse', icone: 'store', permission: 'pos:vendre' },
+    { lien: '/factures', cle: 'menu.factures', icone: 'file-text', permission: 'facturation:creer' },
     { lien: '/produits', cle: 'menu.produits', icone: 'package', permission: 'socle:consulter' },
     { lien: '/tiers', cle: 'menu.tiers', icone: 'users', permission: 'socle:consulter' },
     { lien: '/import', cle: 'menu.import', icone: 'upload', permission: 'referentiel:gerer' },

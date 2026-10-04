@@ -38,6 +38,9 @@ export interface PieceCaisse {
   horodatage: string;
   clientId: string | null;
   factureDemandee: boolean;
+  /** Numéro de facture pris hors-ligne dans la plage FACTURE du terminal (RG-03). */
+  facture?: { typePiece: 'FACTURE'; annee: number; sequence: number };
+  numeroFacture?: string;
   venteOrigineId?: string;
   lignes: LignePiece[];
   encaissements: EncaissementPiece[];
@@ -95,7 +98,10 @@ export function lignesTicket(piece: PieceCaisse, entete: EnteteTicket): string[]
       sortie.push(`  Réf. ${e.reference}`);
     }
   }
-  sortie.push(trait, piece.factureDemandee ? 'Facture certifiée : à venir' : 'Facture certifiée sur demande', 'Merci de votre visite');
+  if (piece.numeroFacture) {
+    sortie.push(trait, `Facture ${piece.numeroFacture}`, 'EN ATTENTE DE CERTIFICATION');
+  }
+  sortie.push(trait, 'Merci de votre visite', 'Édité avec Ambawbio Suite');
   return sortie;
 }
 

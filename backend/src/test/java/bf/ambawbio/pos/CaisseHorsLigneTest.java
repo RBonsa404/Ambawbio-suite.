@@ -24,7 +24,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import bf.ambawbio.TestIntegration;
-import bf.ambawbio.pos.domaine.CalculVente;
+import bf.ambawbio.shared.domaine.CalculLigne;
 import bf.ambawbio.shared.domaine.Uuid7;
 import bf.ambawbio.shared.tenant.ContexteTenant;
 import bf.ambawbio.socle.tenancy.Pack;
@@ -51,7 +51,7 @@ class CaisseHorsLigneTest extends TestIntegration {
 
     @BeforeEach
     void caisse() throws Exception {
-        e = creerEntreprise("Boutique Caisse", Pack.ESSENTIEL);
+        e = creerEntreprise("Boutique Caisse", Pack.ESSENTIEL, "00012345A");
         admin = comme(e.id(), e.adminKeycloakId());
         siege = ContexteTenant.executerPour(e.id(), () -> jdbc.queryForObject("select id from socle.etablissement where code = 'SIEGE'", UUID.class));
         caissier = ContexteTenant.executerPour(e.id(),
@@ -109,7 +109,7 @@ class CaisseHorsLigneTest extends TestIntegration {
         long total = 0;
         for (int i = 0; i < articles.size(); i++) {
             var a = articles.get(i);
-            var m = CalculVente.ligne(new BigDecimal(a.quantite()), a.prix(), true, a.remise(), new BigDecimal("18"));
+            var m = CalculLigne.ligne(new BigDecimal(a.quantite()), a.prix(), true, a.remise(), new BigDecimal("18"));
             total += m.ttc().valeur();
             lignes.add("""
                     {"id":"%s","produitId":"%s","libelle":"Article %d","quantite":"%s","facteur":"1","prixUnitaire":%d,"prixTtc":true,"remise":%d,
@@ -144,9 +144,9 @@ class CaisseHorsLigneTest extends TestIntegration {
 
     @Test
     void calculParLigneArrondiAuFrancDemiSuperieur() {
-        var ttc = CalculVente.ligne(new BigDecimal("3"), 5500, true, 0, new BigDecimal("18"));
+        var ttc = CalculLigne.ligne(new BigDecimal("3"), 5500, true, 0, new BigDecimal("18"));
         assertThat(List.of(ttc.ht().valeur(), ttc.taxe().valeur(), ttc.ttc().valeur())).containsExactly(13983L, 2517L, 16500L);
-        var ht = CalculVente.ligne(new BigDecimal("0.5"), 17500, false, 250, new BigDecimal("18"));
+        var ht = CalculLigne.ligne(new BigDecimal("0.5"), 17500, false, 250, new BigDecimal("18"));
         assertThat(List.of(ht.ht().valeur(), ht.taxe().valeur(), ht.ttc().valeur())).containsExactly(8500L, 1530L, 10030L);
         assertThat(BigDecimal.valueOf(13983).add(BigDecimal.valueOf(2517)).setScale(0, RoundingMode.HALF_UP).longValue()).isEqualTo(16500);
     }
@@ -258,5 +258,31 @@ class CaisseHorsLigneTest extends TestIntegration {
         assertThat(nombre("select max(sequence) - min(sequence) + 1 from pos.vente")).isEqualTo(1050);
         assertThat(nombre("select count(*) from pos.session_caisse where statut = 'CLOTUREE'")).isEqualTo(7);
         mvc.perform(get("/api/v1/pos/sessions").with(admin)).andExpect(jsonPath("$.length()").value(7));
+    }
+
+    @Test
+    void RG_03_factureDemandeeEnCaisseNumeroteeHorsLignePuisAvoirSurRetour() throws Exception {
+        var client = Uuid7.nouveau();
+        mvc.perform(post("/api/v1/referentiel/tiers").with(admin).contentType(MediaType.APPLICATION_JSON).content("""
+                {"id":"%s","tiers":{"code":"BATIR","nom":"Bâtir Faso SARL","regimeCode":"RNI","ifu":"00098765C"}}""".formatted(client)))
+                .andExpect(status().isCreated());
+        var session = Uuid7.nouveau();
+        var venteId = Uuid7.nouveau();
+        var ligneId = Uuid7.nouveau();
+        var charge = charge("VENTE_ENREGISTREE", venteId, session, prochainTicket++, Instant.now(), List.of(new Article(ligneId, "2", 5500, 0)), null, null)
+                .replaceFirst("\\{", ("{\"factureDemandee\":true,\"clientId\":\"%s\","
+                        + "\"facture\":{\"typePiece\":\"FACTURE\",\"annee\":%d,\"sequence\":1},").formatted(client, annee));
+        assertThat(statuts(terminal, List.of(ouverture(session, 0, Instant.now()), terminal.operation("VENTE_ENREGISTREE", charge))))
+                .containsOnly("APPLIQUEE");
+        var facture = ligne("select id, numero, statut, total_ttc, client_ifu from facturation.document_fiscal where origine = 'vente'");
+        assertThat(facture).containsEntry("numero", "FA-C01-%d-000001".formatted(annee)).containsEntry("statut", "PAYEE")
+                .containsEntry("total_ttc", 11_000L).containsEntry("client_ifu", "00098765C");
+
+        var retour = piece("RETOUR_ENREGISTRE", Uuid7.nouveau(), session, prochainAvoir++, Instant.now(), List.of(new Article("1", 5500)), venteId,
+                List.of(ligneId));
+        assertThat(statuts(terminal, List.of(retour))).containsExactly("APPLIQUEE");
+        var avoir = ligne("select numero, total_ttc, facture_origine_id from facturation.document_fiscal where type = 'AVOIR'");
+        assertThat(avoir).containsEntry("numero", "AV-C01-%d-000001".formatted(annee)).containsEntry("total_ttc", 5_500L)
+                .containsEntry("facture_origine_id", facture.get("id"));
     }
 }
