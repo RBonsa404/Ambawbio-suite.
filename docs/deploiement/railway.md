@@ -132,6 +132,8 @@ PostgreSQL 18 range ses données dans `/var/lib/postgresql/18/docker`, un sous-d
 
 N'ajoutez **pas** d'adresse publique à `postgres` : les autres services le joignent par le réseau privé, à l'adresse `postgres.railway.internal:5432` (variable `${{postgres.RAILWAY_PRIVATE_DOMAIN}}`).
 
+**Vérifiez l'adresse privée réelle** : service base de données → **Settings** → section **Private Networking**. Railway fixe ce nom à la création du service ; il ne suit pas forcément le nom affiché sur le canevas (exemple constaté : `ambawbio-suite.railway.internal` pour un service affiché `postgres`). Si ce nom diffère de `postgres.railway.internal`, écrivez-le en clair dans `KC_DB_URL` (keycloak) et `AMBAWBIO_BD_URL` (serveur) à la place de `${{postgres.RAILWAY_PRIVATE_DOMAIN}}`, par exemple `jdbc:postgresql://ambawbio-suite.railway.internal:5432/ambawbio`.
+
 Déployez (**Deploy**, ou le bandeau *Apply changes*). Dans **Deployments → View logs**, vous devez voir `database system is ready to accept connections`. Au tout premier démarrage, `CREATE ROLE` et `CREATE DATABASE` apparaissent juste avant.
 
 ---
@@ -428,6 +430,8 @@ Pour réduire les coûts quand vous ne testez pas, utilisez **Settings → Serve
 | `postgres` : `initdb: directory … exists but is not empty` | Volume monté au mauvais endroit | Monter le volume sur `/var/lib/postgresql` exactement |
 | `serveur` : `password authentication failed for user "ambawbio_app"` | Version antérieure au correctif D-39 et rôle absent ou mot de passe changé | Depuis D-39, le serveur crée ou met à jour ce rôle lui-même au démarrage : redéployez `serveur`. Vérifiez que `AMBAWBIO_BD_MOT_DE_PASSE` n'est pas vide et que `AMBAWBIO_BD_PROPRIETAIRE_MOT_DE_PASSE` est bien le mot de passe de `POSTGRES_PASSWORD` |
 | `serveur` : `password authentication failed for user "ambawbio"` | Mot de passe du propriétaire faux | `AMBAWBIO_BD_PROPRIETAIRE_MOT_DE_PASSE` = `${{postgres.POSTGRES_PASSWORD}}` ; si `POSTGRES_PASSWORD` a changé après le premier démarrage, remettez l'ancien ou réinitialisez (§ 16) |
+| `serveur` : `Connection to localhost:5432 refused` | `AMBAWBIO_BD_URL` absente, ou référence `${{...}}` vers un service ou une variable inexistants (adresse vide, remplacée par `localhost`) | Écrivez l'adresse en clair : `jdbc:postgresql://<adresse privée>:5432/ambawbio` (§ 5.3) |
+| `serveur` ou `keycloak` : `UnknownHostException: xxx.railway.internal` | Adresse privée différente du nom du service, ou base arrêtée | Relevez l'adresse dans base de données → Settings → Private Networking (§ 5.3) ; vérifiez que la base affiche `ready to accept connections` |
 | `keycloak` : `password authentication failed for user "keycloak"` | Idem pour `KEYCLOAK_BD_MOT_DE_PASSE` | Idem |
 | Page blanche, la console du navigateur signale `config.js` | Variables de `application` manquantes : le conteneur refuse de démarrer | Renseigner `AMBAWBIO_API_URL` et `AMBAWBIO_KEYCLOAK_URL` ; voir les logs |
 | Keycloak affiche « Invalid parameter: redirect_uri » | `AMBAWBIO_URL_APPLICATION` faux au moment de l'import | Console Keycloak → *Clients → ambawbio-web* : ajouter `https://<application>/*` dans *Valid redirect URIs* et `https://<application>` dans *Web origins* |
