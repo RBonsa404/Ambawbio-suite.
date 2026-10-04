@@ -1,5 +1,5 @@
 /* Ambawbio Suite — Tailwind CSS 4 · direction C « La terre et le motif » */
-@import "tailwindcss";
+/* Le point d'entrée de l'application importe « tailwindcss » avant ce fichier (frontend/src/styles.css). */
 
 @theme {
   --color-*: initial;

@@ -1,0 +1,45 @@
+name: android
+
+# APK de démonstration (debug). La signature de production (secrets GitHub) arrive au LOT 14.
+on:
+  workflow_dispatch:
+    inputs:
+      hote_dev:
+        description: "Adresse IP du poste qui fait tourner Keycloak et le serveur (démonstration sur réseau local)"
+        required: false
+        default: 'localhost'
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    env:
+      AMBAWBIO_HOTE_DEV: ${{ inputs.hote_dev || 'localhost' }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+      - run: npm ci
+      - name: Adresse du poste de démonstration
+        run: sed -i "s/const HOTE_DEV = 'localhost';/const HOTE_DEV = '${AMBAWBIO_HOTE_DEV}';/" src/app/core/configuration.ts
+      - run: npm run android:sync
+      - run: cd android && ./gradlew --no-daemon assembleDebug
+      - uses: actions/upload-artifact@v5
+        with:
+          name: ambawbio-suite-demo-apk
+          path: frontend/android/app/build/outputs/apk/debug/*.apk

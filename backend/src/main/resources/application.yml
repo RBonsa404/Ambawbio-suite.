@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: ambawbio-suite
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: ${AMBAWBIO_BD_URL:jdbc:postgresql://localhost:5432/ambawbio}
+    username: ${AMBAWBIO_BD_UTILISATEUR:ambawbio}
+    password: ${AMBAWBIO_BD_MOT_DE_PASSE:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: socle
+  flyway:
+    locations: classpath:db/migration/socle
+    schemas: socle
+    create-schemas: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AMBAWBIO_KEYCLOAK_EMETTEUR:http://localhost:8180/realms/ambawbio}
+          jwk-set-uri: ${AMBAWBIO_KEYCLOAK_JWKS:http://localhost:8180/realms/ambawbio/protocol/openid-connect/certs}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+ambawbio:
+  cors:
+    origines: ${AMBAWBIO_CORS_ORIGINES:http://localhost:4200,https://localhost}

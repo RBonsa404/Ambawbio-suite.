@@ -1,0 +1,56 @@
+<div class="min-h-dvh flex flex-col bg-fond text-texte">
+  <header class="bg-banco-950 text-blanc">
+    <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
+      <img src="logo/ambawbio-horizontal-blanc.svg" alt="Ambawbio Suite" class="h-10 w-auto" />
+      <button
+        type="button"
+        class="min-h-12 whitespace-nowrap rounded-sm border-2 border-blanc px-4 font-semibold hover:bg-banco-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-or-400"
+        (click)="seDeconnecter()"
+      >
+        {{ 'accueil.deconnexion' | transloco }}
+      </button>
+    </div>
+    <div class="frise h-2" aria-hidden="true"></div>
+  </header>
+
+  <main class="mx-auto w-full max-w-5xl flex-1 px-4 py-8">
+    <h1 class="font-titre text-4xl font-extrabold uppercase [font-stretch:118%]">
+      {{ 'accueil.bonjour' | transloco: { nom: nom() } }}
+    </h1>
+    <p class="mt-2 text-lg text-texte-secondaire">{{ 'accueil.sousTitre' | transloco }}</p>
+
+    <section class="mt-8 grid gap-4 sm:grid-cols-2">
+      <div class="border border-bordure bg-surface p-4">
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-texte-secondaire">{{ 'accueil.roles' | transloco }}</h2>
+        @if (utilisateur(); as u) {
+          @if (u.roles.length) {
+            <ul class="mt-2 flex flex-wrap gap-2">
+              @for (role of u.roles; track role) {
+                <li class="rounded-sm border border-bordure bg-surface-elevee px-2 py-1 font-code text-sm">{{ role }}</li>
+              }
+            </ul>
+          } @else {
+            <p class="mt-2">{{ 'accueil.aucunRole' | transloco }}</p>
+          }
+        } @else {
+          <p class="mt-2 text-texte-secondaire">—</p>
+        }
+      </div>
+
+      <div class="border border-bordure bg-surface p-4" role="status">
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-texte-secondaire">{{ 'accueil.serveur' | transloco }}</h2>
+        @switch (etatServeur()) {
+          @case ('ok') {
+            <p class="mt-2 font-semibold text-etat-certifie">✓ {{ 'accueil.serveurOk' | transloco }}</p>
+          }
+          @case ('erreur') {
+            <p class="mt-2 font-semibold text-danger">✕ {{ 'accueil.serveurErreur' | transloco }}</p>
+          }
+          @default {
+            <p class="mt-2 text-texte-secondaire">{{ 'accueil.serveurAttente' | transloco }}</p>
+          }
+        }
+      </div>
+    </section>
+  </main>
+</div>

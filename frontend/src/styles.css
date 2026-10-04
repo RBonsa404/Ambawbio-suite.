@@ -1,0 +1,23 @@
+/* Styles globaux : Tailwind CSS 4 + jetons Claude Design (source unique : docs/design/theme.css, R-16). */
+@import "tailwindcss";
+@import "../../docs/design/theme.css";
+
+@layer base {
+  html {
+    font-family: var(--font-interface);
+    color: var(--color-texte);
+    background-color: var(--color-fond);
+  }
+}
+
+/* Frise de chevrons de la marque (docs/design/README.md « Motif de marque ») : une par écran, supprimée en plein soleil. */
+@utility frise {
+  background-image:
+    linear-gradient(135deg, var(--color-laterite-600) 25%, transparent 25%),
+    linear-gradient(225deg, var(--color-laterite-600) 25%, transparent 25%);
+  background-size: 8px 8px;
+  background-repeat: repeat-x;
+}
+[data-theme="plein-soleil"] .frise {
+  display: none;
+}

@@ -1,0 +1,38 @@
+name: codeql
+
+on:
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '17 3 * * 1'
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  analyser:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - langage: java-kotlin
+            construction: manual
+          - langage: javascript-typescript
+            construction: none
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        if: matrix.langage == 'java-kotlin'
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+      - uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.langage }}
+          build-mode: ${{ matrix.construction }}
+      - if: matrix.langage == 'java-kotlin'
+        run: cd backend && ./mvnw -B -DskipTests -Dcheckstyle.skip package
+      - uses: github/codeql-action/analyze@v4

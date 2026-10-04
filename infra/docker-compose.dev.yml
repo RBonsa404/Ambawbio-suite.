@@ -1,0 +1,70 @@
+# Environnement de développement local — NE PAS utiliser en production (mots de passe de démonstration).
+# Démarrage : docker compose -f infra/docker-compose.dev.yml up -d
+# Démonstration sur téléphone : AMBAWBIO_HOTE_DEV=<IP du poste> docker compose -f infra/docker-compose.dev.yml up -d
+#   PostgreSQL 18 : localhost:5432 (base ambawbio, utilisateur ambawbio / ambawbio-dev)
+#   Keycloak     : http://localhost:8180 (console : admin / admin-dev ; royaume « ambawbio » importé)
+#   Mailpit      : http://localhost:8025 (SMTP localhost:1025)
+#   MinIO        : profil « documents » (LOT 6) : docker compose -f infra/docker-compose.dev.yml --profile documents up -d
+name: ambawbio-dev
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: ambawbio
+      POSTGRES_USER: ambawbio
+      POSTGRES_PASSWORD: ambawbio-dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres:/var/lib/postgresql
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ambawbio -d ambawbio"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  keycloak:
+    image: keycloak/keycloak:26.8
+    command: ["start-dev", "--import-realm", "--http-port=8180"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin-dev
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak-dev
+      KC_HOSTNAME: http://${AMBAWBIO_HOTE_DEV:-localhost}:8180
+      KC_HEALTH_ENABLED: "true"
+    ports:
+      - "8180:8180"
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
+  minio:
+    # MinIO ne publie plus d'image sur Docker Hub : voir docs/QUESTIONS.md (Q-14).
+    image: quay.io/minio/minio:latest
+    profiles: ["documents"]
+    command: ["server", "/data", "--console-address", ":9001"]
+    environment:
+      MINIO_ROOT_USER: ambawbio
+      MINIO_ROOT_PASSWORD: ambawbio-dev
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio:/data
+
+volumes:
+  postgres:
+  minio:

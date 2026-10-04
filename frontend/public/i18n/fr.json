@@ -1,0 +1,14 @@
+{
+  "accueil": {
+    "titre": "Ambawbio Suite",
+    "bonjour": "Bonjour, {{ nom }}",
+    "sousTitre": "Votre entreprise, claire aujourd'hui, prête pour demain.",
+    "roles": "Vos rôles",
+    "aucunRole": "Aucun rôle attribué",
+    "serveur": "Serveur",
+    "serveurOk": "Connecté — identité vérifiée par le serveur",
+    "serveurAttente": "Vérification en cours…",
+    "serveurErreur": "Serveur injoignable. Vérifiez que le serveur est démarré, puis rechargez la page.",
+    "deconnexion": "Se déconnecter"
+  }
+}
