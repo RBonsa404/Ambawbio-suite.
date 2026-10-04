@@ -18,17 +18,13 @@ Règle : ne jamais inventer une spécification officielle (DGI, opérateurs). En
 | Q-08 | Prix des packs en FCFA (Essentiel, Business, Enterprise, Institution) | Abonnement, site vitrine (Tarifs), écrans W-01, W-02, W-22 | Prix paramétrables depuis la console de l'éditeur (W-23). Dans l'interface et le site, zone réservée **« [PRIX À DÉFINIR] »**, jamais de montant en dur | 2026-10 |
 | Q-09 | IFU et RCCM de la société éditrice d'Ambawbio Suite (société non encore créée) | En-tête de lettre, factures d'abonnement, mentions légales du site, pied des courriels | Paramètres de la plateforme. Zones réservées **« [IFU EN COURS] »** et **« [RCCM EN COURS] »**, jamais en dur | 2026-10 |
 
-## Points de conception à confirmer
-
-Ces points sont relevés au bas des planches de filaires (phase 4). Le design est validé dans son ensemble, mais ces choix n'ont pas été tranchés explicitement. Ils seront confirmés au début du lot concerné.
-
-| ID | Question | Lot concerné | Hypothèse retenue en attendant |
-|---|---|---|---|
-| Q-10 | Entrée directe par le code PIN (A-04) quand le terminal est déjà appairé, sans repasser par la connexion (A-03) ? | LOT 4, LOT 5 | Oui : A-01 puis A-04 si le terminal est appairé et le caissier connu |
-| Q-11 | Comptage à l'aveugle par défaut à la clôture de caisse (A-15) et en inventaire (M-04) ? | LOT 5, LOT 9 | Oui : option « comptage à l'aveugle » par point de vente (W-13) ; en inventaire, attendu masqué et écarts validés au bureau (filaires M-04) |
-| Q-12 | Un seul téléphone partagé pour le magasinier et le commercial, ou deux appareils distincts ? | LOT 9 | Un rôle par session : même application, menus filtrés selon les droits |
-| Q-13 | Disposition liste + fiche côte à côte pour toutes les listes web (produits, clients, factures…) ? | LOT 3 | Oui à partir de la rupture `bureau` (1280 px), liste seule en dessous |
-
 ## Réglées
 
-_(aucune pour l'instant)_
+| ID | Question | Réponse (2026-10-04) | Décision |
+|---|---|---|---|
+| Q-10 | Entrée directe par le code PIN (A-04) quand le terminal est déjà appairé ? | Oui | D-01 |
+| Q-11 | Comptage à l'aveugle par défaut (clôture A-15, inventaire M-04) ? | Oui, désactivable par point de vente | D-02 |
+| Q-12 | Un ou deux téléphones pour le magasinier et le commercial ? | Une seule application, menus selon le rôle, changement d'utilisateur par PIN | D-03 |
+| Q-13 | Liste + fiche côte à côte pour toutes les listes web ? | Oui à partir de 1280 px | D-04 |
+
+Le porteur du projet a délégué ces choix (« choisis l'approche la plus recommandée »). Justifications dans `docs/DECISIONS.md`.
