@@ -1,0 +1,8 @@
+**/node_modules
+**/target
+**/target-verify
+frontend/dist
+frontend/.angular
+frontend/test-results
+frontend/android
+.git

@@ -31,7 +31,7 @@ import bf.ambawbio.socle.tenancy.ServicePlateformeEntreprises;
  * Toutes les données sont fictives.
  */
 @Component
-@Profile("dev")
+@Profile({"dev", "demo"})
 @org.springframework.core.annotation.Order(10)
 class DonneesDemonstration implements ApplicationRunner {
 

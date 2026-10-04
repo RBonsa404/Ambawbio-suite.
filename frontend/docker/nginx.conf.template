@@ -1,0 +1,18 @@
+server {
+  listen ${PORT};
+  root /usr/share/nginx/html;
+
+  gzip on;
+  gzip_types text/css application/javascript application/json image/svg+xml;
+
+  # Configuration et service worker : jamais en cache, pour qu'un changement soit pris immédiatement.
+  location = /config.js { add_header Cache-Control "no-store"; }
+  location = /ngsw.json { add_header Cache-Control "no-store"; }
+  location = /index.html { add_header Cache-Control "no-cache"; }
+
+  # Fichiers versionnés par la construction : cache long.
+  location ~* \.(js|css|woff2)$ { add_header Cache-Control "public, max-age=31536000, immutable"; try_files $uri =404; }
+
+  # Application monopage : toute autre adresse renvoie index.html.
+  location / { try_files $uri $uri/ /index.html; }
+}

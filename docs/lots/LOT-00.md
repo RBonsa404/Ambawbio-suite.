@@ -39,7 +39,7 @@ cd frontend && npm run e2e                                      # test de connex
 
 1. Relever l'adresse IP du poste sur le réseau local (ex. `192.168.1.20`), téléphone sur le même Wi-Fi.
 2. Démarrer l'environnement avec cette adresse : `AMBAWBIO_HOTE_DEV=192.168.1.20 docker compose -f infra/docker-compose.dev.yml up -d`, puis le serveur avec `AMBAWBIO_KEYCLOAK_EMETTEUR=http://192.168.1.20:8180/realms/ambawbio AMBAWBIO_KEYCLOAK_JWKS=http://192.168.1.20:8180/realms/ambawbio/protocol/openid-connect/certs`.
-3. Sur GitHub : Actions → **android** → *Run workflow*, saisir l'adresse IP. Télécharger l'artefact `ambawbio-suite-demo-apk`.
+3. Sur GitHub : Actions → **android** → *Run workflow*, saisir `http://192.168.1.20:8080/api` et `http://192.168.1.20:8180` (depuis le LOT 5, adresses complètes ; pour Railway, voir `docs/deploiement/railway.md`). Télécharger l'artefact `ambawbio-suite-demo-apk`.
 4. Installer l'APK sur le téléphone (autoriser les sources inconnues), se connecter avec `awa` / `demo-ambawbio`.
 
 Ces autorisations HTTP (texte en clair, contenu mixte) servent uniquement à la démonstration et seront supprimées au LOT 13.

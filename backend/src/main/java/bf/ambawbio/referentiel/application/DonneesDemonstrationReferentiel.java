@@ -20,7 +20,7 @@ import bf.ambawbio.shared.tenant.ContexteTenant;
 
 /** Catalogue et clients de démonstration de la Quincaillerie Wend-Panga (profil {@code dev}, données fictives). */
 @Component
-@Profile("dev")
+@Profile({"dev", "demo"})
 @Order(20)
 class DonneesDemonstrationReferentiel implements ApplicationRunner {
 

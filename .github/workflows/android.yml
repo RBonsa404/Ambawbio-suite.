@@ -4,10 +4,14 @@ name: android
 on:
   workflow_dispatch:
     inputs:
-      hote_dev:
-        description: "Adresse IP du poste qui fait tourner Keycloak et le serveur (démonstration sur réseau local)"
+      api_url:
+        description: "Adresse de l'API (ex. https://serveur-production.up.railway.app/api ; réseau local : http://192.168.1.20:8080/api)"
         required: false
-        default: 'localhost'
+        default: 'http://localhost:8080/api'
+      keycloak_url:
+        description: "Adresse de Keycloak (ex. https://keycloak-production.up.railway.app ; réseau local : http://192.168.1.20:8180)"
+        required: false
+        default: 'http://localhost:8180'
   push:
     tags: ['v*']
 
@@ -21,7 +25,8 @@ jobs:
       run:
         working-directory: frontend
     env:
-      AMBAWBIO_HOTE_DEV: ${{ inputs.hote_dev || 'localhost' }}
+      AMBAWBIO_API_URL: ${{ inputs.api_url || 'http://localhost:8080/api' }}
+      AMBAWBIO_KEYCLOAK_URL: ${{ inputs.keycloak_url || 'http://localhost:8180' }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -35,8 +40,10 @@ jobs:
           java-version: '21'
           cache: gradle
       - run: npm ci
-      - name: Adresse du poste de démonstration
-        run: sed -i "s/const HOTE_DEV = 'localhost';/const HOTE_DEV = '${AMBAWBIO_HOTE_DEV}';/" src/app/core/configuration.ts
+      - name: Adresses du serveur et de Keycloak (config.js, D-34)
+        run: |
+          printf "window.AMBAWBIO_CONFIG = { api: '%s', keycloak: '%s' };\n" "$AMBAWBIO_API_URL" "$AMBAWBIO_KEYCLOAK_URL" > public/config.js
+          cat public/config.js
       - run: npm run android:sync
       - run: cd android && ./gradlew --no-daemon assembleDebug
       - uses: actions/upload-artifact@v7

@@ -59,6 +59,10 @@ cd backend && SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run
 cd frontend && npm ci && npm start   # http://localhost:4200 — awa / demo-ambawbio
 ```
 
+## Démonstration en ligne
+
+Déployer une instance de démonstration complète sur Railway : [docs/deploiement/railway.md](docs/deploiement/railway.md).
+
 ## Licence
 
 Projet privé — © 2026 Rachid Bonsa. Tous droits réservés.
