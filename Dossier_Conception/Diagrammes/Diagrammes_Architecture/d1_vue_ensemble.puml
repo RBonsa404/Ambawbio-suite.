@@ -1,0 +1,48 @@
+@startuml
+!include style.iuml
+left to right direction
+title Vue d'ensemble : architecture client-serveur d'Ambawbio Suite
+
+actor "Utilisateurs\n(dirigeant, comptable,\ncaissier, magasinier…)" as U
+actor "Client final" as CF
+
+rectangle "COUCHE CLIENT" as CL {
+  component "Application web Angular 22\n(PWA, Tailwind CSS)\n+ base locale IndexedDB" as WEB
+  component "Application Android (priorité)\n(Angular + Capacitor)\n+ SQLite chiffrée\nCaisse, stock, pointage" as AND
+  component "Boutique en ligne (Angular SSR)\net portail client" as PORT
+}
+
+rectangle "SERVEUR D'APPLICATION (monolithe modulaire)" as SRV {
+  component "Passerelle HTTP\nNginx (TLS, compression,\nlimitation de débit)" as NGX
+  component "Keycloak\n(identité, MFA, SSO)" as KC
+  component "Application Spring Boot 4 / Java 25\nAPI REST + OpenAPI\nSécurité, multi-tenant\nModules métier (Spring Modulith)\nMoteur de synchronisation\nTâches planifiées" as APP
+}
+
+rectangle "DONNÉES" as DATA {
+  database "PostgreSQL 18\n(schémas par module,\nsécurité au niveau\ndes lignes)" as PG
+  database "Stockage d'objets\n(S3 compatible)\nPDF, pièces, GED" as OBJ
+}
+
+cloud "SERVICES EXTERNES" as EXT {
+  component "Agrégateur Mobile Money\n(Orange Money, Moov Money,\nWave) / Simulateur" as MM
+  component "DGI\n(Facture Électronique\nCertifiée)" as DGI
+  component "SMS, WhatsApp\nBusiness, e-mail" as MSG
+  component "Banques UEMOA\n(relevés, virements)" as BQ
+}
+
+U --> WEB
+U --> AND
+CF --> PORT
+WEB --> NGX : HTTPS / JSON\nsynchronisation
+AND --> NGX : HTTPS / JSON\nsynchronisation
+PORT --> NGX : HTTPS
+NGX --> APP
+NGX --> KC : connexion
+APP ..> KC : vérification\ndes jetons
+APP --> PG : JDBC
+APP --> OBJ
+APP --> MM : API + notifications
+APP --> DGI : certification
+APP --> MSG
+APP --> BQ : fichiers / API
+@enduml

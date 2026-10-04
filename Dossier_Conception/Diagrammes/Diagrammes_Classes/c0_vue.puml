@@ -1,0 +1,61 @@
+@startuml
+!include style.iuml
+title Vue d'ensemble du modèle de classes (MVP)
+
+package "socle" #EEF4F0 {
+  class Entreprise
+  class Etablissement
+  class Utilisateur
+  class Terminal
+}
+package "referentiel" #EEF4F0 {
+  class Tiers
+  class Produit
+}
+package "pos / ventes" #FBF5E3 {
+  class SessionCaisse
+  class Vente
+  class Devis
+  class CommandeClient
+}
+package "facturation" #FBF5E3 {
+  abstract class DocumentFiscal
+  class Facture
+  class Avoir
+}
+package "paiement" #FBF5E3 {
+  class Paiement
+}
+package "comptabilite" #F3F7F4 {
+  class Ecriture
+  class Compte
+}
+package "stock / achats" #F3F7F4 {
+  class Depot
+  class MouvementStock
+  class CommandeFournisseur
+}
+
+Entreprise "1" *-- "1..*" Etablissement
+Etablissement "1" *-- "0..*" Terminal
+Etablissement "1" *-- "0..*" Depot
+SessionCaisse "1" *-- "0..*" Vente
+Terminal "1" -- "0..*" SessionCaisse
+Devis --> CommandeClient : devient
+CommandeClient --> Facture : est facturée par
+Vente --> Facture : peut produire
+DocumentFiscal <|-- Facture
+DocumentFiscal <|-- Avoir
+Avoir --> Facture : annule
+Facture "*" --> "1" Tiers : client
+Vente "*" --> "1..*" Produit
+Paiement "*" --> "0..*" DocumentFiscal : règle
+Facture ..> Ecriture : génère
+Paiement ..> Ecriture : génère
+Ecriture --> Compte
+Vente ..> MouvementStock : génère
+MouvementStock --> Depot
+MouvementStock --> Produit
+CommandeFournisseur --> Tiers : fournisseur
+Utilisateur --> Etablissement : est affecté à
+@enduml

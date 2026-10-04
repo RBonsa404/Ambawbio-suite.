@@ -1,0 +1,43 @@
+@startuml
+!include style.iuml
+left to right direction
+title Cas d'utilisation détaillés : Ventes et Facturation (MVP)
+
+actor "Commercial" as COM
+actor "Comptable" as CPT
+actor "Client final" as CLI
+actor "DGI (FEC)" as DGI <<système>>
+actor "Agrégateur\nMobile Money" as MM <<système>>
+actor "Service SMS /\nWhatsApp" as SMS <<système>>
+
+rectangle "Ventes & Facturation" {
+  usecase "UC-VEN-01\nÉtablir un devis" as D
+  usecase "UC-VEN-02\nConvertir le devis\nen commande" as BC
+  usecase "UC-VEN-03\nFacturer une commande" as F
+  usecase "UC-VEN-04\nEnregistrer un acompte" as AC
+  usecase "UC-FAC-01\nValider et certifier\nune facture" as VF
+  usecase "Contrôler l'IFU" as IFU
+  usecase "Transmettre à la DGI\n(immédiat ou différé)" as CERT
+  usecase "UC-FAC-02\nÉmettre un avoir" as AV
+  usecase "UC-VEN-05\nSuivre les impayés" as IMP
+  usecase "UC-VEN-06\nRelancer un client" as REL
+  usecase "UC-VEN-07\nPayer une facture\npar Mobile Money" as PF
+}
+
+COM --> D
+COM --> BC
+COM --> F
+COM --> AC
+CPT --> VF
+CPT --> AV
+CPT --> IMP
+CLI --> PF
+F ..> VF : <<include>>
+VF ..> IFU : <<include>>
+VF ..> CERT : <<include>>
+AV ..> CERT : <<include>>
+REL .> IMP : <<extend>>
+CERT --> DGI
+REL --> SMS
+PF --> MM
+@enduml

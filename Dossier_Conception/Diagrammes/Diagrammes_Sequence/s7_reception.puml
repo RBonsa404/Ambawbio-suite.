@@ -1,0 +1,30 @@
+@startuml
+!include style.iuml
+title SD-07 : Réceptionner une commande fournisseur et la comptabiliser (UC-ACH-03, UC-CPT-05)
+autonumber
+actor Magasinier as M
+participant "Application\n(téléphone)" as A
+box "Serveur Ambawbio"
+participant "ReceptionService\n(module achats)" as RS
+participant "StockApi\n(module stock)" as ST
+participant "Écouteur\ncomptabilité" as CPT
+database "PostgreSQL" as DB
+end box
+
+M -> A : Scanne la commande
+A -> RS : GET commande à réceptionner
+RS --> A : Lignes attendues
+M -> A : Quantités reçues\n(en sacs, cartons…)
+A -> A : Convertit en unité de stock\n(facteur du conditionnement)
+A -> RS : POST /api/v1/achats/receptions
+RS -> DB : Reception + LigneReception,\nmet à jour quantiteRecue
+RS -> RS : Publie ReceptionValidee
+RS --> A : Réception enregistrée
+== Traitement des événements (transactions séparées, fiables) ==
+RS -> ST : ReceptionValidee
+ST -> DB : MouvementStock (RECEPTION)\npour chaque ligne
+ST -> DB : Recalcule le coût moyen pondéré\n(coûts d'approche inclus, RG-13)
+ST -> ST : Publie MouvementValorise
+ST -> CPT : MouvementValorise
+CPT -> DB : Écriture : stock / fournisseur\n(factures non parvenues)
+@enduml

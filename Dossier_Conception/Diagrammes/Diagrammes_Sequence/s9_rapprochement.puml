@@ -1,0 +1,39 @@
+@startuml
+!include style.iuml
+title SD-09 : Rapprocher les paiements Mobile Money (UC-PAY-02)
+autonumber
+participant "Planificateur\n(ShedLock)" as PL
+box "Serveur Ambawbio"
+participant "RapprochementService" as RS
+participant "<<interface>>\nPortPaiement" as PORT
+participant "NotificationService" as NS
+database "PostgreSQL" as DB
+end box
+participant "Agrégateur\nMobile Money" as AGR
+actor Comptable as CPT
+
+PL -> RS : Déclenchement quotidien\n(ou à la demande du comptable)
+RS -> PORT : releve(date)
+PORT -> AGR : Relevé des transactions
+AGR --> PORT : Transactions du jour
+PORT --> RS : Transactions
+RS -> DB : Paiements EN_ATTENTE et A_VERIFIER
+loop pour chaque transaction du relevé
+  alt Correspondance exacte (référence ou référence de secours,\nmontant, date)
+    RS -> DB : Paiement CONFIRME,\nlien vers la transaction
+  else Montant ou référence différents
+    RS -> DB : Écart à examiner
+  else Aucune pièce correspondante
+    RS -> DB : Transaction non rapprochée
+  end
+end
+RS -> DB : Paiements A_VERIFIER sans transaction\n→ restent à vérifier
+RS -> DB : Écritures de rapprochement\n(compte Mobile Money / clients)
+RS -> NS : Synthèse : rapprochés, écarts, non rapprochés
+NS -> CPT : Notification (application, e-mail)
+CPT -> RS : Associe manuellement ou signale\nles éléments restants
+RS -> DB : Mise à jour + JournalAudit
+opt Référence de secours introuvable
+  RS -> NS : Alerte au responsable de magasin
+end
+@enduml

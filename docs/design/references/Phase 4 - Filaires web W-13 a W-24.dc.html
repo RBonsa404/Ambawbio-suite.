@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>body{margin:0;background:#ECE9E4;color:#1E1B18;-webkit-font-smoothing:antialiased}a{color:#8E3507}a:hover{color:#1E1B18}</style>
+</helmet>
+<section data-screen-label="Phase 4 — Filaires web 2" style="padding:48px;font-family:'IBM Plex Sans',sans-serif;display:flex;flex-direction:column;gap:32px">
+
+<header style="display:flex;flex-direction:column;gap:16px;max-width:2960px">
+<div style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#5A544E">AMB-CONC-10 · Phase 4 — Filaires P1 · lot 3b : web W-13 à W-24 (1440 × 900)</div>
+<h1 style="margin:0;font-size:40px;font-weight:700;letter-spacing:-.01em">Filaires — application web de gestion (2/2)</h1>
+<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+<div style="display:flex;border:2px solid #1E1B18;background:#FFFFFF">
+<span onClick="{{ voirPlanche }}" style="padding:10px 16px;font-weight:600;font-size:15px;cursor:pointer;background:{{ btnPlanche.bg }};color:{{ btnPlanche.fg }}">Planche</span>
+<span onClick="{{ voirProto }}" style="padding:10px 16px;font-weight:600;font-size:15px;cursor:pointer;border-left:2px solid #1E1B18;background:{{ btnProto.bg }};color:{{ btnProto.fg }}">Prototype (navigation latérale)</span>
+</div>
+<span style="font-size:14px;color:#5A544E">En mode prototype, la barre latérale de chaque écran est cliquable. Suite de <a href="Phase 4 - Filaires web W-01 a W-12.dc.html">W-01 à W-12</a>.</span>
+</div>
+</header>
+
+<div style="display:flex;flex-wrap:wrap;gap:56px 48px;align-items:flex-start;justify-content:{{ alignement }}">
+
+<!-- W-13 -->
+<div data-screen-label="W-13 Caisses" style="display:{{ d.W13 }};flex-direction:column;gap:10px;width:1440px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:14px;background:#1E1B18;color:#FFFFFF;padding:2px 7px">W-13</b><b style="font-size:15px">Caisses · points de vente, sessions, rapports Z</b></div>
+<div style="width:1440px;height:900px;border:3px solid #1E1B18;background:#FFFFFF;box-sizing:border-box;display:grid;grid-template-columns:220px minmax(0,1fr);grid-template-rows:56px minmax(0,1fr);overflow:hidden">
+<div style="border-bottom:2px solid #1E1B18;border-right:2px solid #1E1B18;display:flex;align-items:center;padding:0 16px"><div style="width:110px;height:26px;background:#E6E3DE"></div></div>
+<div style="border-bottom:2px solid #1E1B18;display:flex;align-items:center;gap:10px;padding:0 20px;font-size:14px"><span style="border:1.5px solid #1E1B18;padding:6px 10px"><b>Quincaillerie Wend-Panga</b> ▾</span><span style="border:1.5px solid #1E1B18;padding:6px 10px">Tous les établissements ▾</span></div>
+<div style="border-right:2px solid #1E1B18;padding:12px 8px;display:flex;flex-direction:column;gap:2px;font-size:14px"><sc-for list="{{ nav.W13 }}" as="n" hint-placeholder-count="12"><span onClick="{{ n.aller }}" style="padding:8px 10px;cursor:pointer;background:{{ n.bg }};color:{{ n.fg }};font-weight:{{ n.poids }}" style-hover="outline:2px solid #2A78D6">{{ n.nom }}</span></sc-for></div>
+<div style="padding:24px 28px;display:flex;flex-direction:column;gap:16px;font-size:14px">
+<b style="font-size:24px">Caisses</b>
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+<sc-for list="{{ caisses }}" as="c" hint-placeholder-count="4"><div style="border:{{ c.bord }};padding:14px;display:flex;flex-direction:column;gap:4px"><b style="font-size:16px">{{ c.nom }}</b><span>{{ c.lieu }}</span><span style="font-weight:600">{{ c.etat }}</span><span style="color:#5A544E">{{ c.sync }}</span></div></sc-for>
+</div>
+<b style="font-size:16px">Sessions récentes</b>
+<div style="display:grid;grid-template-columns:110px 130px 140px minmax(0,1fr) 120px 120px 110px 120px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5A544E;border-bottom:2px solid #1E1B18;padding:6px 0"><span>DATE</span><span>CAISSE</span><span>CAISSIER</span><span>ÉTABLISSEMENT</span><span style="text-align:right">VENTES</span><span style="text-align:right">ATTENDU</span><span style="text-align:right">ÉCART</span><span style="padding-left:14px">RAPPORT Z</span></div>
+<sc-for list="{{ sessions }}" as="s" hint-placeholder-count="8"><div style="display:grid;grid-template-columns:110px 130px 140px minmax(0,1fr) 120px 120px 110px 120px;height:38px;align-items:center;border-bottom:1px solid #D8D3CE;font-variant-numeric:tabular-nums"><span>{{ s.date }}</span><span>{{ s.caisse }}</span><span>{{ s.caissier }}</span><span>{{ s.lieu }}</span><span style="text-align:right">{{ s.ventes }}</span><span style="text-align:right">{{ s.attendu }}</span><b style="text-align:right">{{ s.ecart }}</b><span style="padding-left:14px;text-decoration:underline">{{ s.z }}</span></div></sc-for>
+</div>
+</div>
+<span style="font-size:13px;color:#5A544E">Écart validé en caisse (A-16) : motif et responsable visibles dans le rapport Z. Option « comptage à l'aveugle » par point de vente.</span>
+</div>
+
+<!-- W-14 -->
+<div data-screen-label="W-14 Comptabilité" style="display:{{ d.W14 }};flex-direction:column;gap:10px;width:1440px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:14px;background:#B4532A;color:#FFFFFF;padding:2px 7px">W-14</b><b style="font-size:15px">Comptabilité · saisie d'écriture au clavier</b><span style="font-size:13px;color:#5A544E">UC-CPT-01 à 03</span></div>
+<div style="width:1440px;height:900px;border:3px solid #1E1B18;background:#FFFFFF;box-sizing:border-box;display:grid;grid-template-columns:220px minmax(0,1fr);grid-template-rows:56px minmax(0,1fr);overflow:hidden">
+<div style="border-bottom:2px solid #1E1B18;border-right:2px solid #1E1B18;display:flex;align-items:center;padding:0 16px"><div style="width:110px;height:26px;background:#E6E3DE"></div></div>
+<div style="border-bottom:2px solid #1E1B18;display:flex;align-items:center;gap:10px;padding:0 20px;font-size:14px"><span style="border:1.5px solid #1E1B18;padding:6px 10px"><b>Quincaillerie Wend-Panga</b> ▾</span><span style="border:1.5px solid #1E1B18;padding:6px 10px">Exercice 2027 ▾</span><span style="margin-left:auto;color:#5A544E">Mariam Ilboudo · Cabinet Fiducia (démo)</span></div>
+<div style="border-right:2px solid #1E1B18;padding:12px 8px;display:flex;flex-direction:column;gap:2px;font-size:14px"><sc-for list="{{ nav.W14 }}" as="n" hint-placeholder-count="12"><span onClick="{{ n.aller }}" style="padding:8px 10px;cursor:pointer;background:{{ n.bg }};color:{{ n.fg }};font-weight:{{ n.poids }}" style-hover="outline:2px solid #2A78D6">{{ n.nom }}</span></sc-for></div>
+<div style="padding:20px 28px;display:flex;flex-direction:column;gap:14px;font-size:14px">
+<div style="display:flex;gap:4px;border-bottom:2px solid #D8D3CE;font-weight:600;font-size:15px"><span style="padding:10px 14px;border-bottom:3px solid #1E1B18;margin-bottom:-2px">Saisie</span><span style="padding:10px 14px;color:#5A544E">Journaux</span><span style="padding:10px 14px;color:#5A544E">Grand livre</span><span style="padding:10px 14px;color:#5A544E">Balance</span><span style="padding:10px 14px;color:#5A544E">Lettrage</span></div>
+<div style="display:grid;grid-template-columns:200px 140px 180px minmax(0,1fr);gap:12px">
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-weight:600">Journal</span><div style="height:40px;border:2px solid #1E1B18;display:flex;align-items:center;padding:0 10px">BQ1 — Banque Coris</div></div>
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-weight:600">Date</span><div style="height:40px;border:1.5px solid #1E1B18;display:flex;align-items:center;padding:0 10px">14/03/2027</div></div>
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-weight:600">Pièce</span><div style="height:40px;border:1.5px solid #1E1B18;display:flex;align-items:center;padding:0 10px;font-family:'IBM Plex Mono',monospace">BQ1-2027-0142</div></div>
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-weight:600">Libellé</span><div style="height:40px;border:1.5px solid #1E1B18;display:flex;align-items:center;padding:0 10px">Règlement fournisseur Ciments du Faso (démo)</div></div>
+</div>
+<div style="display:grid;grid-template-columns:130px 150px minmax(0,1fr) 150px 150px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5A544E;border-bottom:2px solid #1E1B18;padding:6px 0"><span>COMPTE</span><span>TIERS</span><span>LIBELLÉ</span><span style="text-align:right">DÉBIT</span><span style="text-align:right">CRÉDIT</span></div>
+<sc-for list="{{ saisie }}" as="l" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:130px 150px minmax(0,1fr) 150px 150px;height:40px;align-items:center;border-bottom:1px solid #D8D3CE;font-variant-numeric:tabular-nums;outline:{{ l.focus }}"><span style="font-family:'IBM Plex Mono',monospace">{{ l.compte }}</span><span>{{ l.tiers }}</span><span>{{ l.libelle }}</span><span style="text-align:right">{{ l.debit }}</span><span style="text-align:right">{{ l.credit }}</span></div></sc-for>
+<div style="border:1.5px solid #1E1B18;padding:8px 10px;display:flex;flex-direction:column;gap:2px;width:420px;margin-left:130px;background:#F5F3EF;font-size:13px"><span style="font-family:'IBM Plex Mono',monospace">521 · suggestions</span><span><b>5211</b> Banque Coris (démo)</span><span>5212 Banque Ecobank (démo)</span></div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 150px 150px;height:42px;align-items:center;border-top:2px solid #1E1B18;font-weight:700;font-variant-numeric:tabular-nums"><span>Totaux · ✓ écriture équilibrée</span><span style="text-align:right">2 800 000</span><span style="text-align:right">2 800 000</span></div>
+<div style="display:flex;gap:16px;align-items:center;margin-top:auto;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#443F3A"><span>Tab : champ suivant</span><span>= : solde automatique</span><span>F4 : rechercher un compte</span><span>Ctrl+Entrée : enregistrer</span><span style="margin-left:auto;font-family:'IBM Plex Sans',sans-serif;font-size:14px;padding:12px 20px;background:#B4532A;color:#FFFFFF;font-weight:700">Enregistrer l'écriture</span></div>
+</div>
+</div>
+<span style="font-size:13px;color:#5A544E">Plan SYSCOHADA révisé. Les ventes, achats et caisses génèrent leurs écritures automatiquement ; la saisie manuelle sert aux OD, banque et corrections.</span>
+</div>
+
+<!-- W-15 -->
+<div data-screen-label="W-15 États financiers" style="display:{{ d.W15 }};flex-direction:column;gap:10px;width:1440px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:14px;background:#1E1B18;color:#FFFFFF;padding:2px 7px">W-15</b><b style="font-size:15px">États financiers SYSCOHADA</b><span style="font-size:13px;color:#5A544E">UC-CPT-04</span></div>
+<div style="width:1440px;height:900px;border:3px solid #1E1B18;background:#FFFFFF;box-sizing:border-box;display:grid;grid-template-columns:220px minmax(0,1fr);grid-template-rows:56px minmax(0,1fr);overflow:hidden">
+<div style="border-bottom:2px solid #1E1B18;border-right:2px solid #1E1B18;display:flex;align-items:center;padding:0 16px"><div style="width:110px;height:26px;background:#E6E3DE"></div></div>
+<div style="border-bottom:2px solid #1E1B18;display:flex;align-items:center;gap:10px;padding:0 20px;font-size:14px"><span style="border:1.5px solid #1E1B18;padding:6px 10px"><b>Quincaillerie Wend-Panga</b> ▾</span><span style="border:1.5px solid #1E1B18;padding:6px 10px">Exercice 2026 (clos) ▾</span></div>
+<div style="border-right:2px solid #1E1B18;padding:12px 8px;display:flex;flex-direction:column;gap:2px;font-size:14px"><sc-for list="{{ nav.W15 }}" as="n" hint-placeholder-count="12"><span onClick="{{ n.aller }}" style="padding:8px 10px;cursor:pointer;background:{{ n.bg }};color:{{ n.fg }};font-weight:{{ n.poids }}" style-hover="outline:2px solid #2A78D6">{{ n.nom }}</span></sc-for></div>
+<div style="padding:20px 28px;display:flex;flex-direction:column;gap:14px;font-size:14px">
+<div style="display:flex;align-items:center;gap:12px"><b style="font-size:24px">États financiers</b><div style="display:flex;border:2px solid #1E1B18;font-weight:600;margin-left:16px"><span style="padding:8px 14px;background:#1E1B18;color:#FFFFFF">Bilan</span><span style="padding:8px 14px">Compte de résultat</span><span style="padding:8px 14px">Flux de trésorerie</span><span style="padding:8px 14px">Notes annexes</span></div><div style="margin-left:auto;display:flex;gap:8px"><span style="padding:8px 12px;border:1.5px solid #1E1B18">Excel</span><span style="padding:8px 12px;border:1.5px solid #1E1B18">PDF</span><span style="padding:8px 12px;background:#B4532A;color:#FFFFFF;font-weight:600">Préparer la DSF</span></div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+<div style="display:flex;flex-direction:column"><div style="display:grid;grid-template-columns:50px minmax(0,1fr) 130px 130px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5A544E;border-bottom:2px solid #1E1B18;padding:6px 0"><span>RÉF</span><span>ACTIF</span><span style="text-align:right">2026 NET</span><span style="text-align:right">2025 NET</span></div>
+<sc-for list="{{ actif }}" as="a" hint-placeholder-count="9"><div style="display:grid;grid-template-columns:50px minmax(0,1fr) 130px 130px;height:34px;align-items:center;border-bottom:1px solid #D8D3CE;font-variant-numeric:tabular-nums;font-weight:{{ a.poids }}"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px">{{ a.ref }}</span><span>{{ a.lib }}</span><span style="text-align:right">{{ a.n }}</span><span style="text-align:right">{{ a.n1 }}</span></div></sc-for></div>
+<div style="display:flex;flex-direction:column"><div style="display:grid;grid-template-columns:50px minmax(0,1fr) 130px 130px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5A544E;border-bottom:2px solid #1E1B18;padding:6px 0"><span>RÉF</span><span>PASSIF</span><span style="text-align:right">2026</span><span style="text-align:right">2025</span></div>
+<sc-for list="{{ passif }}" as="a" hint-placeholder-count="9"><div style="display:grid;grid-template-columns:50px minmax(0,1fr) 130px 130px;height:34px;align-items:center;border-bottom:1px solid #D8D3CE;font-variant-numeric:tabular-nums;font-weight:{{ a.poids }}"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px">{{ a.ref }}</span><span>{{ a.lib }}</span><span style="text-align:right">{{ a.n }}</span><span style="text-align:right">{{ a.n1 }}</span></div></sc-for></div>
+</div>
+<span style="color:#5A544E">Clic sur un montant : détail des comptes puis des écritures (grand livre). Contrôles de cohérence affichés avant export : ✓ bilan équilibré · ✓ résultat = compte de résultat.</span>
+</div>
+</div>
+<span style="font-size:13px;color:#5A544E">Format SYSCOHADA révisé (système normal ; système minimal de trésorerie pour les micro-entreprises).</span>
+</div>
+
+<!-- W-16 -->
+<div data-screen-label="W-16 Achats" style="display:{{ d.W16 }};flex-direction:column;gap:10px;width:1440px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:14px;background:#1E1B18;color:#FFFFFF;padding:2px 7px">W-16</b><b style="font-size:15px">Achats · demandes de prix, commandes, réceptions, factures fournisseurs</b><span style="font-size:13px;color:#5A544E">UC-ACH-01 à 04</span></div>
+<div style="width:1440px;height:900px;border:3px solid #1E1B18;background:#FFFFFF;box-sizing:border-box;display:grid;grid-template-columns:220px minmax(0,1fr);grid-template-rows:56px minmax(0,1fr);overflow:hidden">
+<div style="border-bottom:2px solid #1E1B18;border-right:2px solid #1E1B18;display:flex;align-items:center;padding:0 16px"><div style="width:110px;height:26px;background:#E6E3DE"></div></div>
+<div style="border-bottom:2px solid #1E1B18;display:flex;align-items:center;gap:10px;padding:0 20px;font-size:14px"><span style="border:1.5px solid #1E1B18;padding:6px 10px"><b>Quincaillerie Wend-Panga</b> ▾</span></div>
+<div style="border-right:2px solid #1E1B18;padding:12px 8px;display:flex;flex-direction:column;gap:2px;font-size:14px"><sc-for list="{{ nav.W16 }}" as="n" hint-placeholder-count="12"><span onClick="{{ n.aller }}" style="padding:8px 10px;cursor:pointer;background:{{ n.bg }};color:{{ n.fg }};font-weight:{{ n.poids }}" style-hover="outline:2px solid #2A78D6">{{ n.nom }}</span></sc-for></div>
+<div style="padding:20px 28px;display:flex;flex-direction:column;gap:14px;font-size:14px">
+<div style="display:flex;align-items:center;gap:12px"><b style="font-size:24px">Achats</b><span style="margin-left:auto;padding:8px 12px;border:1.5px solid #1E1B18">Demande de prix</span><span style="padding:8px 12px;background:#B4532A;color:#FFFFFF;font-weight:600">Nouvelle commande</span></div>
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+<sc-for list="{{ colonnesAchats }}" as="c" hint-placeholder-count="4"><div style="background:#F5F3EF;padding:12px;display:flex;flex-direction:column;gap:8px;min-height:560px"><div style="display:flex;justify-content:space-between"><b>{{ c.titre }}</b><b>{{ c.nb }}</b></div><sc-for list="{{ c.cartes }}" as="k" hint-placeholder-count="3"><div style="background:#FFFFFF;border:1.5px solid #1E1B18;padding:10px;display:flex;flex-direction:column;gap:3px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px">{{ k.ref }}</span><b>{{ k.fournisseur }}</b><span>{{ k.detail }}</span><span style="font-weight:600">{{ k.montant }}</span></div></sc-for></div></sc-for>
+</div>
+</div>
+</div>
+<span style="font-size:13px;color:#5A544E">Vue par étape (liste disponible). La réception se fait sur mobile (M-02) ; la facture fournisseur est rapprochée de la réception (écarts signalés).</span>
+</div>
+
+<!-- W-17 -->
+<div data-screen-label="W-17 Stock" style="display:{{ d.W17 }};flex-direction:column;gap:10px;width:1440px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:14px;background:#1E1B18;color:#FFFFFF;padding:2px 7px">W-17</b><b style="font-size:15px">Stock · disponibilités, mouvements, valorisation, inventaires</b><span style="font-size:13px;color:#5A544E">UC-STK-01 à 04</span></div>
+<div style="width:1440px;height:900px;border:3px solid #1E1B18;background:#FFFFFF;box-sizing:border-box;display:grid;grid-template-columns:220px minmax(0,1fr) 400px;grid-template-rows:56px minmax(0,1fr);overflow:hidden">
+<div style="border-bottom:2px solid #1E1B18;border-right:2px solid #1E1B18;display:flex;align-items:center;padding:0 16px"><div style="width:110px;height:26px;background:#E6E3DE"></div></div>
+<div style="grid-column:2 / 4;border-bottom:2px solid #1E1B18;display:flex;align-items:center;gap:10px;padding:0 20px;font-size:14px"><span style="border:1.5px solid #1E1B18;padding:6px 10px"><b>Quincaillerie Wend-Panga</b> ▾</span><span style="border:1.5px solid #1E1B18;padding:6px 10px">Tous les dépôts ▾</span></div>
+<div style="border-right:2px solid #1E1B18;padding:12px 8px;display:flex;flex-direction:column;gap:2px;font-size:14px"><sc-for list="{{ nav.W17 }}" as="n" hint-placeholder-count="12"><span onClick="{{ n.aller }}" style="padding:8px 10px;cursor:pointer;background:{{ n.bg }};color:{{ n.fg }};font-weight:{{ n.poids }}" style-hover="outline:2px solid #2A78D6">{{ n.nom }}</span></sc-for></div>
+<div style="padding:20px 24px;display:flex;flex-direction:column;gap:12px;border-right:2px solid #1E1B18;font-size:14px;min-width:0">
+<div style="display:flex;gap:4px;border-bottom:2px solid #D8D3CE;font-weight:600;font-size:15px"><span style="padding:10px 14px;border-bottom:3px solid #1E1B18;margin-bottom:-2px">Disponibilités</span><span style="padding:10px 14px;color:#5A544E">Mouvements</span><span style="padding:10px 14px;color:#5A544E">Valorisation</span><span style="padding:10px 14px;color:#5A544E">Inventaires · 1 à valider</span></div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 100px 100px 100px 110px 130px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5A544E;border-bottom:2px solid #1E1B18;padding:6px 0"><span>PRODUIT</span><span style="text-align:right">CENTRAL</span><span style="text-align:right">ZOGONA</span><span style="text-align:right">KOUDOUGOU</span><span style="text-align:right">TOTAL</span><span style="text-align:right">VALEUR (CMUP)</span></div>
+<sc-for list="{{ stock }}" as="s" hint-placeholder-count="10"><div style="display:grid;grid-template-columns:minmax(0,1fr) 100px 100px 100px 110px 130px;height:36px;align-items:center;border-bottom:1px solid #D8D3CE;font-variant-numeric:tabular-nums"><span>{{ s.nom }}</span><span style="text-align:right">{{ s.a }}</span><span style="text-align:right">{{ s.b }}</span><span style="text-align:right">{{ s.c }}</span><b style="text-align:right">{{ s.t }}</b><span style="text-align:right">{{ s.v }}</span></div></sc-for>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 130px;height:40px;align-items:center;border-top:2px solid #1E1B18;font-weight:700"><span>Valeur totale du stock</span><span style="text-align:right">48 612 000</span></div>
+</div>
+<div style="padding:20px;display:flex;flex-direction:column;gap:12px;font-size:14px">
+<b style="font-size:18px">Inventaire Allée B à valider</b>
+<span>Compté par Issouf le 14/03 · 64 produits · 3 écarts</span>
+<div style="display:flex;flex-direction:column;border-top:2px solid #1E1B18">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 70px 70px 70px;padding:8px 0;border-bottom:1px solid #D8D3CE;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5A544E"><span>PRODUIT</span><span style="text-align:right">THÉO.</span><span style="text-align:right">COMPTÉ</span><span style="text-align:right">ÉCART</span></div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 70px 70px 70px;padding:8px 0;border-bottom:1px solid #D8D3CE"><span>Ciment 50 kg</span><span style="text-align:right">148</span><span style="text-align:right">142</span><b style="text-align:right">− 6</b></div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 70px 70px 70px;padding:8px 0;border-bottom:1px solid #D8D3CE"><span>Fer à béton 10</span><span style="text-align:right">416</span><span style="text-align:right">420</span><b style="text-align:right">+ 4</b></div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 70px 70px 70px;padding:8px 0;border-bottom:1px solid #D8D3CE"><span>Tôle bac 3 m</span><span style="text-align:right">88</span><span style="text-align:right">86</span><b style="text-align:right">− 2</b></div>
+</div>
+<span>Impact sur la valeur : − 38 400 FCFA (écriture d'ajustement générée).</span>
+<div style="margin-top:auto;display:flex;gap:8px"><span style="flex:1;height:46px;border:2px solid #1E1B18;display:flex;align-items:center;justify-content:center;font-weight:600">Demander un recomptage</span><span style="flex:1;height:46px;background:#B4532A;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:700">Valider l'inventaire</span></div>
+</div>
+</div>
+<span style="font-size:13px;color:#5A544E">Les stocks négatifs (ventes autorisées en rupture) sont signalés et corrigés ici.</span>
+</div>
+
+<!-- W-18 -->
+<div data-screen-label="W-18 Paramètres" style="display:{{ d.W18 }};flex-direction:column;gap:10px;width:1440px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:14px;background:#B4532A;color:#FFFFFF;padding:2px 7px">W-18</b><b style="font-size:15px">Paramètres · terminaux (appairage et révocation)</b><span style="font-size:13px;color:#5A544E">UC-SOC-02 à 04 · SD-11</span></div>
+<div style="width:1440px;height:900px;border:3px solid #1E1B18;background:#FFFFFF;box-sizing:border-box;display:grid;grid-template-columns:220px 240px minmax(0,1fr);grid-template-rows:56px minmax(0,1fr);overflow:hidden">
+<div style="border-bottom:2px solid #1E1B18;border-right:2px solid #1E1B18;display:flex;align-items:center;padding:0 16px"><div style="width:110px;height:26px;background:#E6E3DE"></div></div>
+<div style="grid-column:2 / 4;border-bottom:2px solid #1E1B18;display:flex;align-items:center;gap:10px;padding:0 20px;font-size:14px"><span style="border:1.5px solid #1E1B18;padding:6px 10px"><b>Quincaillerie Wend-Panga</b> ▾</span></div>
+<div style="border-right:2px solid #1E1B18;padding:12px 8px;display:flex;flex-direction:column;gap:2px;font-size:14px"><sc-for list="{{ nav.W18 }}" as="n" hint-placeholder-count="12"><span onClick="{{ n.aller }}" style="padding:8px 10px;cursor:pointer;background:{{ n.bg }};color:{{ n.fg }};font-weight:{{ n.poids }}" style-hover="outline:2px solid #2A78D6">{{ n.nom }}</span></sc-for></div>
+<div style="border-right:2px solid #1E1B18;padding:16px 10px;display:flex;flex-direction:column;gap:2px;font-size:14px;background:#F5F3EF"><sc-for list="{{ sousParam }}" as="p" hint-placeholder-count="10"><span style="padding:9px 10px;background:{{ p.bg }};font-weight:{{ p.poids }}">{{ p.nom }}</span></sc-for></div>
+<div style="padding:20px 28px;display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:20px;font-size:14px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<b style="font-size:24px">Terminaux</b>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 120px 90px 110px 70px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5A544E;border-bottom:2px solid #1E1B18;padding:6px 0"><span>TERMINAL</span><span>ÉTABLISSEMENT</span><span>STATUT</span><span>DERNIÈRE SYNCHRO</span><span></span></div>
+<sc-for list="{{ terminaux }}" as="t" hint-placeholder-count="5"><div style="display:grid;grid-template-columns:minmax(0,1fr) 120px 90px 110px 70px;height:44px;align-items:center;border-bottom:1px solid #D8D3CE"><span><b>{{ t.nom }}</b> <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5A544E">{{ t.id }}</span></span><span>{{ t.lieu }}</span><span style="font-weight:600">{{ t.statut }}</span><span>{{ t.sync }}</span><span style="text-decoration:underline;color:#76131D">{{ t.action }}</span></div></sc-for>
+<div style="border:1.5px dashed #1E1B18;padding:12px;margin-top:8px">Révoquer un terminal : confirmation obligatoire. Les ventes non synchronisées sont signalées avant révocation (« 3 ventes en attente sur ce terminal »).</div>
+</div>
+<div style="border:2px solid #1E1B18;padding:20px;display:flex;flex-direction:column;align-items:center;gap:12px;align-self:start;text-align:center">
+<b style="font-size:17px">Appairer un terminal</b>
+<div style="width:170px;height:170px;background:repeating-linear-gradient(135deg,#E6E3DE 0 8px,#FFFFFF 8px 16px);border:6px solid #1E1B18;box-sizing:border-box;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:11px">QR D'APPAIRAGE</div>
+<b style="font-family:'IBM Plex Mono',monospace;font-size:20px">4827-KF</b>
+<span>Valable 10 min · établissement : Ouaga — Zogona</span>
+<span style="color:#5A544E">Sur la tablette : ouvrez Ambawbio Caisse et scannez ce code (A-02).</span>
+</div>
+</div>
+</div>
+<span style="font-size:13px;color:#5A544E">Mêmes gabarits liste + panneau pour entreprise, sociétés (Enterprise), établissements, dépôts, utilisateurs et rôles, taxes, régimes, numérotation.</span>
+</div>
+
+<!-- W-19 -->
+<div data-screen-label="W-19 Studio" style="display:{{ d.W19 }};flex-direction:column;gap:10px;width:1440px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:14px;background:#1E1B18;color:#FFFFFF;padding:2px 7px">W-19</b><b style="font-size:15px">Champs personnalisés (Studio)</b><span style="font-size:13px;color:#5A544E">UC-SOC-10</span></div>
+<div style="width:1440px;height:900px;border:3px solid #1E1B18;background:#FFFFFF;box-sizing:border-box;display:grid;grid-template-columns:220px minmax(0,1fr) 440px;grid-template-rows:56px minmax(0,1fr);overflow:hidden">
+<div style="border-bottom:2px solid #1E1B18;border-right:2px solid #1E1B18;display:flex;align-items:center;padding:0 16px"><div style="width:110px;height:26px;background:#E6E3DE"></div></div>
+<div style="grid-column:2 / 4;border-bottom:2px solid #1E1B18;display:flex;align-items:center;gap:10px;padding:0 20px;font-size:14px"><span style="border:1.5px solid #1E1B18;padding:6px 10px"><b>Quincaillerie Wend-Panga</b> ▾</span></div>
+<div style="border-right:2px solid #1E1B18;padding:12px 8px;display:flex;flex-direction:column;gap:2px;font-size:14px"><sc-for list="{{ nav.W19 }}" as="n" hint-placeholder-count="12"><span onClick="{{ n.aller }}" style="padding:8px 10px;cursor:pointer;background:{{ n.bg }};color:{{ n.fg }};font-weight:{{ n.poids }}" style-hover="outline:2px solid #2A78D6">{{ n.nom }}</span></sc-for></div>
+<div style="padding:20px 24px;display:flex;flex-direction:column;gap:12px;border-right:2px solid #1E1B18;font-size:14px">
+<div style="display:flex;align-items:center;gap:12px"><b style="font-size:24px">Studio · champs personnalisés</b><span style="margin-left:auto;border:1.5px solid #1E1B18;padding:6px 10px">Objet : Produit ▾</span></div>
+<div style="display:grid;grid-template-columns:30px minmax(0,1fr) 150px 120px 120px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5A544E;border-bottom:2px solid #1E1B18;padding:6px 0"><span></span><span>LIBELLÉ</span><span>TYPE</span><span>OBLIGATOIRE</span><span>VISIBLE EN CAISSE</span></div>
+<sc-for list="{{ champs }}" as="c" hint-placeholder-count="5"><div style="display:grid;grid-template-columns:30px minmax(0,1fr) 150px 120px 120px;height:44px;align-items:center;border-bottom:1px solid #D8D3CE;background:{{ c.fond }}"><span style="color:#88827B">⋮⋮</span><b>{{ c.lib }}</b><span>{{ c.type }}</span><span>{{ c.oblig }}</span><span>{{ c.caisse }}</span></div></sc-for>
+<span style="color:#8E3507;font-weight:600">+ Ajouter un champ</span>
+</div>
+<div style="padding:20px;display:flex;flex-direction:column;gap:12px;font-size:14px">
+<b style="font-size:18px">Modifier « Classe du ciment »</b>
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-weight:600">Libellé</span><div style="height:42px;border:2px solid #1E1B18;display:flex;align-items:center;padding:0 10px">Classe du ciment</div></div>
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-weight:600">Type</span><div style="height:42px;border:1.5px solid #1E1B18;display:flex;align-items:center;justify-content:space-between;padding:0 10px">Liste de choix<span>▾</span></div></div>
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-weight:600">Valeurs</span><div style="border:1.5px solid #1E1B18;padding:8px 10px;display:flex;gap:6px;flex-wrap:wrap"><span style="padding:3px 8px;border:1px solid #1E1B18">CPJ 35</span><span style="padding:3px 8px;border:1px solid #1E1B18">CPJ 45</span><span style="padding:3px 8px;border:1px solid #1E1B18">CPA 55</span></div></div>
+<span>☑ Visible uniquement pour la catégorie « Construction »</span>
+<b style="margin-top:8px">Aperçu sur la fiche produit</b>
+<div style="border:1.5px dashed #1E1B18;padding:12px;display:grid;grid-template-columns:140px minmax(0,1fr);gap:6px"><span style="color:#5A544E">Fabricant</span><span>CIMAF (démo)</span><span style="color:#5A544E">Classe du ciment</span><span>CPJ 45 ▾</span></div>
+<span style="margin-top:auto;height:46px;background:#B4532A;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:700">Enregistrer le champ</span>
+</div>
+</div>
+<span style="font-size:13px;color:#5A544E">Premier pas du Studio No-Code (pilier 8). Objets : produit, client, fournisseur, facture, employé (R2).</span>
+</div>
+
+<!-- W-20 -->
+<div data-screen-label="W-20 Audit" style="display:{{ d.W20 }};flex-direction:column;gap:10px;width:1440px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:14px;background:#1E1B18;color:#FFFFFF;padding:2px 7px">W-20</b><b style="font-size:15px">Journal d'audit</b><span style="font-size:13px;color:#5A544E">UC-SOC-08</span></div>
+<div style="width:1440px;height:900px;border:3px solid #1E1B18;background:#FFFFFF;box-sizing:border-box;display:grid;grid-template-columns:220px minmax(0,1fr);grid-template-rows:56px minmax(0,1fr);overflow:hidden">
+<div style="border-bottom:2px solid #1E1B18;border-right:2px solid #1E1B18;display:flex;align-items:center;padding:0 16px"><div style="width:110px;height:26px;background:#E6E3DE"></div></div>
+<div style="border-bottom:2px solid #1E1B18;display:flex;align-items:center;gap:10px;padding:0 20px;font-size:14px"><span style="border:1.5px solid #1E1B18;padding:6px 10px"><b>Quincaillerie Wend-Panga</b> ▾</span></div>
+<div style="border-right:2px solid #1E1B18;padding:12px 8px;display:flex;flex-direction:column;gap:2px;font-size:14px"><sc-for list="{{ nav.W20 }}" as="n" hint-placeholder-count="12"><span onClick="{{ n.aller }}" style="padding:8px 10px;cursor:pointer;background:{{ n.bg }};color:{{ n.fg }};font-weight:{{ n.poids }}" style-hover="outline:2px solid #2A78D6">{{ n.nom }}</span></sc-for></div>
+<div style="padding:20px 28px;display:flex;flex-direction:column;gap:12px;font-size:14px">
+<div style="display:flex;align-items:center;gap:10px"><b style="font-size:24px">Journal d'audit</b><span style="margin-left:auto;padding:8px 12px;border:1.5px solid #1E1B18">Exporter (CSV signé)</span></div>
+<div style="display:flex;gap:8px"><span style="padding:8px 12px;border:1.5px solid #1E1B18">Période : 14/03/2027 ▾</span><span style="padding:8px 12px;border:1.5px solid #1E1B18">Utilisateur ▾</span><span style="padding:8px 12px;border:1.5px solid #1E1B18">Action ▾</span><span style="padding:8px 12px;border:1.5px solid #1E1B18">Objet ▾</span><div style="flex:1;height:38px;border:1.5px solid #1E1B18;display:flex;align-items:center;padding:0 10px;color:#5A544E">Rechercher une pièce, un IFU…</div></div>
+<div style="display:grid;grid-template-columns:150px 170px 180px 170px minmax(0,1fr) 170px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5A544E;border-bottom:2px solid #1E1B18;padding:6px 0"><span>DATE ET HEURE</span><span>UTILISATEUR</span><span>ACTION</span><span>OBJET</span><span>DÉTAIL</span><span>APPAREIL</span></div>
+<sc-for list="{{ audit }}" as="a" hint-placeholder-count="12"><div style="display:grid;grid-template-columns:150px 170px 180px 170px minmax(0,1fr) 170px;height:38px;align-items:center;border-bottom:1px solid #D8D3CE"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px">{{ a.date }}</span><span>{{ a.user }}</span><b>{{ a.action }}</b><span style="font-family:'IBM Plex Mono',monospace;font-size:12px">{{ a.objet }}</span><span>{{ a.detail }}</span><span style="font-size:13px;color:#5A544E">{{ a.app }}</span></div></sc-for>
+</div>
+</div>
+<span style="font-size:13px;color:#5A544E">Lecture seule, inaltérable. Les actions faites hors-ligne portent l'heure de l'appareil et l'heure de réception.</span>
+</div>
+
+<!-- W-21 -->
+<div data-screen-label="W-21 Données personnelles" style="display:{{ d.W21 }};flex-direction:column;gap:10px;width:1440px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:14px;background:#1E1B18;color:#FFFFFF;padding:2px 7px">W-21</b><b style="font-size:15px">Données personnelles · demandes d'accès et d'effacement</b><span style="font-size:13px;color:#5A544E">UC-SOC-11</span></div>
+<div style="width:1440px;height:900px;border:3px solid #1E1B18;background:#FFFFFF;box-sizing:border-box;display:grid;grid-template-columns:220px minmax(0,1fr) 440px;grid-template-rows:56px minmax(0,1fr);overflow:hidden">
+<div style="border-bottom:2px solid #1E1B18;border-right:2px solid #1E1B18;display:flex;align-items:center;padding:0 16px"><div style="width:110px;height:26px;background:#E6E3DE"></div></div>
+<div style="grid-column:2 / 4;border-bottom:2px solid #1E1B18;display:flex;align-items:center;gap:10px;padding:0 20px;font-size:14px"><span style="border:1.5px solid #1E1B18;padding:6px 10px"><b>Quincaillerie Wend-Panga</b> ▾</span></div>
+<div style="border-right:2px solid #1E1B18;padding:12px 8px;display:flex;flex-direction:column;gap:2px;font-size:14px"><sc-for list="{{ nav.W21 }}" as="n" hint-placeholder-count="12"><span onClick="{{ n.aller }}" style="padding:8px 10px;cursor:pointer;background:{{ n.bg }};color:{{ n.fg }};font-weight:{{ n.poids }}" style-hover="outline:2px solid #2A78D6">{{ n.nom }}</span></sc-for></div>
+<div style="padding:20px 24px;display:flex;flex-direction:column;gap:12px;border-right:2px solid #1E1B18;font-size:14px">
+<div style="display:flex;align-items:center;gap:10px"><b style="font-size:24px">Données personnelles</b><span style="margin-left:auto;padding:8px 12px;background:#B4532A;color:#FFFFFF;font-weight:600">Enregistrer une demande</span></div>
+<div style="display:grid;grid-template-columns:120px minmax(0,1fr) 120px 140px 140px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5A544E;border-bottom:2px solid #1E1B18;padding:6px 0"><span>REÇUE LE</span><span>PERSONNE</span><span>TYPE</span><span>ÉCHÉANCE</span><span>STATUT</span></div>
+<sc-for list="{{ demandes }}" as="r" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:120px minmax(0,1fr) 120px 140px 140px;height:44px;align-items:center;border-bottom:1px solid #D8D3CE;background:{{ r.fond }}"><span>{{ r.date }}</span><b>{{ r.nom }}</b><span>{{ r.type }}</span><span>{{ r.echeance }}</span><span style="font-weight:600">{{ r.statut }}</span></div></sc-for>
+</div>
+<div style="padding:20px;display:flex;flex-direction:column;gap:12px;font-size:14px">
+<b style="font-size:18px">Effacement · Issa Compaoré</b>
+<span>Client particulier · +226 65 12 09 33</span>
+<div style="border-top:2px solid #1E1B18;padding-top:10px;display:flex;flex-direction:column;gap:6px"><b>Ce qui sera effacé ou anonymisé</b><span>— Nom, téléphone, e-mail, adresse</span><span>— Historique de relances</span><b style="margin-top:6px">Ce qui doit être conservé (obligation légale)</b><span>— 3 factures certifiées : conservées 10 ans, client anonymisé</span></div>
+<div style="border:1.5px dashed #1E1B18;padding:10px">Action irréversible : confirmation et motif obligatoires. Un justificatif est envoyé à la personne.</div>
+<span style="margin-top:auto;height:46px;background:#96252D;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:700">Effacer les données</span>
+</div>
+</div>
+<span style="font-size:13px;color:#5A544E">Délais affichés selon la loi burkinabè sur la protection des données (CIL). Libellés à valider avec un juriste.</span>
+</div>
+
+<!-- W-22 -->
+<div data-screen-label="W-22 Abonnement" style="display:{{ d.W22 }};flex-direction:column;gap:10px;width:1440px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:14px;background:#1E1B18;color:#FFFFFF;padding:2px 7px">W-22</b><b style="font-size:15px">Abonnement</b><span style="font-size:13px;color:#5A544E">UC-SOC-12</span></div>
+<div style="width:1440px;height:900px;border:3px solid #1E1B18;background:#FFFFFF;box-sizing:border-box;display:grid;grid-template-columns:220px minmax(0,1fr);grid-template-rows:56px minmax(0,1fr);overflow:hidden">
+<div style="border-bottom:2px solid #1E1B18;border-right:2px solid #1E1B18;display:flex;align-items:center;padding:0 16px"><div style="width:110px;height:26px;background:#E6E3DE"></div></div>
+<div style="border-bottom:2px solid #1E1B18;display:flex;align-items:center;gap:10px;padding:0 20px;font-size:14px"><span style="border:1.5px solid #1E1B18;padding:6px 10px"><b>Quincaillerie Wend-Panga</b> ▾</span></div>
+<div style="border-right:2px solid #1E1B18;padding:12px 8px;display:flex;flex-direction:column;gap:2px;font-size:14px"><sc-for list="{{ nav.W22 }}" as="n" hint-placeholder-count="12"><span onClick="{{ n.aller }}" style="padding:8px 10px;cursor:pointer;background:{{ n.bg }};color:{{ n.fg }};font-weight:{{ n.poids }}" style-hover="outline:2px solid #2A78D6">{{ n.nom }}</span></sc-for></div>
+<div style="padding:24px 32px;display:flex;flex-direction:column;gap:18px;font-size:14px;max-width:1000px">
+<b style="font-size:24px">Abonnement</b>
+<div style="border:3px solid #1E1B18;padding:20px;display:flex;align-items:center;gap:24px"><div style="display:flex;flex-direction:column;gap:4px"><span style="color:#5A544E">Pack actuel</span><b style="font-size:28px">Business · mensuel</b><span>[PRIX À DÉFINIR] / mois · prochaine échéance le 14/04/2027</span></div><div style="margin-left:auto;display:flex;gap:8px"><span style="padding:12px 16px;border:2px solid #1E1B18;font-weight:600">Changer de pack</span><span style="padding:12px 16px;background:#B4532A;color:#FFFFFF;font-weight:700">Renouveler par Mobile Money</span></div></div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px"><div style="border:1.5px solid #1E1B18;padding:14px;display:flex;flex-direction:column;gap:6px"><span>Caisses</span><b style="font-size:22px">3 / 5</b><div style="height:6px;background:#E6E3DE;position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:60%;background:#1E1B18"></div></div></div><div style="border:1.5px solid #1E1B18;padding:14px;display:flex;flex-direction:column;gap:6px"><span>Établissements</span><b style="font-size:22px">3 / 3</b><div style="height:6px;background:#1E1B18"></div><span style="font-size:13px">Limite atteinte : passez à Enterprise pour en ajouter.</span></div><div style="border:1.5px solid #1E1B18;padding:14px;display:flex;flex-direction:column;gap:6px"><span>Utilisateurs</span><b style="font-size:22px">7 / 10</b><div style="height:6px;background:#E6E3DE;position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:70%;background:#1E1B18"></div></div></div></div>
+<b style="font-size:16px">Factures d'abonnement</b>
+<div style="display:grid;grid-template-columns:160px minmax(0,1fr) 140px 160px 120px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5A544E;border-bottom:2px solid #1E1B18;padding:6px 0"><span>N°</span><span>PÉRIODE</span><span style="text-align:right">MONTANT</span><span style="padding-left:16px">PAYÉE PAR</span><span></span></div>
+<sc-for list="{{ facturesAbo }}" as="f" hint-placeholder-count="3"><div style="display:grid;grid-template-columns:160px minmax(0,1fr) 140px 160px 120px;height:40px;align-items:center;border-bottom:1px solid #D8D3CE"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px">{{ f.num }}</span><span>{{ f.periode }}</span><span style="text-align:right">{{ f.montant }}</span><span style="padding-left:16px">{{ f.moyen }}</span><span style="text-decoration:underline">PDF</span></div></sc-for>
+<div style="border:1.5px dashed #1E1B18;padding:12px">Sans renouvellement : 7 jours de grâce, puis suspension (lecture seule, caisse bloquée après synchronisation). Les données ne sont jamais supprimées pendant 12 mois.</div>
+</div>
+</div>
+<span style="font-size:13px;color:#5A544E">Rappels de renouvellement à J-7, J-1 et J+1 (e-mail, WhatsApp, bannière).</span>
+</div>
+
+<!-- W-23 -->
+<div data-screen-label="W-23 Console éditeur" style="display:{{ d.W23 }};flex-direction:column;gap:10px;width:1440px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:14px;background:#1E1B18;color:#FFFFFF;padding:2px 7px">W-23</b><b style="font-size:15px">Console de l'éditeur (équipe Ambawbio)</b><span style="font-size:13px;color:#5A544E">UC-SOC-13</span></div>
+<div style="width:1440px;height:900px;border:3px solid #1E1B18;background:#FFFFFF;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden">
+<div style="height:56px;background:#1E1B18;color:#FFFFFF;display:flex;align-items:center;gap:16px;padding:0 24px;font-size:14px"><b>Ambawbio · Console éditeur</b><span style="padding:3px 8px;border:1px solid #FFFFFF;font-family:'IBM Plex Mono',monospace;font-size:11px">ACCÈS INTERNE</span><span style="margin-left:auto">Rachid B.</span></div>
+<div style="padding:24px 32px;display:flex;flex-direction:column;gap:16px;font-size:14px">
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px"><sc-for list="{{ kpiEditeur }}" as="k" hint-placeholder-count="4"><div style="border-top:3px solid #1E1B18;padding:12px 0;display:flex;flex-direction:column;gap:4px"><span style="color:#5A544E;font-weight:600">{{ k.t }}</span><b style="font-size:28px">{{ k.v }}</b></div></sc-for></div>
+<div style="display:flex;gap:8px"><div style="flex:1;height:40px;border:1.5px solid #1E1B18;display:flex;align-items:center;padding:0 10px;color:#5A544E">Rechercher une entreprise, un IFU…</div><span style="padding:9px 12px;border:1.5px solid #1E1B18">Statut ▾</span><span style="padding:9px 12px;border:1.5px solid #1E1B18">Pack ▾</span></div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 120px 140px 140px 90px 160px 120px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5A544E;border-bottom:2px solid #1E1B18;padding:6px 0"><span>ENTREPRISE</span><span>PACK</span><span>STATUT</span><span>ÉCHÉANCE</span><span style="text-align:right">CAISSES</span><span style="padding-left:16px">DERNIÈRE ACTIVITÉ</span><span></span></div>
+<sc-for list="{{ abonnes }}" as="a" hint-placeholder-count="10"><div style="display:grid;grid-template-columns:minmax(0,1fr) 120px 140px 140px 90px 160px 120px;height:40px;align-items:center;border-bottom:1px solid #D8D3CE"><b>{{ a.nom }}</b><span>{{ a.pack }}</span><span style="font-weight:600">{{ a.statut }}</span><span>{{ a.ech }}</span><span style="text-align:right">{{ a.caisses }}</span><span style="padding-left:16px">{{ a.act }}</span><span style="text-decoration:underline">Ouvrir</span></div></sc-for>
+</div>
+</div>
+<span style="font-size:13px;color:#5A544E">Aucune donnée métier des clients visible ici, uniquement l'abonnement et l'état technique. Accès support : sur autorisation du client, tracé dans W-20.</span>
+</div>
+
+<!-- W-24 -->
+<div data-screen-label="W-24 Pages système" style="display:{{ d.W24 }};flex-direction:column;gap:10px;width:1440px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:14px;background:#1E1B18;color:#FFFFFF;padding:2px 7px">W-24</b><b style="font-size:15px">Pages système</b></div>
+<div style="width:1440px;border:3px solid #1E1B18;background:#F5F3EF;box-sizing:border-box;padding:24px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px">
+<sc-for list="{{ pagesSysteme }}" as="p" hint-placeholder-count="7">
+<div style="background:#FFFFFF;border:2px solid #1E1B18;height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;text-align:center;box-sizing:border-box">
+<span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5A544E">{{ p.code }}</span>
+<div style="width:64px;height:64px;background:#E6E3DE;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px">{{ p.pic }}</div>
+<b style="font-size:18px">{{ p.titre }}</b>
+<span style="font-size:14px;line-height:1.45;color:#443F3A">{{ p.texte }}</span>
+<span style="padding:10px 16px;background:#B4532A;color:#FFFFFF;font-weight:600;font-size:14px">{{ p.action }}</span>
+</div>
+</sc-for>
+</div>
+<span style="font-size:13px;color:#5A544E">Chaque page dit ce qui s'est passé et ce qu'il faut faire. Illustrations géométriques de la charte en haute fidélité.</span>
+</div>
+
+</div>
+
+<div style="display:flex;flex-direction:column;gap:6px;font-size:14px;color:#443F3A;max-width:1100px;border-top:2px solid #1E1B18;padding-top:16px">
+<b>Points à valider</b>
+<span>1. Achats en colonnes par étape (W-16) plutôt qu'une liste : d'accord ?</span>
+<span>2. Suspension d'abonnement : 7 jours de grâce, caisse bloquée seulement après synchronisation (jamais en pleine journée de vente).</span>
+<span>3. Console éditeur sans accès aux données métier des clients.</span>
+<span>Une fois les filaires validés : maquettes haute fidélité, en commençant par la caisse (A-06, A-09, A-10, A-12).</span>
+</div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { mode: 'planche', ecran: 'W13' };
+  componentDidMount() { try { const s = JSON.parse(localStorage.getItem('amb-filaires-web2') || 'null'); if (s) this.setState(s); } catch (e) {} }
+  save(p) { this.setState(p, () => { try { localStorage.setItem('amb-filaires-web2', JSON.stringify(this.state)); } catch (e) {} }); }
+  renderVals() {
+    const ids = ['W13','W14','W15','W16','W17','W18','W19','W20','W21','W22','W23','W24'];
+    const proto = this.state.mode === 'proto';
+    const d = {}, go = {};
+    ids.forEach(id => { d[id] = !proto || this.state.ecran === id ? 'flex' : 'none'; go[id] = () => this.save({ ecran: id }); });
+    const menu = [['Tableau de bord',null],['Ventes',null],['Caisses','W13'],['Comptabilité','W14'],['États financiers','W15'],['Achats','W16'],['Stock','W17'],['Paramètres','W18'],['Studio','W19'],['Journal d\'audit','W20'],['Données personnelles','W21'],['Abonnement','W22'],['Console éditeur','W23'],['Pages système','W24']];
+    const nav = {};
+    ids.forEach(id => { nav[id] = menu.map(([nom, c]) => ({ nom, bg: c === id ? '#1E1B18' : 'transparent', fg: c === id ? '#FFFFFF' : (c ? '#1E1B18' : '#5A544E'), poids: c === id ? 700 : 400, aller: c ? go[c] : () => {} })); });
+    const M = (rows, keys) => rows.map(r => Object.fromEntries(keys.map((k, i) => [k, r[i]])));
+    const caisses = M([['Caisse 1','Ouaga — Zogona','Session ouverte · Awa','Hors-ligne depuis 9 h 15 · 12 en attente','3px solid #1E1B18'],['Caisse 2','Ouaga — Zogona','Session ouverte · Aminata','Synchronisée à 18 h 04','1.5px solid #1E1B18'],['Caisse 3','Koudougou','Fermée · rapport Z envoyé','Synchronisée à 17 h 40','1.5px solid #1E1B18'],['Tablette dépôt','Bobo · Dépôt central','Magasin (pas de caisse)','Synchronisée à 16 h 12','1.5px dashed #1E1B18']], ['nom','lieu','etat','sync','bord']);
+    const sessions = M([['14/03','Caisse 3','Salimata T.','Koudougou','184 500','184 500','0','Z-0311'],['14/03','Caisse 1','Awa K.','Ouaga — Zogona','612 400','612 400','en cours','—'],['13/03','Caisse 1','Awa K.','Ouaga — Zogona','548 000','549 500','− 1 500','Z-0309'],['13/03','Caisse 2','Aminata O.','Ouaga — Zogona','402 750','402 750','0','Z-0308'],['13/03','Caisse 3','Salimata T.','Koudougou','211 000','211 000','0','Z-0307'],['12/03','Caisse 1','Awa K.','Ouaga — Zogona','633 250','633 250','0','Z-0306'],['12/03','Caisse 2','Boukary S.','Ouaga — Zogona','389 600','388 600','+ 1 000','Z-0305'],['12/03','Caisse 3','Salimata T.','Koudougou','176 400','176 400','0','Z-0304']], ['date','caisse','caissier','lieu','ventes','attendu','ecart','z']);
+    const saisie = M([['401100','Ciments du Faso','Règlement facture FF-0088','2 800 000','','none'],['5211','','Règlement facture FF-0088','','2 800 000','2px solid #1E1B18'],['','','','','','none']], ['compte','tiers','libelle','debit','credit','focus']);
+    const actif = M([['AD','Immobilisations incorporelles','1 200 000','1 500 000',400],['AI','Immobilisations corporelles','18 450 000','16 900 000',400],['AZ','Total actif immobilisé','19 650 000','18 400 000',700],['BB','Stocks et encours','48 612 000','41 080 000',400],['BH','Créances clients','12 840 000','10 320 000',400],['BK','Total actif circulant','61 452 000','51 400 000',700],['BS','Trésorerie-actif','6 312 400','4 870 000',400],['BZ','Total général','87 414 400','74 670 000',700]], ['ref','lib','n','n1','poids']);
+    const passif = M([['CA','Capital','10 000 000','10 000 000',400],['CJ','Résultat net de l\'exercice','7 940 000','5 210 000',400],['CP','Total capitaux propres','32 150 000','24 210 000',700],['DA','Emprunts et dettes financières','12 000 000','14 000 000',400],['DJ','Fournisseurs d\'exploitation','34 264 400','29 460 000',400],['DK','Dettes fiscales et sociales','6 200 000','4 800 000',400],['DP','Total dettes','52 464 400','48 260 000',700],['DT','Trésorerie-passif','2 800 000','2 200 000',400],['DZ','Total général','87 414 400','74 670 000',700]], ['ref','lib','n','n1','poids']);
+    const C = (titre, cartes) => ({ titre, nb: cartes.length, cartes: M(cartes, ['ref','fournisseur','detail','montant']) });
+    const colonnesAchats = [C('Demandes de prix', [['DP-0021','Sahel Agro (démo)','Huile 20 L · 100 bidons','—'],['DP-0020','Tôles du Burkina (démo)','Tôle bac · 500','—']]), C('Commandes', [['BC-2027-0088','Ciments du Faso (démo)','400 sacs · livraison 14/03','2 080 000'],['BC-2027-0087','Quincaillerie Import (démo)','Pointes, câbles','640 000']]), C('Réceptions', [['BR-0102','Ciments du Faso (démo)','380 / 400 · écart − 20','1 976 000']]), C('Factures fournisseurs', [['FF-0088','Ciments du Faso (démo)','À rapprocher de BR-0102','2 080 000'],['FF-0086','Savonnerie Ouaga (démo)','Payée · Wave','312 000']])];
+    const stock = M([['Ciment 50 kg','142','36','0','178','890 000'],['Riz 25 kg','40','24','0','64','1 024 000'],['Huile 20 L','0','3','0','3','63 000'],['Tôle bac 3 m','86','0','0','86','352 600'],['Savon 400 g','900','240','60','1 200','288 000'],['Fer à béton 10','420','80','40','540','1 512 000'],['Beurre de karité','60','26','0','86','111 800'],['Peinture 4 L','14','8','0','22','176 000'],['Sucre 1 kg','200','80','30','310','201 500'],['Brouette','4','2','0','6','162 000']], ['nom','a','b','c','t','v']);
+    const sousParam = ['Entreprise','Sociétés','Établissements','Dépôts','Terminaux','Utilisateurs et rôles','Taxes','Régimes fiscaux','Numérotation','Moyens de paiement et FEC'].map(nom => ({ nom, bg: nom === 'Terminaux' ? '#FFFFFF' : 'transparent', poids: nom === 'Terminaux' ? 700 : 400 }));
+    const terminaux = M([['Caisse 1','TRM-0007','Ouaga — Zogona','Hors-ligne','aujourd\'hui 9 h 14','Révoquer'],['Caisse 2','TRM-0008','Ouaga — Zogona','En ligne','18 h 04','Révoquer'],['Caisse 3','TRM-0011','Koudougou','En ligne','17 h 40','Révoquer'],['Tablette dépôt','TRM-0012','Bobo · Central','En ligne','16 h 12','Révoquer'],['Ancienne caisse','TRM-0003','Ouaga — Zogona','Révoqué','02/01/2027','']], ['nom','id','lieu','statut','sync','action']);
+    const champs = M([['Fabricant','Texte court','Non','Non','transparent'],['Classe du ciment','Liste de choix','Non','Oui','#F5F3EF'],['Date de péremption','Date','Oui','Oui','transparent'],['Poids net (kg)','Nombre','Non','Non','transparent'],['Photo du lot','Fichier','Non','Non','transparent']], ['lib','type','oblig','caisse','fond']);
+    const audit = M([['14/03 18:07:12','Moussa Sawadogo','Facture validée','FA-2027-00422','405 000 FCFA · envoyée à la DGI','Web · Chrome'],['14/03 17:52:40','Awa Kaboré','Écart validé','Z-0309','− 1 500 · PIN Moussa S.','Caisse 1 (hors-ligne)'],['14/03 16:30:05','Mariam Ilboudo','Écriture saisie','BQ1-2027-0142','2 800 000','Web · Firefox'],['14/03 15:12:44','Moussa Sawadogo','Prix modifié','RIZ-025','17 000 → 17 500','Web · Chrome'],['14/03 11:02:10','Issouf Ouattara','Inventaire compté','INV-0007','Allée B · 64 produits','Tablette dépôt'],['14/03 10:43:55','Awa Kaboré','Paiement à vérifier','T-0139','Wave · réf. saisie','Caisse 1 (hors-ligne)'],['14/03 09:15:01','Système','Perte de réseau','TRM-0007','Mode hors-ligne','Caisse 1'],['14/03 08:58:20','Moussa Sawadogo','Connexion','—','MFA par SMS','Web · Chrome'],['13/03 19:20:33','Moussa Sawadogo','Terminal révoqué','TRM-0003','Ancienne caisse','Web · Chrome'],['13/03 18:10:00','Salimata Traoré','Session clôturée','Z-0307','Sans écart','Caisse 3'],['13/03 14:45:12','Mariam Ilboudo','Lettrage','411100','Pharmacie du Progrès','Web · Firefox'],['13/03 09:02:48','Aminata Ouédraogo','Retour','AV-2027-00014','5 500 · sac abîmé','Caisse 2']], ['date','user','action','objet','detail','app']);
+    const demandes = M([['12/03/2027','Issa Compaoré','Effacement','11/04/2027','À traiter','#F5F3EF'],['02/03/2027','Salimata Traoré','Accès','01/04/2027','Export envoyé','transparent'],['15/02/2027','Client anonyme (portail)','Rectification','17/03/2027','Traitée','transparent'],['10/01/2027','Boukary Ouédraogo','Accès','09/02/2027','Traitée','transparent']], ['date','nom','type','echeance','statut','fond']);
+    const facturesAbo = M([['AMB-2027-03-0412','14/03 → 13/04/2027','[PRIX À DÉFINIR]','Orange Money'],['AMB-2027-02-0388','14/02 → 13/03/2027','[PRIX À DÉFINIR]','Orange Money'],['AMB-2027-01-0351','14/01 → 13/02/2027','[PRIX À DÉFINIR]','Wave']], ['num','periode','montant','moyen']);
+    const kpiEditeur = M([['Entreprises abonnées','184'],['En essai','37'],['Suspendues','6'],['Revenu mensuel','6 840 000 F']], ['t','v']);
+    const abonnes = M([['Quincaillerie Wend-Panga (démo)','Business','Actif','14/04/2027','3','il y a 2 min'],['Pharmacie du Progrès (démo)','Essentiel','Actif','02/04/2027','1','il y a 1 h'],['BTP Faso Bâtir (démo)','Enterprise','Actif','30/06/2027','8','il y a 5 min'],['Alimentation Wend-Kuuni (démo)','Essentiel','Essai · J-6','20/03/2027','1','hier'],['Coopérative Karité Lèo (démo)','Business','Grâce · J+3','11/03/2027','2','il y a 3 j'],['Atelier Kaboré & Fils (démo)','Essentiel','Suspendu','28/02/2027','1','il y a 15 j'],['ONG Lumière Sahel (démo)','Institution','Actif','31/12/2027','0','il y a 4 h'],['Garage Zida (démo)','Essentiel','Essai · J-21','04/04/2027','1','il y a 20 min'],['Transit Nakambé (démo)','Business','Actif','09/04/2027','4','il y a 1 h'],['Boulangerie Le Faso (démo)','Essentiel','Actif','22/03/2027','2','il y a 8 min']], ['nom','pack','statut','ech','caisses','act']);
+    const pagesSysteme = M([['CONNEXION','A','Connexion','Téléphone ou e-mail, puis mot de passe. Établissement choisi après connexion.','Se connecter'],['MFA','#','Code de vérification','Saisissez le code à 6 chiffres envoyé par SMS au +226 70 •• •• 02.','Vérifier'],['MOT DE PASSE OUBLIÉ','?','Mot de passe oublié','Recevez un lien par SMS ou e-mail. Il est valable 30 minutes.','Envoyer le lien'],['403','⊘','Accès non autorisé','Votre rôle ne permet pas d\'ouvrir cette page. Demandez l\'accès à Moussa Sawadogo.','Retour au tableau de bord'],['404','404','Page introuvable','Le lien est peut-être ancien. Cherchez la pièce par son numéro.','Rechercher'],['MAINTENANCE','◐','Maintenance en cours','Retour prévu à 2 h 30. Vos caisses continuent de fonctionner hors-ligne.','Voir l\'état du service'],['ABONNEMENT SUSPENDU','‖','Abonnement suspendu','Vos données sont conservées. Renouvelez pour retrouver l\'accès complet.','Renouveler par Mobile Money']], ['code','pic','titre','texte','action']);
+    return {
+      d, go, nav, alignement: proto ? 'center' : 'flex-start',
+      btnPlanche: proto ? { bg: '#FFFFFF', fg: '#1E1B18' } : { bg: '#1E1B18', fg: '#FFFFFF' },
+      btnProto: proto ? { bg: '#1E1B18', fg: '#FFFFFF' } : { bg: '#FFFFFF', fg: '#1E1B18' },
+      voirPlanche: () => this.save({ mode: 'planche' }), voirProto: () => this.save({ mode: 'proto' }),
+      caisses, sessions, saisie, actif, passif, colonnesAchats, stock, sousParam, terminaux, champs, audit, demandes, facturesAbo, kpiEditeur, abonnes, pagesSysteme
+    };
+  }
+}
+</script>
+</body>
+</html>

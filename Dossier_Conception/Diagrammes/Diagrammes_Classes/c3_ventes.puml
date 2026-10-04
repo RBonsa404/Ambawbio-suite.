@@ -1,0 +1,125 @@
+@startuml
+!include style.iuml
+title Packages pos, ventes et facturation
+
+class PointDeVente {
+  nom : String
+  seuilEcart : Montant
+  stockNegatifAutorise : boolean = true
+}
+class SessionCaisse {
+  numero : String
+  ouverteLe : Instant
+  fermeeLe : Instant
+  fondsOuverture : Montant
+  statut : StatutSession
+  + ouvrir(fonds)
+  + cloturer(comptage) : RapportZ
+}
+class ComptageCaisse {
+  moyen : MoyenPaiement
+  attendu : Montant
+  compte : Montant
+  ecart : Montant
+  motifEcart : String
+}
+class Vente {
+  numero : String
+  horodatageLocal : Instant
+  total : Montant
+  statut : StatutVente
+  + ajouterLigne(produit, qte)
+  + calculerTotaux()
+}
+class LigneVente {
+  quantite : BigDecimal
+  prixUnitaire : Montant
+  remise : BigDecimal
+  montantHT : Montant
+}
+class Devis {
+  numero : String
+  date : LocalDate
+  validite : LocalDate
+  statut : StatutDevis
+  + convertirEnCommande() : CommandeClient
+}
+class CommandeClient {
+  numero : String
+  date : LocalDate
+  statut : StatutCommande
+  + facturer() : Facture
+}
+class LigneDocument {
+  quantite : BigDecimal
+  prixUnitaire : Montant
+  remise : BigDecimal
+}
+abstract class DocumentFiscal <<abstraite>> {
+  numero : String
+  dateEmission : LocalDate
+  totalHT : Montant
+  totalTaxes : Montant
+  totalTTC : Montant
+  statut : StatutFacture
+  + valider()
+  + resteAPayer() : Montant
+}
+class Facture {
+  dateEcheance : LocalDate
+  conditionsPaiement : String
+  + creerAvoir(lignes) : Avoir
+}
+class Avoir {
+  motif : String
+}
+class LigneFacture {
+  quantite : BigDecimal
+  prixUnitaire : Montant
+  remise : BigDecimal
+  montantHT : Montant
+}
+class LigneTaxe {
+  base : Montant
+  taux : BigDecimal
+  montant : Montant
+}
+class CertificationFEC {
+  statut : StatutCertification
+  identifiantDGI : String
+  codeQR : String
+  horodatageDGI : Instant
+  tentatives : int
+  dernierMessage : String
+}
+
+class Tiers <<externe : referentiel>>
+class Produit <<externe : referentiel>>
+PointDeVente "1" *-- "0..*" SessionCaisse
+SessionCaisse "1" *-- "1..*" ComptageCaisse
+SessionCaisse "1" *-- "0..*" Vente
+Vente "1" *-- "1..*" LigneVente
+Vente "0..1" --> "0..1" Facture : facture demandée
+Devis "1" *-- "1..*" LigneDocument
+CommandeClient "1" *-- "1..*" LigneDocument
+Devis "0..1" --> "0..1" CommandeClient : devient
+CommandeClient "1" --> "0..*" Facture
+DocumentFiscal <|-- Facture
+DocumentFiscal <|-- Avoir
+Avoir "0..*" --> "1" Facture : annule
+DocumentFiscal "1" *-- "1..*" LigneFacture
+DocumentFiscal "1" *-- "1..*" LigneTaxe
+DocumentFiscal "1" *-- "0..1" CertificationFEC
+DocumentFiscal "0..*" --> "1" Tiers : client
+Vente "0..*" --> "0..1" Tiers : client
+Devis "0..*" --> "1" Tiers : client
+LigneVente "0..*" --> "1" Produit
+LigneFacture "0..*" --> "0..1" Produit
+LigneDocument "0..*" --> "1" Produit
+note right of DocumentFiscal
+  Invariant : un document validé
+  n'est plus modifiable (RG-01).
+  Numéro unique par société et
+  par type de pièce.
+end note
+@enduml

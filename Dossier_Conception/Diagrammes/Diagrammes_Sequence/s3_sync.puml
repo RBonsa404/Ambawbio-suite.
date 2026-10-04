@@ -1,0 +1,47 @@
+@startuml
+!include style.iuml
+title SD-03 : Synchroniser un terminal (UC-SOC-05)
+autonumber
+participant "SyncAgent\n(Android)" as AG
+database "SQLite" as L
+box "Serveur Ambawbio"
+participant "SyncController" as SC
+participant "SyncService" as SS
+participant "Gestionnaire\nd'opération\n(ex. VenteHandler)" as H
+participant "Publication\nd'événements\n(Spring Modulith)" as EV
+database "PostgreSQL" as DB
+end box
+
+AG -> AG : Réseau détecté
+AG -> L : Opérations en attente (ordre de création)
+L --> AG : Lot de 100 opérations max.
+AG -> SC : POST /api/v1/sync/push\n(lot compressé, signé)
+SC -> SS : traiter(terminal, lot)
+SS -> DB : Vérifie le terminal (actif, clé)
+loop pour chaque opération
+  SS -> DB : INSERT operation_recue\n(idOperation unique)
+  alt Nouvelle opération
+    SS -> H : appliquer(opération)
+    H -> DB : Écrit Vente, Paiement,\nMouvementStock (cumul)
+    H -> EV : VenteEnregistree,\nFactureACertifier…
+    EV -> DB : event_publication\n(même transaction)
+    SS -> DB : statut = APPLIQUEE
+  else Conflit de clé (déjà reçue)
+    SS -> SS : statut = IGNOREE_DOUBLON
+  else Conflit métier sensible
+    SS -> DB : statut = EN_CONFLIT\n+ alerte au responsable
+  end
+end
+SS --> SC : Accusés de réception
+SC --> AG : 200 OK (accusés, conflits)
+AG -> L : Marque les opérations synchronisées
+AG -> SC : GET /api/v1/sync/pull?curseur=N
+SC -> SS : changements(terminal, N)
+SS -> DB : flux_changements > N\n(filtré par entreprise, établissement, rôle)
+DB --> SS : Changements
+opt Plage consommée à plus de 80 %
+  SS -> DB : Réserve une nouvelle plage
+end
+SS --> AG : Changements + curseur M\n(+ nouvelle plage)
+AG -> L : Applique les changements, mémorise M
+@enduml

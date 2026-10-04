@@ -1,0 +1,107 @@
+@startuml
+!include style.iuml
+title Package referentiel : tiers et produits
+
+class Tiers {
+  nom : String
+  type : TypeTiers
+  estClient : boolean
+  estFournisseur : boolean
+  ifu : Ifu [0..1]
+  rccm : String [0..1]
+  assujettiTva : boolean
+  telephone : String
+  email : String
+  adresse : Adresse
+  plafondCredit : Montant
+  + estAssujetti() : boolean
+}
+class RegimeFiscal {
+  code : String
+  libelle : String
+  actif : boolean
+}
+class Contact {
+  nom : String
+  fonction : String
+  telephone : String
+  consentementMarketing : boolean
+}
+class CompteMobileMoney {
+  operateur : Operateur
+  numero : String
+}
+class CategorieProduit {
+  nom : String
+}
+class Produit {
+  reference : String
+  nom : String
+  type : TypeProduit
+  prixVente : Montant
+  coutMoyen : Montant
+  suiviStock : boolean
+  suiviLot : boolean
+  actif : boolean
+}
+class CodeBarre {
+  valeur : String
+}
+class UniteMesure {
+  code : String
+  libelle : String
+}
+class Conditionnement {
+  libelle : String
+  facteur : BigDecimal
+}
+class Taxe {
+  code : String
+  libelle : String
+  type : TypeTaxe
+  taux : BigDecimal
+  dateEffet : LocalDate
+}
+class ListePrix {
+  nom : String
+  dateDebut : LocalDate
+  dateFin : LocalDate
+}
+class LignePrix {
+  quantiteMin : BigDecimal
+  prix : Montant
+  remise : BigDecimal
+}
+
+class Ifu <<valeur>> {
+  numero : String
+  + estValide() : boolean
+}
+class Montant <<valeur>> {
+  valeur : long
+  devise : Devise
+  + ajouter(Montant) : Montant
+}
+class Adresse <<valeur>> {
+  ville : String
+  quartier : String
+  secteur : String
+  repere : String
+}
+
+Tiers "0..*" --> "1" RegimeFiscal
+Tiers "1" *-- "0..*" Contact
+Tiers "1" *-- "0..*" CompteMobileMoney
+Produit "0..*" --> "1" CategorieProduit
+Produit "1" *-- "0..*" CodeBarre
+Produit "0..*" --> "1" UniteMesure : unité de stock
+Produit "1" *-- "0..*" Conditionnement
+Conditionnement "0..*" --> "1" UniteMesure : sac, carton…
+Produit "0..*" --> "0..*" Taxe
+ListePrix "1" *-- "1..*" LignePrix
+LignePrix "0..*" --> "1" Produit
+Tiers "0..*" --> "0..1" ListePrix
+Tiers ..> Ifu
+Tiers ..> Adresse
+Produit ..> Montant
+@enduml

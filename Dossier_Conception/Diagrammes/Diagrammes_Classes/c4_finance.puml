@@ -1,0 +1,96 @@
+@startuml
+!include style.iuml
+title Packages paiement et comptabilite
+
+class Paiement {
+  numero : String
+  date : Instant
+  montant : Montant
+  moyen : MoyenPaiement
+  statut : StatutPaiement
+  sens : SensPaiement
+  + confirmer()
+  + rapprocher()
+}
+class AffectationPaiement {
+  montantAffecte : Montant
+}
+class TransactionMobileMoney {
+  operateur : Operateur
+  numeroPayeur : String
+  referenceExterne : String
+  referenceSecours : String
+  statutFournisseur : String
+  adaptateur : String
+  creeeLe : Instant
+  confirmeeLe : Instant
+}
+class NotificationPaiement {
+  recueLe : Instant
+  charge : JSONB
+  signatureValide : boolean
+  cleIdempotence : String
+}
+class ExerciceComptable {
+  dateDebut : LocalDate
+  dateFin : LocalDate
+  statut : StatutExercice
+  systeme : SystemeComptable
+}
+class PeriodeComptable {
+  mois : YearMonth
+  cloturee : boolean
+}
+class Compte {
+  numero : String
+  libelle : String
+  classe : int
+  type : TypeCompte
+  lettrable : boolean
+}
+class Journal {
+  code : String
+  libelle : String
+  type : TypeJournal
+}
+class Ecriture {
+  numero : String
+  date : LocalDate
+  libelle : String
+  origine : String
+  origineId : UUID
+  statut : StatutEcriture
+  + valider()
+  + estEquilibree() : boolean
+}
+class LigneEcriture {
+  debit : Montant
+  credit : Montant
+  libelle : String
+  tiersId : UUID
+  axeAnalytique : String
+}
+class Lettrage {
+  code : String
+  date : LocalDate
+}
+
+Paiement "1" *-- "0..*" AffectationPaiement
+AffectationPaiement "0..*" --> "1" DocumentFiscal
+Paiement "1" *-- "0..1" TransactionMobileMoney
+TransactionMobileMoney "1" -- "0..*" NotificationPaiement
+ExerciceComptable "1" *-- "12..*" PeriodeComptable
+Ecriture "0..*" --> "1" Journal
+Ecriture "0..*" --> "1" PeriodeComptable
+Ecriture "1" *-- "2..*" LigneEcriture
+LigneEcriture "0..*" --> "1" Compte
+Lettrage "0..1" -- "2..*" LigneEcriture
+Compte "0..1" -- "0..*" Compte : compte parent >
+class DocumentFiscal <<externe : facturation>>
+note bottom of Ecriture
+  Invariant : somme des débits =
+  somme des crédits.
+  Une écriture validée n'est corrigée
+  que par une contre-passation.
+end note
+@enduml

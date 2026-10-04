@@ -1,0 +1,58 @@
+@startuml
+!include style.iuml
+title SD-05 : Valider et certifier une facture (UC-FAC-01)
+autonumber
+actor Comptable as U
+participant "Application web" as A
+box "Serveur Ambawbio"
+participant "FactureController" as FC
+participant "FactureService" as FS
+participant "Facture\n(domaine)" as F
+participant "NumerotationService" as NS
+participant "ConformiteFiscaleService" as CF
+participant "<<interface>>\nPortCertificationFiscale" as PORT
+participant "Écouteur\ncomptabilité" as CPT
+database "PostgreSQL" as DB
+end box
+participant "DGI\n(FEC)" as DGI
+
+U -> A : Valider la facture
+A -> FC : POST /api/v1/factures/{id}/validation
+FC -> FS : valider(id)
+FS -> DB : Charge la facture (verrou)
+FS -> CF : controler(facture)
+CF -> CF : Mentions obligatoires,\nIFU vendeur et client assujetti,\nbarème en vigueur
+alt Contrôle en échec
+  CF --> FS : Erreurs
+  FS --> A : 422 (liste des erreurs)
+else Contrôle réussi
+  FS -> NS : prochainNumero(société, FACTURE)
+  NS -> DB : Séquence sans trou\n(verrou de ligne)
+  NS --> FS : Numéro
+  FS -> F : valider(numéro)
+  F -> F : Statut VALIDEE,\ndocument verrouillé (INV-01)
+  FS -> DB : Enregistre facture\n+ JournalAudit\n+ événement FactureValidee
+  FS --> A : 200 (facture validée)
+end
+
+== Certification (asynchrone, après validation) ==
+CF -> PORT : certifier(facture)
+PORT -> DGI : Transmission selon\nles spécifications officielles
+alt DGI disponible
+  DGI --> PORT : Identifiant, éléments QR, horodatage
+  PORT --> CF : Résultat
+  CF -> DB : CertificationFEC = CERTIFIEE
+  CF -> CF : Génère le PDF avec QR code\n(stockage d'objets)
+else DGI indisponible
+  CF -> DB : CertificationFEC = EN_FILE,\ntentatives + 1
+  note right of CF
+    Le planificateur relance la file
+    avec un délai croissant
+  end note
+else Rejet
+  CF -> DB : CertificationFEC = REJETEE\n+ alerte au comptable
+end
+
+== Comptabilisation (événement FactureValidee) ==
+CPT -> DB : Écriture au journal des ventes\n(client / ventes / TVA collectée)
+@enduml

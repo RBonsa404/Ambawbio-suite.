@@ -1,0 +1,49 @@
+@startuml
+!include style.iuml
+title SD-04 : Payer par Mobile Money (UC-POS-04, UC-PAY-01)
+autonumber
+actor Caissier as C
+participant "Application\nde caisse" as A
+box "Serveur Ambawbio"
+participant "PaiementController" as PC
+participant "PaiementService" as PSV
+participant "<<interface>>\nPortPaiement" as PORT
+participant "AdaptateurAgregateur\n(ou Simulateur)" as AD
+participant "NotificationController" as NC
+database "PostgreSQL" as DB
+end box
+participant "Agrégateur\nMobile Money" as AGR
+actor "Client\n(téléphone)" as CL
+
+C -> A : Mobile Money : opérateur + numéro
+A -> PC : POST /api/v1/paiements\n(idPaiement UUID, vente, montant)
+PC -> PSV : initierEncaissement(...)
+PSV -> DB : Paiement statut = INITIE
+PSV -> PORT : initierEncaissement(demande)
+PORT -> AD : (implémentation choisie\npar configuration)
+AD -> AGR : Demande de paiement\n(clé d'idempotence = idPaiement)
+AGR --> AD : Référence externe
+AD --> PSV : Référence
+PSV -> DB : statut = EN_ATTENTE
+PSV --> A : En attente de validation client
+AGR -> CL : Demande de confirmation (USSD / application)
+CL -> AGR : Valide avec son code secret
+AGR -> NC : POST /api/v1/paiements/notifications\n(signée)
+NC -> NC : Vérifie la signature
+NC -> DB : NotificationPaiement\n(clé d'idempotence unique)
+alt Première notification
+  NC -> PSV : confirmer(référence)
+  PSV -> DB : statut = CONFIRME
+  PSV -> PSV : Publie PaiementConfirme\n(comptabilité)
+else Notification en double
+  NC -> NC : Ignorée
+end
+NC --> AGR : 200 OK
+A -> PC : GET /api/v1/paiements/{id}\n(interrogation périodique)
+PC --> A : CONFIRME
+A --> C : Paiement accepté, vente finalisée
+
+== Variante : pas de réseau en caisse ==
+C -> A : Saisit la référence reçue par SMS
+A -> A : Paiement local A_VERIFIER\n(rapprochement ultérieur, UC-PAY-02)
+@enduml

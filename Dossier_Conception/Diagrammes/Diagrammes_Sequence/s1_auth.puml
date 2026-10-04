@@ -1,0 +1,39 @@
+@startuml
+!include style.iuml
+title SD-01 : S'authentifier (UC-SOC-01)
+autonumber
+actor Utilisateur as U
+box "Client" 
+participant "Application\nAngular" as A
+end box
+participant "Keycloak" as K
+box "Serveur Ambawbio"
+participant "Filtre de sécurité\n(Spring Security)" as F
+participant "ContexteService" as CS
+database "PostgreSQL" as DB
+end box
+
+U -> A : Ouvre l'application
+A -> K : Redirection (OpenID Connect,\nflux code + PKCE)
+U -> K : Identifiant + mot de passe
+alt Rôle sensible
+  K -> U : Demande le code MFA
+  U -> K : Code à usage unique
+end
+K --> A : Code d'autorisation
+A -> K : Échange contre jetons
+K --> A : Jeton d'accès (15 min)\n+ jeton de renouvellement
+A -> F : GET /api/v1/socle/contexte\n(Authorization: Bearer)
+F -> F : Vérifie signature,\nexpiration, entreprise
+F -> CS : contexteUtilisateur(idKeycloak)
+CS -> DB : SET app.tenant_id ;\nlecture utilisateur, rôles,\nétablissements, modules actifs
+DB --> CS : Données
+CS -> DB : Écrit JournalAudit (CONNEXION)
+CS --> A : Contexte (entreprise, établissements,\ndroits, modules)
+A --> U : Écran d'accueil
+
+== Variante hors-ligne (Android, UC-SOC-01 A2) ==
+U -> A : Code PIN
+A -> A : Compare au PIN haché local\n(session déjà ouverte sur ce terminal)
+A --> U : Session locale déverrouillée\n(droits de la dernière synchronisation)
+@enduml

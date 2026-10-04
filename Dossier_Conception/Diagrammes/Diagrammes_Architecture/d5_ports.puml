@@ -1,0 +1,42 @@
+@startuml
+!include style.iuml
+title Intégrations externes : ports et adaptateurs
+left to right direction
+
+package "Cœur métier" #EEF4F0 {
+  [facturation] as FAC
+  [pos / ventes / rh] as MET
+  interface "PortPaiement\n+ initierEncaissement()\n+ initierDecaissement()\n+ consulterStatut()\n+ traiterNotification()" as PP
+  interface "PortCertificationFiscale\n+ certifier(facture)\n+ verifierIfu(ifu)" as PF
+  interface "PortMessagerie\n+ envoyer(message)" as PM
+}
+
+package "Adaptateurs (infrastructure)" #FBF5E3 {
+  [SimulateurPaiement\n(développement, démonstration)] as SIM
+  [AdaptateurAgregateur\n(contrat principal)] as AGR
+  [AdaptateurOperateurDirect\n(évolution future)] as DIR
+  [SimulateurFEC] as SFEC
+  [AdaptateurDGI\n(selon spécifications officielles)] as DGI
+  [AdaptateurSMS] as SMS
+  [AdaptateurWhatsApp] as WA
+  [AdaptateurSMTP] as MAIL
+}
+
+MET --> PP
+FAC --> PF
+MET --> PM
+PP <|.. SIM
+PP <|.. AGR
+PP <|.. DIR
+PF <|.. SFEC
+PF <|.. DGI
+PM <|.. SMS
+PM <|.. WA
+PM <|.. MAIL
+
+note right of AGR
+Choix de l'adaptateur par configuration,
+par entreprise. Notifications entrantes
+vérifiées (signature) et idempotentes.
+end note
+@enduml

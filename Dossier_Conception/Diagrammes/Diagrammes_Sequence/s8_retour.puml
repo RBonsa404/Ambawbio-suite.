@@ -1,0 +1,44 @@
+@startuml
+!include style.iuml
+title SD-08 : Traiter un retour en caisse et émettre un avoir (UC-POS-06, UC-FAC-02)
+autonumber
+actor Caissier as C
+box "Application Android"
+participant "Écran\nde caisse" as UI
+participant "RetourService" as RS
+database "SQLite" as L
+participant "FileOperations" as Q
+end box
+box "Serveur Ambawbio"
+participant "Gestionnaire\nRetourHandler" as H
+participant "AvoirService" as AV
+participant "ConformiteFiscaleService" as CF
+database "PostgreSQL" as DB
+end box
+
+C -> UI : Scanne le ticket ou la facture d'origine
+UI -> RS : chercherVente(numéro)
+RS -> L : Vente d'origine et lignes
+alt Vente trouvée localement
+  L --> RS : Vente
+else Vente absente du terminal
+  RS --> UI : Recherche en ligne nécessaire\n(ou retour sans ticket si autorisé)
+end
+C -> UI : Sélectionne les articles retournés et le motif
+UI -> RS : creerRetour(lignes, motif, remboursement)
+RS -> RS : Contrôle : quantité retournée\n≤ quantité vendue non déjà retournée
+RS -> L : Retour, MouvementStock (RETOUR_CLIENT),\nPaiement sortant (espèces ou Mobile Money)
+RS -> Q : Opération RETOUR_ENREGISTRE
+RS --> UI : Bon de retour imprimé
+
+== À la synchronisation ==
+Q -> H : Opération RETOUR_ENREGISTRE
+H -> AV : creerAvoir(factureOrigine, lignes, motif)
+AV -> AV : Vérifie INV-04\n(avoir ≤ reste non annulé)
+AV -> DB : Avoir lié à la facture d'origine,\nnuméro définitif, JournalAudit
+AV -> CF : Certification (même flux que SD-05)
+AV -> DB : Événement AvoirValide\n(écriture d'extourne)
+note over AV
+  La facture d'origine n'est jamais modifiée (RG-01)
+end note
+@enduml

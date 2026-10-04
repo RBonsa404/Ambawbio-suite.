@@ -1,0 +1,43 @@
+@startuml
+!include style.iuml
+title Architecture du client Angular (web et Android)
+
+rectangle "Application Angular 22 (composants autonomes, signaux, Tailwind CSS 4)" {
+  package "core" #EEF4F0 {
+    [Authentification\n(jetons, MFA)] as AUTH
+    [Intercepteurs HTTP\n(tenant, erreurs, réessais)] as INT
+    [Contexte utilisateur\n(entreprise, établissement, droits)] as CTX
+    [Traductions\n(français, extensible)] as I18N
+  }
+  package "shared (système de conception)" #FBF5E3 {
+    [Composants UI Tailwind\n(tableaux, formulaires, caisse)] as UI
+    [Pipes FCFA, dates, IFU] as PIPE
+  }
+  package "features (chargées à la demande)" #F3F7F4 {
+    [pos] as FPOS
+    [ventes] as FVEN
+    [stock] as FSTK
+    [comptabilite] as FCPT
+    [achats] as FACH
+    [crm, rh, …] as FOTH
+  }
+  package "offline" #FFFFFF {
+    [Dépôts locaux\n(Dexie / IndexedDB\nou SQLite chiffrée)] as REPO
+    [File d'opérations\n(outbox)] as OUT
+    [Service de synchronisation\n(push / pull, reprise)] as SYNC
+    [Détection du réseau\net de l'état de la batterie] as NET
+  }
+  [Service Worker\n(cache des écrans et ressources)] as SW
+}
+
+FPOS --> REPO : lecture
+FPOS --> OUT : écriture d'opérations
+FVEN --> REPO
+FSTK --> OUT
+OUT --> SYNC
+REPO <-- SYNC : changements reçus
+NET --> SYNC
+SYNC --> INT
+INT --> [API REST du serveur] : HTTPS
+FCPT --> INT : en ligne uniquement
+@enduml

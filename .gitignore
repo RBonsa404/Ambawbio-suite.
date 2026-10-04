@@ -1,0 +1,31 @@
+# OS
+.DS_Store
+Thumbs.db
+.thumbnail
+desktop.ini
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+*~
+
+# Build
+target/
+dist/
+node_modules/
+.angular/
+
+# Environment
+.env
+.env.local
+*.log
+
+# Java
+*.class
+*.jar
+*.war
+
+# Dependencies
+package-lock.json

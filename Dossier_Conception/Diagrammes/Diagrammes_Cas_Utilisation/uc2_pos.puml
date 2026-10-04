@@ -1,0 +1,44 @@
+@startuml
+!include style.iuml
+left to right direction
+title Cas d'utilisation détaillés : Point de Vente (MVP)
+
+actor "Caissier" as CAI
+actor "Responsable\nde magasin" as RES
+actor "Agrégateur\nMobile Money" as MM <<système>>
+actor "DGI (FEC)" as DGI <<système>>
+
+RES -|> CAI
+
+rectangle "Point de Vente (fonctionne hors-ligne)" {
+  usecase "UC-POS-01\nOuvrir une session de caisse" as O
+  usecase "UC-POS-02\nEnregistrer une vente" as V
+  usecase "Rechercher / scanner\nun article" as SC
+  usecase "UC-POS-03\nEncaisser" as E
+  usecase "Payer en espèces" as ESP
+  usecase "UC-POS-04\nPayer par Mobile Money" as MOM
+  usecase "Saisir une référence\nde secours" as SEC
+  usecase "Paiement mixte" as MIX
+  usecase "UC-POS-05\nÉmettre le ticket\net la facture certifiée" as T
+  usecase "UC-POS-06\nTraiter un retour\n(avoir)" as R
+  usecase "UC-POS-07\nClôturer la session" as C
+  usecase "UC-POS-08\nValider un écart de caisse" as EC
+}
+
+CAI --> O
+CAI --> V
+CAI --> R
+CAI --> C
+RES --> EC
+V ..> SC : <<include>>
+V ..> E : <<include>>
+E ..> T : <<include>>
+ESP .> E : <<extend>>
+MOM .> E : <<extend>>
+MIX .> E : <<extend>>
+SEC .> MOM : <<extend>>\n(pas de réseau)
+R ..> T : <<include>>
+EC .> C : <<extend>>\n(écart > seuil)
+MOM --> MM
+T --> DGI
+@enduml

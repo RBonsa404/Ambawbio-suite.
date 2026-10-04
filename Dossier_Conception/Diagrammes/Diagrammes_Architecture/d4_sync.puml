@@ -1,0 +1,32 @@
+@startuml
+!include style.iuml
+title Principe de la synchronisation hors-ligne
+autonumber
+actor Caissier as C
+participant "Application\n(caisse)" as A
+database "Base locale\nchiffrée" as L
+participant "Serveur\n(module synchronisation)" as S
+database "PostgreSQL" as P
+
+== Hors-ligne ==
+C -> A : Enregistre une vente
+A -> L : Écrit la vente (UUID généré localement,\nnuméro pris dans la plage réservée)
+A -> L : Ajoute l'opération à la file (outbox)\nhorodatée et signée
+A --> C : Ticket imprimé
+
+== Retour du réseau ==
+A -> S : POST /sync/push (lot d'opérations compressé)
+S -> P : Pour chaque opération : déjà reçue ?\n(clé d'idempotence = identifiant d'opération)
+alt Nouvelle opération
+  S -> P : Applique selon la règle de conflit\n(cumul stock, dernière modification, validation manuelle)
+  S -> P : Publie les événements (comptabilité, FEC à certifier)
+else Déjà appliquée
+  S -> S : Ignore (aucun doublon)
+end
+S --> A : Accusés de réception + conflits éventuels
+A -> L : Marque les opérations comme synchronisées
+A -> S : GET /sync/pull?curseur=…
+S -> P : Lit le flux de changements depuis le curseur\n(filtré par entreprise et par rôle)
+S --> A : Changements + nouveau curseur\n(+ nouvelle plage de numéros si besoin)
+A -> L : Met à jour les données locales
+@enduml

@@ -1,0 +1,54 @@
+@startuml
+!include style.iuml
+title Architecture logique du serveur : modules (Spring Modulith)
+
+package "Modules métier" as MET #FBF5E3 {
+  [ventes\n(devis, commandes)] as VEN
+  [pos\n(caisse, sessions)] as POS
+  [achats] as ACH
+  [crm] as CRM
+  [rh / paie\n(Release 2)] as RH
+  [facturation\n(FEC, avoirs)] as FAC
+  [paiement\n(port Mobile Money)] as PAY
+  [stock] as STK
+  [comptabilite\n(SYSCOHADA)] as CPT
+}
+
+package "Conformité" as CONF #F3F7F4 {
+  [conformite-fiscale\n(port FEC, règles DGI)] as FEC
+}
+
+package "Socle transversal (utilisé par tous les modules)" as SOC #EEF4F0 {
+  [identite\n(utilisateurs, rôles, MFA)] as ID
+  [tenancy\n(entreprises, établissements,\nabonnements)] as TEN
+  [referentiel\n(tiers, produits, unités)] as REF
+  [parametrage\n(taxes, barèmes versionnés)] as PAR
+  [audit\n(journal chaîné)] as AUD
+  [synchronisation\n(opérations, changements,\nplages de numéros)] as SYN
+  [notification\n(e-mail, SMS, WhatsApp)] as NOT
+  [documents\n(fichiers, PDF, GED)] as DOC
+  [studio\n(champs personnalisés)] as STU
+}
+
+VEN --> FAC : appel
+POS --> FAC : appel
+FAC --> FEC : appel
+POS --> PAY : appel
+FAC ..> CPT : <<événement>>\nFactureValidee
+POS ..> STK : <<événement>>\nVenteEnregistree
+ACH ..> STK : <<événement>>\nReceptionValidee
+STK ..> CPT : <<événement>>\nMouvementValorise
+PAY ..> CPT : <<événement>>\nPaiementConfirme
+RH ..> CPT : <<événement>>\nPaieValidee
+FEC --> PAR : appel
+MET -down-> SOC : API publiques du socle
+CRM -[hidden]- RH
+
+legend right
+  Trait plein : appel synchrone d'une API publique
+  Pointillé : événement de domaine publié et enregistré
+  dans PostgreSQL (traitement fiable, sans courtier)
+  Chaque module : package « api » public,
+  package « internal » caché, vérifié par des tests.
+endlegend
+@enduml

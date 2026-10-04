@@ -1,0 +1,52 @@
+@startuml
+!include style.iuml
+left to right direction
+title Vue globale des cas d'utilisation d'Ambawbio Suite (8 piliers + socle)
+
+actor "Dirigeant" as DIR
+actor "Administrateur\nentreprise" as ADM
+actor "Comptable" as CPT
+actor "Caissier" as CAI
+actor "Commercial" as COM
+actor "Magasinier /\nacheteur" as MAG
+actor "Gestionnaire\nRH / paie" as RH
+actor "Employé" as EMP
+actor "Chef de projet" as CDP
+actor "Chargé de\nmarketing" as MKT
+actor "Client final" as CLI
+
+rectangle "Ambawbio Suite" {
+  usecase "Gérer l'entreprise, les utilisateurs\net les droits (Socle)" as S0
+  usecase "Consulter les tableaux de bord" as S1
+  usecase "Vendre et suivre les clients\n(P1 Ventes & Relation client)" as P1
+  usecase "Tenir la comptabilité et facturer\n(P2 Finance & Comptabilité)" as P2
+  usecase "Gérer stock, achats et production\n(P3 Opérations & Logistique)" as P3
+  usecase "Gérer le personnel et la paie\n(P4 Ressources humaines)" as P4
+  usecase "Publier le site et vendre en ligne\n(P5 Site Web & E-commerce)" as P5
+  usecase "Communiquer et fidéliser\n(P6 Marketing & Communication)" as P6
+  usecase "Piloter projets, temps et documents\n(P7 Productivité)" as P7
+  usecase "Personnaliser sans code\n(P8 Studio)" as P8
+}
+
+actor "Agrégateur\nMobile Money" as MM <<système>>
+actor "DGI (FEC)" as DGI <<système>>
+actor "Service SMS /\nWhatsApp / e-mail" as SMS <<système>>
+
+ADM --> S0
+ADM --> P8
+DIR --> S1
+CAI --> P1
+COM --> P1
+CPT --> P2
+P3 <-- MAG
+P4 <-- RH
+P4 <-- EMP
+P7 <-- CDP
+P6 <-- MKT
+P5 <-- CLI
+P1 --> MM
+P2 --> DGI
+P2 --> MM
+P4 --> MM
+P6 --> SMS
+@enduml

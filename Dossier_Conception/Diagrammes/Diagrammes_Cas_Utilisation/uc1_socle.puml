@@ -1,0 +1,49 @@
+@startuml
+!include style.iuml
+left to right direction
+title Cas d'utilisation détaillés : socle transversal (MVP)
+
+actor "Utilisateur" as U
+actor "Administrateur\nentreprise" as ADM
+actor "Dirigeant" as DIR
+actor "Administrateur\nplateforme" as APF
+actor "Keycloak" as KC <<système>>
+actor "Agrégateur\nMobile Money" as MM <<système>>
+
+ADM -|> U
+DIR -|> U
+
+rectangle "Socle transversal" {
+  usecase "UC-SOC-01\nS'authentifier" as A1
+  usecase "Valider le second\nfacteur (MFA)" as A2
+  usecase "UC-SOC-02\nParamétrer l'entreprise\n(sociétés, établissements,\ndépôts, fiscalité)" as A3
+  usecase "UC-SOC-03\nGérer les utilisateurs\net les rôles" as A4
+  usecase "UC-SOC-04\nEnregistrer un terminal" as A5
+  usecase "UC-SOC-05\nSynchroniser un terminal" as A6
+  usecase "UC-SOC-06\nImporter des données" as A7
+  usecase "UC-SOC-07\nConsulter le tableau de bord" as A8
+  usecase "UC-SOC-08\nConsulter le journal d'audit" as A9
+  usecase "UC-SOC-09\nGérer les tiers\net les produits" as A10
+  usecase "UC-SOC-10\nAjouter un champ\npersonnalisé" as A11
+  usecase "UC-SOC-11\nTraiter une demande\nsur les données personnelles" as A12
+  usecase "UC-SOC-12\nSouscrire et payer\nl'abonnement" as A13
+  usecase "UC-SOC-13\nGérer les entreprises\nabonnées" as A14
+}
+
+U --> A1
+A1 .> A2 : <<extend>>\n(rôle sensible)
+A1 --> KC
+U --> A6
+U --> A10
+A3 <-- ADM
+A4 <-- ADM
+A5 <-- ADM
+A7 <-- ADM
+A11 <-- ADM
+A12 <-- ADM
+A13 <-- ADM
+A9 <-- ADM
+DIR --> A8
+A13 --> MM
+APF --> A14
+@enduml

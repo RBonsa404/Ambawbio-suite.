@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>body{margin:0;background:#E3DCD0;color:#1E1B18;-webkit-font-smoothing:antialiased}a{color:#8E3507}a:hover{color:#1E1B18}</style>
+</helmet>
+<section data-screen-label="Phase 5 — HF caisse" style="padding:56px;font-family:'IBM Plex Sans',sans-serif;display:flex;flex-direction:column;gap:40px">
+
+<header style="display:flex;flex-direction:column;gap:14px;max-width:1400px">
+<div style="display:flex;gap:12px;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#5A544E"><span style="background:#1E1B18;color:#F5F1EA;padding:5px 10px">5a</span>AMB-CONC-10 · Phase 5 — Haute fidélité · lot 1 : caisse, parcours de vente</div>
+<h1 style="margin:0;font-family:'Archivo',sans-serif;font-stretch:118%;font-weight:800;font-size:52px;line-height:1;text-transform:uppercase">Caisse Android — vente et encaissement</h1>
+<p style="margin:0;font-size:17px;line-height:1.5;color:#443F3A;max-width:860px;text-wrap:pretty">Écrans A-06, A-07, A-09, A-10, A-11, A-12, A-17 en 360 × 640, variante plein soleil et tablette 1280 × 800. Jetons et composants de la phase 3. Sur A-06, touchez les produits : le panier et le total se mettent à jour, « Vider » réinitialise.</p>
+</header>
+
+<div style="display:flex;flex-wrap:wrap;gap:48px 36px;align-items:flex-start">
+
+<!-- A-06 interactif -->
+<div data-screen-label="A-06 Vente" style="display:flex;flex-direction:column;gap:10px;width:360px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:13px;background:#B4532A;color:#FFFFFF;padding:2px 7px">A-06</b><b style="font-size:15px">Écran de vente · hors-ligne</b></div>
+<div style="width:360px;height:640px;background:#F5F1EA;display:flex;flex-direction:column;overflow:hidden;outline:6px solid #1E1B18;border-radius:4px">
+<div style="height:24px;background:#1E1B18;color:#D8D3CE;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:12px;font-family:'IBM Plex Mono',monospace"><span>10:42</span><span>▮▮▯ 64 %</span></div>
+<div style="background:#1E1B18;color:#FFFFFF;padding:6px 14px 10px;display:flex;align-items:center;gap:12px">
+<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;display:block"><line x1="4" x2="20" y1="12" y2="12"></line>
+  <line x1="4" x2="20" y1="6" y2="6"></line>
+  <line x1="4" x2="20" y1="18" y2="18"></line></svg>
+<div style="display:flex;flex-direction:column;gap:1px;flex:1;min-width:0"><b style="font-size:16px">Caisse 1 · Awa</b><span style="font-size:13px;color:#D8D3CE;white-space:nowrap">Wend-Panga · Ouaga — Zogona</span></div>
+<span style="height:36px;padding:0 10px;border:1.5px solid #FFFFFF;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;white-space:nowrap"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:block"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+  <circle cx="9" cy="7" r="4"></circle>
+  <line x1="19" x2="19" y1="8" y2="14"></line>
+  <line x1="22" x2="16" y1="11" y2="11"></line></svg>Client</span>
+</div>
+<div style="height:6px;background-color:#1E1B18;background-image:linear-gradient(135deg,#B4532A 25%,transparent 25%),linear-gradient(225deg,#B4532A 25%,transparent 25%);background-size:6px 6px"></div>
+<div style="background:#EBE7E3;color:#2E2B26;padding:7px 14px;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600"><svg viewBox="0 0 24 24" fill="none" stroke="#2E2B26" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex:none;display:block"><path d="m2 2 20 20"></path>
+  <path d="M5.782 5.782A7 7 0 0 0 9 19h8.5a4.5 4.5 0 0 0 1.307-.193"></path>
+  <path d="M21.532 16.5A4.5 4.5 0 0 0 17.5 10h-1.79A7.008 7.008 0 0 0 10 5.07"></path></svg>Hors-ligne — 3 ventes sur l'appareil<span style="margin-left:auto;font-size:18px">›</span></div>
+<div style="padding:10px 12px 6px;display:flex;gap:8px">
+<div style="flex:1;height:44px;background:#FFFFFF;border:2px solid #1E1B18;display:flex;align-items:center;gap:8px;padding:0 10px;box-sizing:border-box"><svg viewBox="0 0 24 24" fill="none" stroke="#5A544E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;display:block"><circle cx="11" cy="11" r="8"></circle>
+  <path d="m21 21-4.3-4.3"></path></svg><span style="font-size:16px;color:#5A544E">Rechercher un produit</span></div>
+<div style="width:52px;height:44px;background:#1E1B18;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;display:block"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+  <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+  <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+  <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+  <path d="M8 7v10"></path>
+  <path d="M12 7v10"></path>
+  <path d="M17 7v10"></path></svg></div>
+</div>
+<div style="padding:2px 12px 8px;display:flex;gap:6px;font-size:14px;font-weight:600">
+<span style="padding:7px 12px;background:#B4532A;color:#FFFFFF">Favoris</span><span style="padding:7px 12px;border:2px solid #1E1B18">Construction</span><span style="padding:7px 12px;border:2px solid #1E1B18">Alimentation</span>
+</div>
+<div style="padding:0 12px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<sc-for list="{{ produits }}" as="p" hint-placeholder-count="6">
+<div onClick="{{ p.ajouter }}" style="position:relative;background:{{ p.fond }};color:{{ p.encre }};border:2px solid #1E1B18;padding:7px 10px;display:flex;flex-direction:column;gap:1px;height:62px;box-sizing:border-box;cursor:pointer;user-select:none" style-active="transform:translateY(1px)">
+<span style="font-size:15px;font-weight:600;line-height:1.2">{{ p.nom }}</span>
+<span style="font-size:16px;font-weight:700;font-variant-numeric:tabular-nums">{{ p.prix }}</span>
+<sc-if value="{{ p.dansPanier }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-9px;right:-9px;min-width:26px;height:26px;padding:0 6px;box-sizing:border-box;border-radius:999px;background:#1E1B18;color:#FFFFFF;border:2px solid #F5F1EA;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">{{ p.qte }}</span></sc-if>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:auto;background:#FFFFFF;border-top:3px solid #1E1B18;padding:10px 14px 12px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;justify-content:space-between;align-items:center;font-size:14px;min-height:20px"><span style="color:#443F3A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ resumePanier }}</span><span onClick="{{ vider }}" style="font-weight:600;color:#8E3507;text-decoration:underline;cursor:pointer;white-space:nowrap;padding-left:8px">Vider</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:15px;color:#443F3A;white-space:nowrap">{{ nbArticles }}</span><span style="font-family:'Archivo',sans-serif;font-weight:800;font-size:40px;font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1">{{ total }} <span style="font-size:17px">FCFA</span></span></div>
+<div style="height:58px;background:#B4532A;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-stretch:115%;font-weight:800;font-size:21px;text-transform:uppercase;letter-spacing:.03em">Encaisser</div>
+</div>
+</div>
+<span style="font-size:13px;color:#5A544E;line-height:1.45">Total et Encaisser fixes en bas, toujours visibles. Toucher le bandeau réseau ouvre A-17 ; appui long sur un produit ouvre A-07.</span>
+</div>
+
+<!-- A-07 -->
+<div data-screen-label="A-07 Détail ligne" style="display:flex;flex-direction:column;gap:10px;width:360px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:13px;background:#1E1B18;color:#FFFFFF;padding:2px 7px">A-07</b><b style="font-size:15px">Détail d'une ligne · stock insuffisant</b></div>
+<div style="width:360px;height:640px;background:#5A544E;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;outline:6px solid #1E1B18;border-radius:4px">
+<div style="background:#FFFFFF;padding:10px 18px 16px;display:flex;flex-direction:column;gap:14px">
+<span style="width:44px;height:4px;background:#BFBAB4;align-self:center;border-radius:2px"></span>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-family:'Archivo',sans-serif;font-stretch:112%;font-size:22px">Ciment 50 kg</b><span style="font-size:15px;color:#443F3A">5 500 F / sac</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:600">Conditionnement</span><div style="display:flex;border:2px solid #1E1B18;font-size:15px;font-weight:600"><span style="flex:1;height:48px;display:flex;align-items:center;justify-content:center">Pièce</span><span style="flex:1;height:48px;display:flex;align-items:center;justify-content:center;background:#1E1B18;color:#FFFFFF">Sac</span><span style="flex:1;height:48px;display:flex;align-items:center;justify-content:center">Palette (40)</span></div></div>
+<div style="display:flex;align-items:center;justify-content:space-between">
+<div style="display:flex;border:2px solid #1E1B18"><span style="width:60px;height:60px;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:600">−</span><span style="width:84px;height:60px;display:flex;align-items:center;justify-content:center;border-left:2px solid #1E1B18;border-right:2px solid #1E1B18;font-family:'Archivo',sans-serif;font-weight:800;font-size:28px">3</span><span style="width:60px;height:60px;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:600;background:#B4532A;color:#FFFFFF">+</span></div>
+<span style="font-family:'Archivo',sans-serif;font-weight:800;font-size:26px;font-variant-numeric:tabular-nums">16 500</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:600">Remise</span><div style="display:flex;gap:6px"><span style="flex:1;height:44px;border:2px solid #1E1B18;background:#1E1B18;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:600">0 %</span><span style="flex:1;height:44px;border:2px solid #1E1B18;display:flex;align-items:center;justify-content:center;font-weight:600">5 %</span><span style="flex:1;height:44px;border:2px solid #1E1B18;display:flex;align-items:center;justify-content:center;font-weight:600">10 %</span><span style="flex:1;height:44px;border:2px dashed #88827B;display:flex;align-items:center;justify-content:center;font-weight:600;color:#5A544E;font-size:13px">Autre</span></div><span style="font-size:13px;color:#5A544E">Au-delà de 10 % : PIN du responsable.</span></div>
+<div style="display:flex;gap:10px;padding:12px 14px;background:#FBE6B4;border-top:3px solid #503D01;color:#382900"><svg viewBox="0 0 24 24" fill="none" stroke="#503D01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;flex:none;display:block"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path>
+  <path d="M12 9v4"></path>
+  <path d="M12 17h.01"></path></svg><span style="font-size:14px;line-height:1.4"><b>Stock insuffisant : 2 sacs disponibles.</b> La vente reste possible ; le gérant sera prévenu.</span></div>
+<div style="display:flex;gap:8px"><span style="flex:1;height:56px;border:2px solid #96252D;color:#96252D;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px">Retirer</span><span style="flex:2;height:56px;background:#B4532A;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px">Valider la ligne</span></div>
+</div>
+</div>
+<span style="font-size:13px;color:#5A544E;line-height:1.45">Feuille inférieure : le panier reste visible derrière. Retirer est annulable (toast « Annuler »).</span>
+</div>
+
+<!-- A-09 interactif -->
+<div data-screen-label="A-09 Encaissement" style="display:flex;flex-direction:column;gap:10px;width:360px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:13px;background:#B4532A;color:#FFFFFF;padding:2px 7px">A-09</b><b style="font-size:15px">Encaissement · espèces</b></div>
+<div style="width:360px;height:640px;background:#F5F1EA;display:flex;flex-direction:column;overflow:hidden;outline:6px solid #1E1B18;border-radius:4px">
+<div style="height:24px;background:#1E1B18;color:#D8D3CE;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:12px;font-family:'IBM Plex Mono',monospace"><span>10:43</span><span>▮▮▯ 64 %</span></div>
+<div style="background:#1E1B18;color:#FFFFFF;padding:6px 14px 12px;display:flex;align-items:center;gap:12px"><span style="font-size:22px">←</span><b style="font-size:17px">Encaisser</b><span style="margin-left:auto;font-size:13px;color:#D8D3CE">Wend-Panga · Zogona</span></div>
+<div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px;flex:1">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:15px;color:#443F3A">À payer</span><span style="font-family:'Archivo',sans-serif;font-weight:800;font-size:30px;font-variant-numeric:tabular-nums">34 600 FCFA</span></div>
+<div style="display:flex;border:2px solid #1E1B18;font-size:15px;font-weight:600;background:#FFFFFF"><span style="flex:1;height:46px;display:flex;align-items:center;justify-content:center;background:#1E1B18;color:#FFFFFF">Espèces</span><span style="flex:1.4;height:46px;display:flex;align-items:center;justify-content:center;border-left:2px solid #1E1B18">Mobile Money</span><span style="flex:1;height:46px;display:flex;align-items:center;justify-content:center;border-left:2px solid #1E1B18">Mixte</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center;background:#FFFFFF;border:2px solid #1E1B18;padding:6px 12px"><span style="font-size:14px;font-weight:600">Reçu</span><span style="font-family:'Archivo',sans-serif;font-weight:800;font-size:30px;font-variant-numeric:tabular-nums">{{ recu }}</span></div>
+<div style="display:flex;gap:6px"><sc-for list="{{ rapides }}" as="r" hint-placeholder-count="3"><span onClick="{{ r.choisir }}" style="flex:1;height:42px;border:2px solid #1E1B18;background:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;font-variant-numeric:tabular-nums;cursor:pointer" style-active="background:#D8D3CE">{{ r.libelle }}</span></sc-for></div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+<sc-for list="{{ touches }}" as="t" hint-placeholder-count="12"><span onClick="{{ t.appuyer }}" style="height:46px;background:#EBE7E3;display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:700;font-size:22px;cursor:pointer;user-select:none" style-active="background:#BFBAB4">{{ t.libelle }}</span></sc-for>
+</div>
+<div style="padding:10px 14px;background:{{ rendu.fond }};color:{{ rendu.encre }};border:2px solid {{ rendu.encre }};display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:16px">{{ rendu.libelle }}</b><span style="font-family:'Archivo',sans-serif;font-weight:800;font-size:40px;font-variant-numeric:tabular-nums;line-height:1">{{ rendu.montant }}</span></div>
+<div style="height:56px;background:{{ valider.fond }};color:{{ valider.encre }};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px">Valider le paiement</div>
+</div>
+</div>
+<span style="font-size:13px;color:#5A544E;line-height:1.45">Pavé interactif. Rendu de monnaie en 40 px ; « Il manque » en rouge si montant insuffisant, bouton alors désactivé.</span>
+</div>
+
+<!-- A-10 attente -->
+<div data-screen-label="A-10 Attente Mobile Money" style="display:flex;flex-direction:column;gap:10px;width:360px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:13px;background:#B4532A;color:#FFFFFF;padding:2px 7px">A-10</b><b style="font-size:15px">Mobile Money · attente du client</b></div>
+<div style="width:360px;height:640px;background:#F5F1EA;display:flex;flex-direction:column;overflow:hidden;outline:6px solid #1E1B18;border-radius:4px">
+<div style="height:24px;background:#1E1B18;color:#D8D3CE;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:12px;font-family:'IBM Plex Mono',monospace"><span>10:44</span><span>▮▮▮ 63 %</span></div>
+<div style="background:#1E1B18;color:#FFFFFF;padding:6px 14px 12px;display:flex;align-items:center;gap:12px"><b style="font-size:17px">Paiement Mobile Money</b><span style="margin-left:auto;font-size:13px;color:#D8D3CE">Zogona</span></div>
+<div style="background:#CEF2DD;color:#1B4332;padding:7px 14px;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600"><svg viewBox="0 0 24 24" fill="none" stroke="#1B4332" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:block"><path d="M12 20h.01"></path>
+  <path d="M2 8.82a15 15 0 0 1 20 0"></path>
+  <path d="M5 12.859a10 10 0 0 1 14 0"></path>
+  <path d="M8.5 16.429a5 5 0 0 1 7 0"></path></svg>En ligne</div>
+<div style="padding:16px 20px;display:flex;flex-direction:column;gap:16px;flex:1">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:14px;font-weight:600;padding:6px 12px;border:2px solid #1E1B18;background:#FFFFFF">Orange Money</span><span style="font-size:16px;font-variant-numeric:tabular-nums">+226 70 12 34 56</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 0;border-top:2px solid #1E1B18;border-bottom:2px solid #1E1B18"><span style="font-size:15px;color:#443F3A">Montant demandé</span><span style="font-family:'Archivo',sans-serif;font-weight:800;font-size:44px;font-variant-numeric:tabular-nums;line-height:1.05">34 600 FCFA</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+<div style="width:112px;height:112px;border-radius:50%;border:9px solid #D8D3CE;border-top-color:#B4532A;border-right-color:#B4532A;border-bottom-color:#B4532A;box-sizing:border-box;display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:30px;font-variant-numeric:tabular-nums">1:12</div>
+<b style="font-size:20px;text-align:center">Le client valide sur son téléphone</b>
+<span style="font-size:15px;color:#443F3A;text-align:center;line-height:1.5">Dites-lui : « Vous allez recevoir une demande. Tapez votre code secret pour confirmer. »</span>
+</div>
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:6px">
+<div style="height:52px;border:2px solid #1E1B18;background:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px">Renvoyer la demande</div>
+<div style="height:44px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px;color:#8E3507;text-decoration:underline">Changer de moyen de paiement</div>
+</div>
+</div>
+</div>
+<span style="font-size:13px;color:#5A544E;line-height:1.45">Compte à rebours 2 min, anneau sans animation continue (mise à jour chaque seconde). Issues ci-contre.</span>
+</div>
+
+<!-- A-10 issues -->
+<div data-screen-label="A-10 Issues" style="display:flex;flex-direction:column;gap:10px;width:360px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:13px;background:#B4532A;color:#FFFFFF;padding:2px 7px">A-10</b><b style="font-size:15px">Issues · reçu, refusé, délai dépassé</b></div>
+<div style="width:360px;height:640px;display:flex;flex-direction:column;gap:8px">
+<div style="flex:1;background:#CEF2DD;border:3px solid #1B4332;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:14px;text-align:center;color:#1B4332">
+<svg viewBox="0 0 24 24" fill="none" stroke="#1B4332" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:40px;height:40px;display:block"><circle cx="12" cy="12" r="10"></circle>
+  <path d="m9 12 2 2 4-4"></path></svg>
+<b style="font-family:'Archivo',sans-serif;font-stretch:112%;font-size:22px">Paiement reçu</b>
+<span style="font-size:14px">34 600 FCFA · réf. <span style="font-family:'IBM Plex Mono',monospace">OM270314.1043.A7</span></span>
+<span style="font-size:13px">Passage automatique au ticket…</span>
+</div>
+<div style="flex:1;background:#FFDFDD;border:3px solid #76131D;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:14px;text-align:center;color:#76131D">
+<svg viewBox="0 0 24 24" fill="none" stroke="#76131D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:40px;height:40px;display:block"><circle cx="12" cy="12" r="10"></circle>
+  <path d="m15 9-6 6"></path>
+  <path d="m9 9 6 6"></path></svg>
+<b style="font-family:'Archivo',sans-serif;font-stretch:112%;font-size:22px">Paiement refusé par le client</b>
+<span style="font-size:14px">Proposez un autre moyen de paiement.</span>
+<span style="height:44px;padding:0 16px;background:#76131D;color:#FFFFFF;display:flex;align-items:center;font-weight:700;font-size:15px">Choisir un autre moyen</span>
+</div>
+<div style="flex:1;background:#FBE6B4;border:3px solid #503D01;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:14px;text-align:center;color:#382900">
+<svg viewBox="0 0 24 24" fill="none" stroke="#503D01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:40px;height:40px;display:block"><path d="M10 2h4"></path>
+  <path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7"></path>
+  <path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2"></path>
+  <path d="m2 2 20 20"></path>
+  <path d="M12 12v-2"></path></svg>
+<b style="font-family:'Archivo',sans-serif;font-stretch:112%;font-size:22px">Délai dépassé</b>
+<span style="font-size:14px">Le client a-t-il reçu un SMS de confirmation ?</span>
+<div style="display:flex;gap:6px"><span style="height:44px;padding:0 12px;border:2px solid #382900;display:flex;align-items:center;font-weight:700;font-size:14px">Renvoyer</span><span style="height:44px;padding:0 12px;background:#382900;color:#FFFFFF;display:flex;align-items:center;font-weight:700;font-size:14px">Saisir la référence</span></div>
+</div>
+</div>
+<span style="font-size:13px;color:#5A544E;line-height:1.45">Chaque issue : icône + titre + action suivante. Jamais de couleur seule.</span>
+</div>
+
+<!-- A-11 -->
+<div data-screen-label="A-11 Secours" style="display:flex;flex-direction:column;gap:10px;width:360px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:13px;background:#1E1B18;color:#FFFFFF;padding:2px 7px">A-11</b><b style="font-size:15px">Paiement de secours · référence SMS</b></div>
+<div style="width:360px;height:640px;background:#F5F1EA;display:flex;flex-direction:column;overflow:hidden;outline:6px solid #1E1B18;border-radius:4px">
+<div style="height:24px;background:#1E1B18;color:#D8D3CE;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:12px;font-family:'IBM Plex Mono',monospace"><span>10:46</span><span>▮▯▯ 63 %</span></div>
+<div style="background:#1E1B18;color:#FFFFFF;padding:6px 14px 12px;display:flex;align-items:center;gap:12px"><span style="font-size:22px">←</span><b style="font-size:17px">Référence SMS</b></div>
+<div style="background:#EBE7E3;color:#2E2B26;padding:7px 14px;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600"><svg viewBox="0 0 24 24" fill="none" stroke="#2E2B26" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:block"><path d="m2 2 20 20"></path>
+  <path d="M5.782 5.782A7 7 0 0 0 9 19h8.5a4.5 4.5 0 0 0 1.307-.193"></path>
+  <path d="M21.532 16.5A4.5 4.5 0 0 0 17.5 10h-1.79A7.008 7.008 0 0 0 10 5.07"></path></svg>Hors-ligne</div>
+<div style="padding:16px;display:flex;flex-direction:column;gap:14px;flex:1">
+<span style="font-size:16px;line-height:1.5">Impossible de joindre l'opérateur. Demandez au client le <b>SMS de confirmation</b> reçu après son paiement.</span>
+<div style="display:flex;gap:6px"><span style="padding:8px 12px;border:2px solid #1E1B18;background:#1E1B18;color:#FFFFFF;font-weight:600;font-size:14px">Orange Money</span><span style="padding:8px 12px;border:2px solid #1E1B18;font-weight:600;font-size:14px">Moov</span><span style="padding:8px 12px;border:2px solid #1E1B18;font-weight:600;font-size:14px">Wave</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:600">Référence de la transaction</span><div style="height:54px;background:#FFFFFF;border:2px solid #1E1B18;outline:3px solid #F4A485;display:flex;align-items:center;padding:0 12px;font-family:'IBM Plex Mono',monospace;font-size:19px;letter-spacing:.04em">OM270314.1043.A7</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:600">Montant indiqué dans le SMS</span><div style="height:54px;background:#FFFFFF;border:1.5px solid #88827B;display:flex;align-items:center;justify-content:space-between;padding:0 12px"><span style="font-family:'Archivo',sans-serif;font-weight:800;font-size:24px">34 600</span><span style="font-weight:600;color:#5A544E">FCFA</span></div></div>
+<div style="display:flex;gap:10px;padding:12px 14px;background:#FFE1D5;border-top:3px solid #6E2500;color:#4E1700"><svg viewBox="0 0 24 24" fill="none" stroke="#6E2500" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;flex:none;display:block"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path>
+  <path d="M12 9v4"></path>
+  <path d="M12 17h.01"></path></svg><span style="font-size:14px;line-height:1.4"><b>Paiement à vérifier.</b> Il sera contrôlé auprès de l'opérateur dès le retour du réseau.</span></div>
+<div style="margin-top:auto;height:58px;background:#B4532A;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px">Enregistrer le paiement</div>
+</div>
+</div>
+<span style="font-size:13px;color:#5A544E;line-height:1.45">État « à vérifier » repris dans A-14, A-17, la clôture A-15 et le rapprochement W-12.</span>
+</div>
+
+<!-- A-12 -->
+<div data-screen-label="A-12 Fin de vente" style="display:flex;flex-direction:column;gap:10px;width:360px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:13px;background:#B4532A;color:#FFFFFF;padding:2px 7px">A-12</b><b style="font-size:15px">Fin de vente · facture en attente</b></div>
+<div style="width:360px;height:640px;background:#F5F1EA;display:flex;flex-direction:column;overflow:hidden;outline:6px solid #1E1B18;border-radius:4px">
+<div style="height:24px;background:#1E1B18;color:#D8D3CE;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:12px;font-family:'IBM Plex Mono',monospace"><span>10:47</span><span>▮▮▯ 63 %</span></div>
+<div style="height:8px;background-color:#B4532A;background-image:linear-gradient(135deg,#1E1B18 25%,transparent 25%),linear-gradient(225deg,#1E1B18 25%,transparent 25%);background-size:8px 8px"></div>
+<div style="padding:22px 18px 16px;display:flex;flex-direction:column;gap:14px;flex:1">
+<div style="display:flex;align-items:center;gap:12px"><span style="width:52px;height:52px;flex:none;background:#1B4332;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:30px;height:30px;display:block"><path d="M20 6 9 17l-5-5"></path></svg></span><div style="display:flex;flex-direction:column"><b style="font-family:'Archivo',sans-serif;font-stretch:112%;font-size:24px">Vente enregistrée</b><span style="font-size:14px;color:#443F3A">Ticket T-0142 · Espèces</span></div></div>
+<div style="background:#FFFFFF;border:3px solid #1E1B18;padding:14px;display:flex;flex-direction:column;gap:4px"><div style="display:flex;justify-content:space-between;font-size:15px"><span>Total</span><b style="font-variant-numeric:tabular-nums">34 600 FCFA</b></div><div style="display:flex;justify-content:space-between;font-size:15px"><span>Reçu</span><span style="font-variant-numeric:tabular-nums">40 000 FCFA</span></div><div style="display:flex;justify-content:space-between;align-items:baseline;border-top:2px solid #1E1B18;padding-top:8px;margin-top:4px"><b style="font-size:17px">Rendu</b><span style="font-family:'Archivo',sans-serif;font-weight:800;font-size:44px;font-variant-numeric:tabular-nums;line-height:1">5 400 F</span></div></div>
+<div style="display:flex;align-items:center;gap:10px;font-size:15px"><svg viewBox="0 0 24 24" fill="none" stroke="#1B4332" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;display:block"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+  <path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"></path>
+  <rect x="6" y="14" width="12" height="8" rx="1"></rect></svg>Ticket imprimé</div>
+<div style="display:flex;gap:10px;padding:12px 14px;background:#FBE6B4;border:1.5px solid #D3B875;color:#382900"><svg viewBox="0 0 24 24" fill="none" stroke="#503D01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;flex:none;display:block"><circle cx="12" cy="12" r="10"></circle>
+  <polyline points="12 6 12 12 16 14"></polyline></svg><span style="font-size:14px;line-height:1.4"><b>Facture FA-2027-00421 en attente de certification.</b> Elle sera envoyée à la DGI au retour du réseau.</span></div>
+<div style="display:flex;gap:8px"><span style="flex:1;height:48px;border:2px solid #1E1B18;background:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px">Réimprimer</span><span style="flex:1;height:48px;border:2px solid #1E1B18;background:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px">Envoyer par SMS</span></div>
+<div style="margin-top:auto;height:62px;background:#B4532A;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-stretch:115%;font-weight:800;font-size:21px;text-transform:uppercase;letter-spacing:.03em">Nouvelle vente</div>
+<span style="font-size:12px;color:#5A544E;text-align:center">Retour automatique à la vente dans 8 s</span>
+</div>
+</div>
+<span style="font-size:13px;color:#5A544E;line-height:1.45">Le rendu reste l'information dominante. « Envoyer par SMS » remplace WhatsApp quand le client n'a pas de données.</span>
+</div>
+
+<!-- A-17 -->
+<div data-screen-label="A-17 Synchronisation" style="display:flex;flex-direction:column;gap:10px;width:360px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:13px;background:#1E1B18;color:#FFFFFF;padding:2px 7px">A-17</b><b style="font-size:15px">État de la synchronisation</b></div>
+<div style="width:360px;height:640px;background:#F5F1EA;display:flex;flex-direction:column;overflow:hidden;outline:6px solid #1E1B18;border-radius:4px">
+<div style="height:24px;background:#1E1B18;color:#D8D3CE;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:12px;font-family:'IBM Plex Mono',monospace"><span>11:02</span><span>▮▯▯ 61 %</span></div>
+<div style="background:#1E1B18;color:#FFFFFF;padding:6px 14px 12px;display:flex;align-items:center;gap:12px"><span style="font-size:22px">←</span><b style="font-size:17px">Synchronisation</b></div>
+<div style="padding:14px;display:flex;flex-direction:column;gap:12px;flex:1">
+<div style="background:#EBE7E3;border-top:3px solid #2E2B26;padding:12px 14px;display:flex;gap:12px"><svg viewBox="0 0 24 24" fill="none" stroke="#2E2B26" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px;flex:none;display:block"><path d="m2 2 20 20"></path>
+  <path d="M5.782 5.782A7 7 0 0 0 9 19h8.5a4.5 4.5 0 0 0 1.307-.193"></path>
+  <path d="M21.532 16.5A4.5 4.5 0 0 0 17.5 10h-1.79A7.008 7.008 0 0 0 10 5.07"></path></svg><div style="display:flex;flex-direction:column;gap:2px"><b style="font-size:17px">Hors-ligne depuis 9 h 15</b><span style="font-size:14px;color:#443F3A">Vos ventes sont enregistrées sur l'appareil. Dernière synchronisation : 9 h 14.</span></div></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:15px">En attente d'envoi</b><span style="font-family:'Archivo',sans-serif;font-weight:800;font-size:26px">12</span></div>
+<div style="background:#FFFFFF;border:1.5px solid #D8D3CE;display:flex;flex-direction:column;font-size:15px">
+<div style="padding:11px 14px;border-bottom:1px solid #EBE7E3;display:flex;justify-content:space-between"><span>Ventes</span><b>9</b></div>
+<div style="padding:11px 14px;border-bottom:1px solid #EBE7E3;display:flex;justify-content:space-between;align-items:center"><span>Factures à certifier</span><span style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:3px 8px;background:#FBE6B4;color:#503D01">En file · 2</span></div>
+<div style="padding:11px 14px;border-bottom:1px solid #EBE7E3;display:flex;justify-content:space-between;align-items:center"><span>Paiements à vérifier</span><span style="font-size:13px;font-weight:600;padding:3px 8px;background:#FFE1D5;color:#6E2500">1</span></div>
+<div style="padding:11px 14px;display:flex;justify-content:space-between"><span>Nouveau client</span><b>1</b></div>
+</div>
+<div style="display:flex;gap:10px;padding:12px 14px;background:#FFF2ED;border-top:3px solid #6E2500;color:#4E1700"><svg viewBox="0 0 24 24" fill="none" stroke="#6E2500" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;flex:none;display:block"><path d="M10 12h11"></path>
+  <path d="M10 18h11"></path>
+  <path d="M10 6h11"></path>
+  <path d="M4 10h2"></path>
+  <path d="M4 6h1v4"></path>
+  <path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg><span style="font-size:14px;line-height:1.4"><b>18 numéros de ticket restants.</b> Reconnectez-vous avant la fin de la journée pour en recevoir d'autres.</span></div>
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:6px">
+<div style="height:56px;background:#D8D3CE;color:#5A544E;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:17px"><svg viewBox="0 0 24 24" fill="none" stroke="#5A544E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;display:block"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+  <path d="M21 3v5h-5"></path>
+  <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+  <path d="M8 16H3v5"></path></svg>Synchroniser maintenant</div>
+<span style="font-size:13px;color:#443F3A;text-align:center">Disponible dès le retour du réseau. L'envoi est automatique.</span>
+</div>
+</div>
+</div>
+<span style="font-size:13px;color:#5A544E;line-height:1.45">Aucun jargon : « en attente d'envoi », « à certifier », « à vérifier ».</span>
+</div>
+
+<!-- A-06 plein soleil -->
+<div data-screen-label="A-06 Plein soleil" style="display:flex;flex-direction:column;gap:10px;width:360px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:13px;background:#B4532A;color:#FFFFFF;padding:2px 7px">A-06</b><b style="font-size:15px">Variante plein soleil</b></div>
+<div style="width:360px;height:640px;background:#FFFFFF;display:flex;flex-direction:column;overflow:hidden;outline:6px solid #000000;border-radius:4px">
+<div style="height:24px;background:#000000;color:#FFFFFF;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:12px;font-family:'IBM Plex Mono',monospace"><span>12:15</span><span>▮▮▯ 52 %</span></div>
+<div style="background:#000000;color:#FFFFFF;padding:6px 14px 10px;display:flex;align-items:center;gap:12px"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px;display:block"><line x1="4" x2="20" y1="12" y2="12"></line>
+  <line x1="4" x2="20" y1="6" y2="6"></line>
+  <line x1="4" x2="20" y1="18" y2="18"></line></svg><b style="font-size:18px">Caisse 1 · Awa</b><svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto;width:26px;height:26px;display:block"><circle cx="12" cy="12" r="4"></circle>
+  <path d="M12 2v2"></path>
+  <path d="M12 20v2"></path>
+  <path d="m4.93 4.93 1.41 1.41"></path>
+  <path d="m17.66 17.66 1.41 1.41"></path>
+  <path d="M2 12h2"></path>
+  <path d="M20 12h2"></path>
+  <path d="m6.34 17.66-1.41 1.41"></path>
+  <path d="m19.07 4.93-1.41 1.41"></path></svg></div>
+<div style="border-bottom:3px solid #000000;padding:8px 14px;display:flex;align-items:center;gap:8px;font-size:16px;font-weight:700"><svg viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;display:block"><path d="m2 2 20 20"></path>
+  <path d="M5.782 5.782A7 7 0 0 0 9 19h8.5a4.5 4.5 0 0 0 1.307-.193"></path>
+  <path d="M21.532 16.5A4.5 4.5 0 0 0 17.5 10h-1.79A7.008 7.008 0 0 0 10 5.07"></path></svg>Hors-ligne — 3 ventes enregistrées</div>
+<div style="padding:10px 12px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div style="border:3px solid #000000;padding:8px 10px;display:flex;flex-direction:column;height:70px;box-sizing:border-box;justify-content:space-between"><b style="font-size:17px">Ciment 50 kg</b><b style="font-size:18px">5 500 F</b></div>
+<div style="border:3px solid #000000;background:#6E2500;color:#FFFFFF;padding:8px 10px;display:flex;flex-direction:column;height:70px;box-sizing:border-box;justify-content:space-between"><b style="font-size:17px">Riz 25 kg · ×1</b><b style="font-size:18px">17 500 F</b></div>
+<div style="border:3px solid #000000;padding:8px 10px;display:flex;flex-direction:column;height:70px;box-sizing:border-box;justify-content:space-between"><b style="font-size:17px">Huile 20 L</b><b style="font-size:18px">24 000 F</b></div>
+<div style="border:3px solid #000000;padding:8px 10px;display:flex;flex-direction:column;height:70px;box-sizing:border-box;justify-content:space-between"><b style="font-size:17px">Tôle bac 3 m</b><b style="font-size:18px">4 750 F</b></div>
+</div>
+<div style="margin-top:auto;border-top:4px solid #000000;padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;font-size:17px;font-weight:700"><span>3 × Ciment 50 kg</span><span>16 500</span></div>
+<div style="display:flex;justify-content:space-between;font-size:17px;font-weight:700"><span>1 × Riz 25 kg</span><span>17 500</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline;border-top:2px solid #000000;padding-top:8px"><b style="font-size:17px">4 articles</b><span style="font-family:'Archivo',sans-serif;font-weight:800;font-size:48px;font-variant-numeric:tabular-nums;line-height:1">34 000 <span style="font-size:19px">F</span></span></div>
+<div style="height:66px;background:#6E2500;color:#FFFFFF;border:3px solid #000000;display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-stretch:115%;font-weight:800;font-size:24px;text-transform:uppercase">Encaisser</div>
+</div>
+</div>
+<span style="font-size:13px;color:#5A544E;line-height:1.45">Blanc et noir purs, bordures 3 px, textes +2 px, frise et pastels supprimés. Contraste du total 21:1.</span>
+</div>
+
+</div>
+
+<!-- Tablette -->
+<div data-screen-label="A-06 Tablette" style="display:flex;flex-direction:column;gap:10px;width:1280px">
+<div style="display:flex;gap:8px;align-items:baseline"><b style="font-family:'IBM Plex Mono',monospace;font-size:13px;background:#B4532A;color:#FFFFFF;padding:2px 7px">A-06</b><b style="font-size:15px">Écran de vente · tablette 1280 × 800 paysage</b></div>
+<div style="width:1280px;height:800px;background:#F5F1EA;display:grid;grid-template-columns:minmax(0,1fr) 440px;grid-template-rows:auto auto minmax(0,1fr);overflow:hidden;outline:8px solid #1E1B18;border-radius:6px">
+<div style="grid-column:1 / -1;background:#1E1B18;color:#FFFFFF;height:60px;display:flex;align-items:center;gap:16px;padding:0 20px">
+<dc-import name="Symbole" dir="c" mode="blanc" taille="28" fond="#1E1B18" hint-size="28px,28px"></dc-import>
+<b style="font-size:18px">Caisse 1 · Awa Kaboré</b><span style="font-size:15px;color:#D8D3CE">Quincaillerie Wend-Panga · Ouaga — Zogona</span>
+<span style="margin-left:auto;display:flex;align-items:center;gap:8px;padding:7px 12px;background:#EBE7E3;color:#2E2B26;font-size:14px;font-weight:600"><svg viewBox="0 0 24 24" fill="none" stroke="#2E2B26" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:block"><path d="m2 2 20 20"></path>
+  <path d="M5.782 5.782A7 7 0 0 0 9 19h8.5a4.5 4.5 0 0 0 1.307-.193"></path>
+  <path d="M21.532 16.5A4.5 4.5 0 0 0 17.5 10h-1.79A7.008 7.008 0 0 0 10 5.07"></path></svg>Hors-ligne — 3 ventes sur l'appareil</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#D8D3CE">10:42</span>
+</div>
+<div style="grid-column:1 / -1;height:6px;background-color:#1E1B18;background-image:linear-gradient(135deg,#B4532A 25%,transparent 25%),linear-gradient(225deg,#B4532A 25%,transparent 25%);background-size:6px 6px"></div>
+<div style="padding:16px 18px;display:flex;flex-direction:column;gap:12px;min-height:0">
+<div style="display:flex;gap:10px"><div style="flex:1;height:54px;background:#FFFFFF;border:2px solid #1E1B18;display:flex;align-items:center;gap:10px;padding:0 14px;box-sizing:border-box"><svg viewBox="0 0 24 24" fill="none" stroke="#5A544E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;display:block"><circle cx="11" cy="11" r="8"></circle>
+  <path d="m21 21-4.3-4.3"></path></svg><span style="font-size:17px;color:#5A544E">Rechercher un produit ou scanner un code-barres</span></div><div style="height:54px;padding:0 18px;background:#1E1B18;color:#FFFFFF;display:flex;align-items:center;gap:8px;font-weight:700"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;display:block"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+  <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+  <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+  <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+  <path d="M8 7v10"></path>
+  <path d="M12 7v10"></path>
+  <path d="M17 7v10"></path></svg>Scanner</div></div>
+<div style="display:flex;gap:8px;font-size:15px;font-weight:600"><span style="padding:10px 16px;background:#B4532A;color:#FFFFFF">Favoris</span><span style="padding:10px 16px;border:2px solid #1E1B18">Construction</span><span style="padding:10px 16px;border:2px solid #1E1B18">Alimentation</span><span style="padding:10px 16px;border:2px solid #1E1B18">Hygiène</span><span style="padding:10px 16px;border:2px solid #1E1B18">Quincaillerie</span><span style="padding:10px 16px;border:2px solid #1E1B18">Peinture</span></div>
+<div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px">
+<sc-for list="{{ produitsTab }}" as="p" hint-placeholder-count="15"><div style="height:100px;background:{{ p.fond }};color:{{ p.encre }};border:2px solid #1E1B18;padding:10px 12px;display:flex;flex-direction:column;justify-content:space-between;box-sizing:border-box"><b style="font-size:16px;line-height:1.2">{{ p.nom }}</b><div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:17px;font-variant-numeric:tabular-nums">{{ p.prix }}</b><span style="font-size:12px;font-weight:600">{{ p.note }}</span></div></div></sc-for>
+</div>
+</div>
+<div style="background:#FFFFFF;border-left:3px solid #1E1B18;display:flex;flex-direction:column;min-height:0">
+<div style="padding:14px 18px;border-bottom:1.5px solid #D8D3CE;display:flex;justify-content:space-between;align-items:center;font-size:15px"><span style="display:flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" fill="none" stroke="#1E1B18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;display:block"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+  <circle cx="12" cy="7" r="4"></circle></svg><b>Boukary Ouédraogo</b></span><span style="color:#8E3507;font-weight:600;text-decoration:underline">Changer</span></div>
+<div style="display:flex;flex-direction:column">
+<sc-for list="{{ panierTab }}" as="l" hint-placeholder-count="4"><div style="padding:12px 18px;border-bottom:1px solid #EBE7E3;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px"><b style="font-size:16px">{{ l.nom }}</b><b style="font-size:16px;font-variant-numeric:tabular-nums;text-align:right">{{ l.montant }}</b><span style="font-size:14px;color:#5A544E">{{ l.detail }}</span><span style="font-size:13px;color:#8E3507;font-weight:600;text-align:right">Modifier</span></div></sc-for>
+</div>
+<div style="margin-top:auto;padding:16px 18px;border-top:3px solid #1E1B18;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;justify-content:space-between;font-size:15px;color:#443F3A"><span>Dont TVA 18 %</span><span style="font-variant-numeric:tabular-nums">5 541</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:16px;color:#443F3A">7 articles</span><span style="font-family:'Archivo',sans-serif;font-weight:800;font-size:56px;font-variant-numeric:tabular-nums;line-height:1">36 325 <span style="font-size:22px">FCFA</span></span></div>
+<div style="display:flex;gap:8px"><span style="flex:1;height:66px;border:2px solid #1E1B18;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px;text-align:center">Mettre en attente</span><span style="flex:2;height:66px;background:#B4532A;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-stretch:115%;font-weight:800;font-size:24px;text-transform:uppercase;letter-spacing:.03em">Encaisser</span></div>
+</div>
+</div>
+</div>
+<span style="font-size:13px;color:#5A544E;line-height:1.45">Panier permanent à droite, grille 5 colonnes, cibles de 100 px. Stock bas et rupture signalés en texte sur la carte.</span>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:6px;font-size:14px;color:#443F3A;max-width:1100px;border-top:2px solid #1E1B18;padding-top:16px">
+<b>À valider sur ce lot</b>
+<span>1. Bandeau réseau sous la barre (pleine largeur) plutôt qu'une pastille : plus lisible, coûte 32 px de hauteur.</span>
+<span>2. Montant reçu : raccourcis 35 000 / 40 000 / 50 000 calculés à partir du total (billets supérieurs).</span>
+<span>3. Retour automatique à la vente après 8 s sur A-12.</span>
+<span>Lots suivants : caisse (A-01 à A-05, A-08, A-13 à A-16, A-18), puis magasin, puis web.</span>
+</div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { panier: { 0: 3, 1: 1, 4: 2 }, recu: '40000' };
+  renderVals() {
+    const f = n => n.toLocaleString('fr-FR').replace(/\s/g, '\u202F');
+    const cat = [['Ciment 50 kg', 5500], ['Riz 25 kg', 17500], ['Huile 20 L', 24000], ['Tôle bac 3 m', 4750], ['Savon 400 g', 300], ['Karité 1 kg', 1500]];
+    const pan = this.state.panier;
+    const produits = cat.map(([nom, prix], i) => {
+      const q = pan[i] || 0;
+      return { nom, prix: f(prix) + ' F', qte: q, dansPanier: q > 0, fond: q ? '#B4532A' : '#FFFFFF', encre: q ? '#FFFFFF' : '#1E1B18',
+        ajouter: () => this.setState(s => ({ panier: { ...s.panier, [i]: (s.panier[i] || 0) + 1 } })) };
+    });
+    const lignes = cat.map(([nom, prix], i) => ({ nom, q: pan[i] || 0, prix })).filter(l => l.q);
+    const tot = lignes.reduce((a, l) => a + l.q * l.prix, 0);
+    const nb = lignes.reduce((a, l) => a + l.q, 0);
+    const resumePanier = lignes.length ? lignes.map(l => `${l.q} × ${l.nom}`).join(' · ') : 'Panier vide — touchez un produit';
+    const totalPaye = 34600, v = parseInt(this.state.recu || '0', 10);
+    const set = s => this.setState({ recu: s.replace(/^0+/, '').slice(0, 7) });
+    const touches = ['1','2','3','4','5','6','7','8','9','00','0','⌫'].map(t => ({ libelle: t, appuyer: () => set(t === '⌫' ? this.state.recu.slice(0, -1) : this.state.recu + t) }));
+    const rapides = [35000, 40000, 50000].map(n => ({ libelle: f(n), choisir: () => set(String(n)) }));
+    const ok = v >= totalPaye;
+    const rendu = ok ? { libelle: 'Rendu', montant: f(v - totalPaye) + ' F', fond: '#CEF2DD', encre: '#1B4332' } : { libelle: 'Il manque', montant: f(totalPaye - v) + ' F', fond: '#FFDFDD', encre: '#76131D' };
+    const valider = ok ? { fond: '#B4532A', encre: '#FFFFFF' } : { fond: '#D8D3CE', encre: '#5A544E' };
+    const tab = [['Ciment 50 kg','5 500 F','2 en stock',1],['Riz 25 kg','17 500 F','',1],['Huile 20 L','24 000 F','Stock bas',0],['Tôle bac 3 m','4 750 F','',0],['Savon 400 g','300 F','',1],['Karité 1 kg','1 500 F','',0],['Fer à béton 10','3 250 F','',0],['Pointes 1 kg','1 200 F','',0],['Peinture 4 L','9 500 F','',0],['Sucre 1 kg','750 F','',0],['Lait en poudre','2 400 F','',0],['Seau 15 L','1 750 F','',1],['Pelle','3 500 F','',0],['Câble 2,5 mm','650 F','Rupture',0],['Brouette','32 000 F','',0]];
+    const produitsTab = tab.map(([nom, prix, note, sel]) => ({ nom, prix, note, fond: sel ? '#B4532A' : '#FFFFFF', encre: sel ? '#FFFFFF' : '#1E1B18' }));
+    const panierTab = [['Ciment 50 kg','16 500','3 sacs × 5 500'],['Riz 25 kg','17 500','1 sac'],['Savon 400 g','575','2 × 300 · remise 4 %'],['Seau 15 L','1 750','1 pièce']].map(([nom, montant, detail]) => ({ nom, montant, detail }));
+    return {
+      produits, resumePanier, total: f(tot), nbArticles: nb + (nb > 1 ? ' articles' : ' article'),
+      vider: () => this.setState({ panier: {} }),
+      recu: f(v), touches, rapides, rendu, valider, produitsTab, panierTab
+    };
+  }
+}
+</script>
+</body>
+</html>

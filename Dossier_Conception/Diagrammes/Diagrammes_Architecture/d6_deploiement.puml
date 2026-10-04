@@ -1,0 +1,36 @@
+@startuml
+!include style.iuml
+title Déploiement : SaaS hébergé au Burkina Faso et installation sur site
+
+node "Hébergeur au Burkina Faso (SaaS)" as H {
+  node "Répartiteur de charge\nNginx (TLS)" as LB
+  node "Keycloak\n(identité)" as KC
+  node "Serveur applicatif 1\n(conteneur Spring Boot)" as A1
+  node "Serveur applicatif 2\n(conteneur Spring Boot)" as A2
+  database "PostgreSQL primaire" as PG1
+  database "PostgreSQL secondaire\n(réplication)" as PG2
+  database "Stockage d'objets" as OBJ
+  node "Supervision\n(Prometheus, Grafana)" as MON
+}
+node "Site de secours\n(géographiquement séparé)" as BK {
+  database "Sauvegardes chiffrées\n+ journaux WAL" as SAV
+}
+node "Installation sur site\n(administration, grande entreprise)" as OP {
+  node "Serveur unique\n(Docker Compose : Nginx, Keycloak,\napplication, PostgreSQL)" as ONE
+}
+node "Poste client / téléphone" as CLI
+
+CLI --> LB : HTTPS
+LB --> A1
+LB --> KC
+LB --> A2
+A1 --> PG1
+A2 --> PG1
+PG1 --> PG2 : réplication continue
+A1 --> OBJ
+PG1 --> SAV : sauvegarde + WAL\n(perte max. 1 h)
+MON ..> A1
+MON ..> PG1
+CLI ..> ONE : HTTPS (réseau interne)
+ONE ..> H : mises à jour (paquets signés)
+@enduml

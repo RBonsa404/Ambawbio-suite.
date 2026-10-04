@@ -1,0 +1,37 @@
+@startuml
+!include style.iuml
+left to right direction
+title Cas d'utilisation détaillés : Stocks et Achats (MVP)
+
+actor "Acheteur" as ACH
+actor "Magasinier" as MAG
+actor "Comptable" as CPT
+actor "Responsable\nde magasin" as RES
+
+rectangle "Stocks & Achats" {
+  usecase "UC-ACH-01\nDemander des prix" as DP
+  usecase "UC-ACH-02\nPasser une commande\nfournisseur" as BC
+  usecase "UC-ACH-03\nRéceptionner\nune commande" as REC
+  usecase "UC-ACH-04\nEnregistrer une facture\nfournisseur" as FF
+  usecase "Rapprocher commande,\nréception et facture" as RAP
+  usecase "UC-STK-01\nTransférer du stock\nentre dépôts" as TR
+  usecase "UC-STK-02\nRéaliser un inventaire\n(hors-ligne possible)" as INV
+  usecase "UC-STK-03\nValider un inventaire" as VINV
+  usecase "UC-STK-04\nConsulter le stock\net sa valeur" as CS
+  usecase "Convertir les unités\n(sac, carton, bidon)" as UN
+}
+
+ACH --> DP
+ACH --> BC
+MAG --> REC
+MAG --> TR
+MAG --> INV
+RES --> VINV
+CPT --> FF
+CPT --> CS
+RES --> CS
+FF ..> RAP : <<include>>
+REC ..> UN : <<include>>
+INV ..> UN : <<include>>
+VINV .> INV : <<extend>>\n(écarts)
+@enduml

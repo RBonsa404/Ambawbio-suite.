@@ -1,0 +1,122 @@
+@startuml
+!include style.iuml
+title Package socle : organisation, sécurité, synchronisation, audit
+
+abstract class EntiteMetier <<abstraite>> {
+  # id : UUID v7
+  # tenantId : UUID
+  # creeLe : Instant
+  # modifieLe : Instant
+  # creePar : UUID
+  # version : long
+  # champsPerso : JSONB
+}
+
+class Entreprise {
+  raisonSociale : String
+  ifu : Ifu
+  rccm : String
+  regimeFiscal : RegimeFiscal
+  deviseReference : Devise = XOF
+  statut : StatutEntreprise
+}
+class Abonnement {
+  pack : Pack
+  dateDebut : LocalDate
+  dateFin : LocalDate
+  statut : StatutAbonnement
+  + renouveler()
+  + suspendre()
+}
+class ModuleActive {
+  code : CodeModule
+  activeLe : Instant
+}
+class Societe {
+  raisonSociale : String
+  ifu : Ifu
+}
+class Etablissement {
+  nom : String
+  adresse : Adresse
+  type : TypeEtablissement
+}
+class Utilisateur {
+  idKeycloak : String
+  nom : String
+  telephone : String
+  email : String
+  pinHorsLigneHache : String
+  actif : boolean
+}
+class Role {
+  code : String
+  libelle : String
+}
+class Permission {
+  module : CodeModule
+  action : Action
+}
+class AffectationRole
+class Terminal {
+  nom : String
+  type : TypeTerminal
+  clePublique : String
+  derniereSynchro : Instant
+  statut : StatutTerminal
+  + reserverPlage(type) : PlageNumerotation
+}
+class PlageNumerotation {
+  typePiece : TypePiece
+  debut : long
+  fin : long
+  prochain : long
+  + numeroSuivant() : long
+  + tauxConsommation() : double
+}
+class OperationSync {
+  idOperation : UUID
+  typeOperation : String
+  charge : JSONB
+  horodatageLocal : Instant
+  signature : String
+  statut : StatutSync
+}
+class JournalAudit {
+  horodatage : Instant
+  utilisateurId : UUID
+  action : String
+  entite : String
+  entiteId : UUID
+  avant : JSONB
+  apres : JSONB
+  empreintePrecedente : String
+  empreinte : String
+}
+class Bareme {
+  code : String
+  dateEffet : LocalDate
+  dateFin : LocalDate
+  valeurs : JSONB
+  + estEnVigueur(date) : boolean
+}
+
+EntiteMetier <|-- Etablissement
+EntiteMetier <|-- Utilisateur
+EntiteMetier <|-- Terminal
+Entreprise "1" *-- "1" Abonnement
+Abonnement "1" *-- "1..*" ModuleActive
+Entreprise "1" *-- "1..*" Societe
+Societe "1" *-- "1..*" Etablissement
+Entreprise "1" *-- "0..*" Utilisateur
+Utilisateur "1" -- "0..*" AffectationRole
+AffectationRole "0..*" -- "1" Role
+AffectationRole "0..*" -- "0..1" Etablissement : limité à
+Role "1" *-- "1..*" Permission
+Etablissement "1" *-- "0..*" Terminal
+Terminal "1" *-- "0..*" PlageNumerotation
+Terminal "1" -- "0..*" OperationSync : émet
+Entreprise "1" -- "0..*" JournalAudit
+JournalAudit "0..1" -- "1" JournalAudit : chaîné à >
+Entreprise "1" -- "0..*" Bareme
+@enduml

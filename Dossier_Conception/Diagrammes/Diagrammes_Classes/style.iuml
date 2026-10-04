@@ -1,0 +1,57 @@
+skinparam defaultFontName Carlito
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam roundCorner 10
+skinparam ArrowColor #1B4332
+skinparam ArrowFontSize 11
+skinparam componentStyle rectangle
+skinparam rectangle {
+  BorderColor #1B4332
+  BackgroundColor #FFFFFF
+}
+skinparam component {
+  BorderColor #1B4332
+  BackgroundColor #EEF4F0
+}
+skinparam database {
+  BorderColor #1B4332
+  BackgroundColor #FBF5E3
+}
+skinparam node {
+  BorderColor #1B4332
+  BackgroundColor #FFFFFF
+}
+skinparam cloud {
+  BorderColor #C9A227
+  BackgroundColor #FFFDF5
+}
+skinparam package {
+  BorderColor #2D6A4F
+  BackgroundColor #FFFFFF
+  FontColor #1B4332
+}
+skinparam actor {
+  BorderColor #1B4332
+  BackgroundColor #C9A227
+}
+skinparam sequence {
+  ParticipantBorderColor #1B4332
+  ParticipantBackgroundColor #EEF4F0
+  LifeLineBorderColor #2D6A4F
+  ActorBorderColor #1B4332
+  ActorBackgroundColor #C9A227
+  GroupBorderColor #C9A227
+}
+skinparam noteBackgroundColor #FBF5E3
+skinparam noteBorderColor #C9A227
+skinparam class {
+  BorderColor #1B4332
+  BackgroundColor #FFFFFF
+  HeaderBackgroundColor #EEF4F0
+  ArrowColor #1B4332
+  AttributeFontSize 12
+}
+skinparam stereotypeCBackgroundColor #C9A227
+skinparam stereotypeABackgroundColor #2D6A4F
+skinparam stereotypeEBackgroundColor #F3722C
+hide empty members

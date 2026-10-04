@@ -1,0 +1,35 @@
+@startuml
+!include style.iuml
+left to right direction
+title Cas d'utilisation détaillés : Comptabilité et Paiements (MVP)
+
+actor "Comptable" as CPT
+actor "Expert-comptable\nexterne" as EXP
+actor "Dirigeant" as DIR
+actor "Agrégateur\nMobile Money" as MM <<système>>
+actor "Planificateur" as PL <<système>>
+
+EXP -|> CPT
+
+rectangle "Comptabilité & Paiements" {
+  usecase "UC-CPT-01\nConsulter journaux, grand livre\net balance" as J
+  usecase "UC-CPT-02\nSaisir une écriture\nmanuelle" as S
+  usecase "UC-CPT-03\nLettrer des comptes" as LE
+  usecase "UC-PAY-01\nRecevoir une notification\nde paiement" as N
+  usecase "UC-PAY-02\nRapprocher les paiements\nMobile Money" as RA
+  usecase "UC-CPT-04\nProduire les états financiers\nSYSCOHADA" as EF
+  usecase "UC-CPT-05\nGénérer les écritures\nautomatiques" as AUTO
+  usecase "UC-CPT-06\nChanger de dossier\n(multi-sociétés)" as MD
+}
+
+CPT --> J
+CPT --> S
+CPT --> LE
+CPT --> RA
+CPT --> EF
+DIR --> EF
+EXP --> MD
+MM --> N
+N ..> RA : <<include>>\n(rapprochement automatique)
+PL --> AUTO
+@enduml

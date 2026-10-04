@@ -1,0 +1,39 @@
+@startuml
+!include style.iuml
+title SD-13 : Souscrire et payer l'abonnement Ambawbio (UC-SOC-12)
+autonumber
+actor "Administrateur\nentreprise" as ADM
+participant "Application\nweb" as W
+box "Serveur Ambawbio"
+participant "AbonnementService" as AS
+participant "PaiementService" as PS
+participant "<<interface>>\nPortPaiement" as PORT
+participant "TenancyService" as TS
+database "PostgreSQL" as DB
+end box
+participant "Keycloak" as K
+participant "Agrégateur\nMobile Money" as AGR
+
+ADM -> W : Inscription : entreprise, IFU, pack,\nnombre d'utilisateurs, durée
+W -> AS : POST /api/v1/abonnements
+AS -> TS : creerEntreprise(...)
+TS -> DB : Entreprise EN_ATTENTE_PAIEMENT
+AS -> DB : Abonnement + montant en FCFA
+AS -> PS : initierEncaissement(abonnement)
+PS -> PORT : initierEncaissement
+PORT -> AGR : Demande de paiement
+AGR -> ADM : Validation sur le téléphone
+AGR -> PS : Notification signée (comme SD-04)
+PS -> AS : PaiementConfirme
+AS -> DB : Abonnement ACTIF, modules activés
+AS -> TS : activerEntreprise
+TS -> K : Crée le groupe de l'entreprise\net le compte administrateur
+TS -> DB : Paramétrage initial : plan SYSCOHADA,\ntaxes, rôles par défaut
+AS -> W : Facture d'abonnement (Ambawbio est aussi\nsoumis à la FEC)
+W --> ADM : Accès à l'assistant de démarrage (UC-SOC-02)
+== Renouvellement ==
+AS -> AS : Le planificateur relance\n7 jours avant l'échéance
+alt Non payé à l'échéance
+  AS -> DB : Délai de grâce, puis SUSPENDU\n(données conservées, export possible)
+end
+@enduml

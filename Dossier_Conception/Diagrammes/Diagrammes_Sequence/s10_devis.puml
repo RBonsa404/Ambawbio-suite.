@@ -1,0 +1,47 @@
+@startuml
+!include style.iuml
+title SD-10 : Du devis à la facture (UC-VEN-01 à UC-VEN-04)
+autonumber
+actor Commercial as COM
+actor Client as CL
+participant "Application" as A
+box "Serveur Ambawbio"
+participant "DevisService" as DS
+participant "CommandeService" as CS
+participant "StockApi" as ST
+participant "FactureService" as FS
+participant "<<interface>>\nPortMessagerie" as MSG
+database "PostgreSQL" as DB
+end box
+
+COM -> A : Crée le devis (client, articles, remises)
+A -> DS : POST /api/v1/ventes/devis
+DS -> DB : Prix applicables (ListePrix), taxes
+DS -> DB : Devis BROUILLON
+COM -> A : Envoyer
+A -> DS : envoyer(devis)
+DS -> DS : Génère le PDF
+DS -> MSG : Envoi par e-mail ou WhatsApp
+MSG -> CL : Devis
+DS -> DB : Statut ENVOYE
+CL -> COM : Accepte
+COM -> A : Convertir en commande
+A -> DS : convertirEnCommande(devis)
+DS -> CS : creerCommande(lignes)
+CS -> DB : CommandeClient, statut ACCEPTE du devis
+CS -> ST : reserver(lignes)
+ST --> CS : Disponibilités
+opt Acompte demandé
+  CS -> FS : facture d'acompte
+  FS -> FS : Validation + certification (SD-05)
+end
+COM -> A : Livrer
+A -> CS : livrer(commande)
+CS -> ST : Publie LivraisonValidee\n(mouvements de stock)
+COM -> A : Facturer
+A -> CS : facturer(commande)
+CS -> FS : creerFacture(lignes livrées, acompte à déduire)
+FS -> FS : Validation + certification (SD-05)
+FS -> MSG : Envoi de la facture\navec lien de paiement Mobile Money
+MSG -> CL : Facture
+@enduml

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<sc-if value="{{ isA }}" hint-placeholder-val="{{ true }}">
+<svg viewBox="0 0 48 48" width="{{ taille }}" height="{{ taille }}" style="display:block">
+<path d="M9 31 A15 15 0 0 1 39 31 Z" fill="{{ c1 }}"></path>
+<rect x="3" y="35" width="42" height="5" fill="{{ c2 }}"></rect>
+</svg>
+</sc-if>
+<sc-if value="{{ isB }}" hint-placeholder-val="{{ false }}">
+<svg viewBox="0 0 48 48" width="{{ taille }}" height="{{ taille }}" style="display:block">
+<rect x="4" y="12" width="40" height="8" fill="{{ c2 }}"></rect>
+<rect x="4" y="28" width="40" height="8" fill="{{ c2 }}"></rect>
+<rect x="12" y="4" width="8" height="40" fill="{{ c1 }}" stroke="{{ fond }}" stroke-width="2"></rect>
+<rect x="28" y="4" width="8" height="40" fill="{{ c1 }}" stroke="{{ fond }}" stroke-width="2"></rect>
+<rect x="26.5" y="12" width="11" height="8" fill="{{ c2 }}"></rect>
+<rect x="10.5" y="28" width="11" height="8" fill="{{ c2 }}"></rect>
+<rect x="27" y="11" width="10" height="2" fill="{{ fond }}"></rect>
+<rect x="27" y="19" width="10" height="2" fill="{{ fond }}"></rect>
+<rect x="11" y="27" width="10" height="2" fill="{{ fond }}"></rect>
+<rect x="11" y="35" width="10" height="2" fill="{{ fond }}"></rect>
+</svg>
+</sc-if>
+<sc-if value="{{ isC }}" hint-placeholder-val="{{ false }}">
+<svg viewBox="0 0 48 48" width="{{ taille }}" height="{{ taille }}" style="display:block">
+<polygon points="4,24 24,4 44,24 44,33 24,13 4,33" fill="{{ c1 }}"></polygon>
+<polygon points="4,39 24,19 44,39 44,46 24,28 4,46" fill="{{ c2 }}"></polygon>
+</svg>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:120,&quot;height&quot;:120},&quot;dir&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;],&quot;default&quot;:&quot;a&quot;,&quot;tsType&quot;:&quot;'a'|'b'|'c'&quot;},&quot;mode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;couleur&quot;,&quot;noir&quot;,&quot;blanc&quot;],&quot;default&quot;:&quot;couleur&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;fond&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#FBFAF7&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;taille&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:48,&quot;tsType&quot;:&quot;number&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const dir = this.props.dir ?? 'a', mode = this.props.mode ?? 'couleur';
+    const pal = { a: ['#D9952B', '#13233F'], b: ['#2B3A78', '#A8322D'], c: ['#B4532A', '#1E1B18'] }[dir];
+    const ink = mode === 'noir' ? '#111111' : mode === 'blanc' ? '#FFFFFF' : null;
+    return {
+      isA: dir === 'a', isB: dir === 'b', isC: dir === 'c',
+      c1: ink || pal[0], c2: ink || pal[1],
+      fond: this.props.fond ?? '#FBFAF7',
+      taille: this.props.taille ?? 48
+    };
+  }
+}
+</script>
+</body>
+</html>

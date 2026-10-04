@@ -1,0 +1,50 @@
+@startuml
+!include style.iuml
+title SD-02 : Enregistrer une vente hors-ligne (UC-POS-02, UC-POS-03, UC-POS-05)
+autonumber
+actor Caissier as C
+box "Application Android (hors-ligne)"
+participant "Écran\nde caisse" as UI
+participant "VenteLocaleService" as VS
+participant "PlageService" as PS
+database "SQLite\nchiffrée" as L
+participant "FileOperations\n(outbox)" as Q
+participant "Imprimante\nESC/POS" as IMP
+end box
+
+C -> UI : Scanne les articles
+loop pour chaque article
+  UI -> VS : ajouterLigne(codeBarre, qte, conditionnement)
+  VS -> L : Produit, prix, taxes, stock local
+  L --> VS : Données
+  VS --> UI : Ligne + totaux recalculés
+  opt Stock local insuffisant
+    VS --> UI : Alerte (vente autorisée)
+  end
+end
+C -> UI : Encaisser (espèces)
+UI -> VS : finaliser(paiements)
+VS -> PS : numeroSuivant(TICKET)
+PS -> L : Lit et incrémente la plage
+alt Plage disponible
+  L --> PS : Numéro
+  PS --> VS : Numéro
+else Plage épuisée
+  PS --> UI : Blocage : synchroniser
+end
+opt Plage consommée à plus de 80 %
+  PS --> UI : Alerte de synchronisation
+end
+VS -> L : Transaction locale : Vente, LigneVente,\nPaiement, MouvementStock (UUID v7)
+VS -> Q : Ajoute l'opération VENTE_ENREGISTREE\n(idOperation, horodatage, signature)
+VS -> IMP : Imprime le ticket
+VS --> UI : Vente terminée
+opt Facture demandée par le client
+  VS -> L : Crée la facture (numéro de plage FACTURE),\nstatut certification = EN_FILE
+  VS -> IMP : Imprime la facture\n« en attente de certification »
+end
+note over Q
+  L'opération partira à la prochaine
+  synchronisation (SD-03)
+end note
+@enduml

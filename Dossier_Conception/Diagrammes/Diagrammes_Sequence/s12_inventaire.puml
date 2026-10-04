@@ -1,0 +1,34 @@
+@startuml
+!include style.iuml
+title SD-12 : Réaliser et valider un inventaire (UC-STK-02, UC-STK-03)
+autonumber
+actor Magasinier as M
+actor "Responsable\nde magasin" as R
+participant "Application\nAndroid" as A
+database "SQLite" as L
+box "Serveur Ambawbio"
+participant "InventaireService" as IS
+participant "Écouteur\ncomptabilité" as CPT
+database "PostgreSQL" as DB
+end box
+
+R -> IS : Ouvre l'inventaire (dépôt, emplacements)
+IS -> DB : Inventaire OUVERT,\ninstant de référence T0
+IS --> A : Inventaire diffusé à la synchronisation
+M -> A : Scanne un article et saisit la quantité comptée
+A -> L : LigneInventaire (quantité comptée, horodatage)
+note over A, L
+  Le comptage fonctionne hors-ligne ;
+  les ventes continuent pendant le comptage
+end note
+A -> IS : Synchronisation des comptages
+IS -> DB : Enregistre les lignes
+R -> IS : Demande les écarts
+IS -> DB : Stock théorique à T0\n+ mouvements entre T0 et chaque comptage
+IS --> R : Écarts par article (quantité et valeur)
+R -> IS : Valide l'inventaire
+IS -> DB : MouvementStock AJUSTEMENT_INVENTAIRE\npour chaque écart (jamais de modification directe)
+IS -> DB : Inventaire VALIDE + JournalAudit
+IS -> CPT : Événement InventaireValide
+CPT -> DB : Écriture de variation de stock
+@enduml

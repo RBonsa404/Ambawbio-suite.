@@ -1,0 +1,175 @@
+/* Ambawbio Suite — Tailwind CSS 4 · direction C « La terre et le motif » */
+@import "tailwindcss";
+
+@theme {
+  --color-*: initial;
+  --color-laterite-50: #FFF2ED;
+  --color-laterite-100: #FFE1D5;
+  --color-laterite-200: #FEC5B0;
+  --color-laterite-300: #F4A485;
+  --color-laterite-400: #DD8360;
+  --color-laterite-500: #C6633A;
+  --color-laterite-600: #B4532A;
+  --color-laterite-700: #8E3507;
+  --color-laterite-800: #6E2500;
+  --color-laterite-900: #4E1700;
+  --color-laterite-950: #340B00;
+  --color-banco-50: #F5F1EA;
+  --color-banco-100: #EBE7E3;
+  --color-banco-200: #D8D3CE;
+  --color-banco-300: #BFBAB4;
+  --color-banco-400: #A39D97;
+  --color-banco-500: #88827B;
+  --color-banco-600: #716B63;
+  --color-banco-700: #5A544E;
+  --color-banco-800: #443F3A;
+  --color-banco-900: #2E2B26;
+  --color-banco-950: #1E1B18;
+  --color-vert-50: #DEFFEB;
+  --color-vert-100: #CEF2DD;
+  --color-vert-200: #B6E0C8;
+  --color-vert-300: #98C8AD;
+  --color-vert-400: #76AD8F;
+  --color-vert-500: #539372;
+  --color-vert-600: #377B5A;
+  --color-vert-700: #266346;
+  --color-vert-800: #1B4332;
+  --color-vert-900: #063421;
+  --color-vert-950: #002212;
+  --color-or-50: #FFF4DC;
+  --color-or-100: #FBE6B4;
+  --color-or-200: #EAD299;
+  --color-or-300: #D3B875;
+  --color-or-400: #C9A227;
+  --color-or-500: #A17E11;
+  --color-or-600: #866700;
+  --color-or-700: #6A5101;
+  --color-or-800: #503D01;
+  --color-or-900: #382900;
+  --color-or-950: #241900;
+  --color-rouge-50: #FEF2F1;
+  --color-rouge-100: #FFDFDD;
+  --color-rouge-200: #FEC3C0;
+  --color-rouge-300: #FE9B98;
+  --color-rouge-400: #E87877;
+  --color-rouge-500: #D15557;
+  --color-rouge-600: #B8373E;
+  --color-rouge-700: #96252D;
+  --color-rouge-800: #76131D;
+  --color-rouge-900: #57020E;
+  --color-rouge-950: #3B0005;
+  --color-bleu-50: #EEF6FE;
+  --color-bleu-100: #D5EBFF;
+  --color-bleu-200: #BBD8F2;
+  --color-bleu-300: #9DBFDD;
+  --color-bleu-400: #7DA3C5;
+  --color-bleu-500: #5D88AD;
+  --color-bleu-600: #437096;
+  --color-bleu-700: #31597A;
+  --color-bleu-800: #21435E;
+  --color-bleu-900: #112E44;
+  --color-bleu-950: #051C2F;
+  --color-blanc: #FFFFFF;
+  --color-noir: #000000;
+
+  --color-fond: var(--color-banco-50);
+  --color-surface: #FFFFFF;
+  --color-surface-elevee: var(--color-banco-100);
+  --color-texte: var(--color-banco-950);
+  --color-texte-secondaire: var(--color-banco-700);
+  --color-bordure: var(--color-banco-200);
+  --color-primaire: var(--color-laterite-600);
+  --color-primaire-survol: var(--color-laterite-700);
+  --color-primaire-texte: #FFFFFF;
+  --color-accent: var(--color-or-400);
+  --color-succes: var(--color-vert-700);
+  --color-avertissement: var(--color-or-700);
+  --color-danger: var(--color-rouge-700);
+  --color-info: var(--color-bleu-700);
+  --color-etat-hors-ligne: var(--color-banco-900);
+  --color-etat-hors-ligne-fond: var(--color-banco-100);
+  --color-etat-synchronisation: var(--color-bleu-800);
+  --color-etat-synchronisation-fond: var(--color-bleu-100);
+  --color-etat-en-attente: var(--color-or-800);
+  --color-etat-en-attente-fond: var(--color-or-100);
+  --color-etat-a-verifier: var(--color-laterite-800);
+  --color-etat-a-verifier-fond: var(--color-laterite-100);
+  --color-etat-certifie: var(--color-vert-800);
+  --color-etat-certifie-fond: var(--color-vert-100);
+
+  --font-titre: "Archivo", sans-serif;
+  --font-interface: "IBM Plex Sans", sans-serif;
+  --font-code: "IBM Plex Mono", monospace;
+
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.333;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.429;
+  --text-base: 1rem;
+  --text-base--line-height: 1.500;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.444;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.400;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 1.250;
+  --text-3xl: 1.875rem;
+  --text-3xl--line-height: 1.200;
+  --text-4xl: 2.25rem;
+  --text-4xl--line-height: 1.111;
+  --text-montant: 2.75rem;
+  --text-montant--line-height: 1.091;
+  --text-5xl: 3rem;
+  --text-5xl--line-height: 1.083;
+  --text-6xl: 4rem;
+  --text-6xl--line-height: 1.000;
+
+  --spacing: 0.25rem;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-pilule: 999px;
+  --shadow-1: 0 1px 2px rgb(30 27 24 / 0.12);
+  --shadow-2: 0 2px 6px rgb(30 27 24 / 0.16);
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --duration-rapide: 150ms;
+  --duration-normale: 200ms;
+  --duration-lente: 250ms;
+
+  --breakpoint-*: initial;
+  --breakpoint-telephone: 22.5rem;
+  --breakpoint-petite-tablette: 37.5rem;
+  --breakpoint-tablette: 56.25rem;
+  --breakpoint-bureau: 80rem;
+  --breakpoint-large: 100rem;
+}
+
+/* Variante plein soleil (caisse) : <html data-theme="plein-soleil"> */
+[data-theme="plein-soleil"] {
+  --color-fond: #FFFFFF;
+  --color-surface-elevee: var(--color-banco-50);
+  --color-texte: #000000;
+  --color-texte-secondaire: var(--color-banco-900);
+  --color-bordure: var(--color-banco-950);
+  --color-primaire: var(--color-laterite-800);
+  --color-primaire-survol: var(--color-laterite-900);
+  --color-accent: var(--color-or-500);
+  --color-succes: var(--color-vert-900);
+  --color-avertissement: var(--color-or-900);
+  --color-danger: var(--color-rouge-900);
+  --color-info: var(--color-bleu-900);
+  --color-etat-hors-ligne: #000000;
+  --color-etat-hors-ligne-fond: #FFFFFF;
+  --color-etat-synchronisation: var(--color-bleu-950);
+  --color-etat-synchronisation-fond: #FFFFFF;
+  --color-etat-en-attente: var(--color-or-950);
+  --color-etat-en-attente-fond: #FFFFFF;
+  --color-etat-a-verifier: var(--color-laterite-950);
+  --color-etat-a-verifier-fond: #FFFFFF;
+  --color-etat-certifie: var(--color-vert-950);
+  --color-etat-certifie-fond: #FFFFFF;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+}

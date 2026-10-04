@@ -1,0 +1,104 @@
+@startuml
+!include style.iuml
+title Packages stock et achats
+
+class Depot {
+  code : String
+  nom : String
+}
+class Emplacement {
+  code : String
+  type : TypeEmplacement
+}
+class Lot {
+  numero : String
+  datePeremption : LocalDate
+}
+class StockQuant {
+  quantite : BigDecimal
+  valeur : Montant
+}
+class MouvementStock {
+  date : Instant
+  type : TypeMouvement
+  quantite : BigDecimal
+  coutUnitaire : Montant
+  origine : String
+  origineId : UUID
+  operationSyncId : UUID
+}
+class Inventaire {
+  numero : String
+  date : LocalDate
+  statut : StatutInventaire
+  + valider()
+}
+class LigneInventaire {
+  quantiteTheorique : BigDecimal
+  quantiteComptee : BigDecimal
+  ecart : BigDecimal
+}
+class DemandePrix {
+  numero : String
+  date : LocalDate
+  statut : StatutDemandePrix
+}
+class CommandeFournisseur {
+  numero : String
+  date : LocalDate
+  dateLivraisonPrevue : LocalDate
+  statut : StatutCommandeFournisseur
+  + receptionner(lignes) : Reception
+}
+class LigneCommandeFournisseur {
+  quantite : BigDecimal
+  quantiteRecue : BigDecimal
+  prixUnitaire : Montant
+}
+class Reception {
+  numero : String
+  date : LocalDate
+  coutsApproche : Montant
+  statut : StatutReception
+}
+class LigneReception {
+  quantite : BigDecimal
+  conditionnement : String
+  quantiteUniteStock : BigDecimal
+}
+class FactureFournisseur {
+  numeroFournisseur : String
+  date : LocalDate
+  totalTTC : Montant
+  statut : StatutFactureFournisseur
+}
+class Produit <<externe : referentiel>>
+class Tiers <<externe : referentiel>>
+
+Depot "1" *-- "1..*" Emplacement
+Emplacement "1" *-- "0..*" StockQuant
+StockQuant "0..*" --> "1" Produit
+StockQuant "0..*" --> "0..1" Lot
+MouvementStock "0..*" --> "1" Produit
+MouvementStock "0..*" --> "0..1" Emplacement : source
+MouvementStock "0..*" --> "0..1" Emplacement : destination
+MouvementStock "0..*" --> "0..1" Lot
+Inventaire "0..*" --> "1" Depot
+Inventaire "1" *-- "1..*" LigneInventaire
+LigneInventaire "0..*" --> "1" Produit
+DemandePrix "0..*" --> "1" Tiers : fournisseur
+DemandePrix "0..1" --> "0..1" CommandeFournisseur : devient
+CommandeFournisseur "0..*" --> "1" Tiers : fournisseur
+CommandeFournisseur "1" *-- "1..*" LigneCommandeFournisseur
+LigneCommandeFournisseur "0..*" --> "1" Produit
+CommandeFournisseur "1" --> "0..*" Reception
+Reception "1" *-- "1..*" LigneReception
+Reception ..> MouvementStock : génère
+FactureFournisseur "0..*" --> "1" Tiers
+FactureFournisseur "0..*" --> "0..*" Reception : rapprochée avec
+note bottom of MouvementStock
+  Les mouvements ne sont jamais modifiés :
+  le stock est la somme des mouvements (RG-05).
+  operationSyncId garantit l'idempotence.
+end note
+@enduml

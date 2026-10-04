@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,700..800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;600;700&display=swap">
+<style>body{margin:0;background:#F5F1EA;color:#1E1B18;-webkit-font-smoothing:antialiased}a{color:#8E3507}a:hover{color:#1E1B18}</style>
+</helmet>
+<div data-screen-label="Site — Accueil" style="font-family:'IBM Plex Sans',sans-serif;background:#F5F1EA;min-width:0">
+
+<div style="height:14px;background-color:#B4532A;background-image:linear-gradient(135deg,#1E1B18 25%,transparent 25%),linear-gradient(225deg,#1E1B18 25%,transparent 25%);background-size:14px 14px"></div>
+<header style="max-width:1240px;margin:0 auto;padding:18px 24px;display:flex;align-items:center;gap:24px;flex-wrap:wrap">
+<div style="display:flex;align-items:center;gap:10px"><dc-import name="Symbole" dir="c" taille="32" fond="#F5F1EA" hint-size="32px,32px"></dc-import><b style="font-family:'Archivo',sans-serif;font-stretch:120%;font-weight:800;font-size:20px;letter-spacing:.04em">AMBAWBIO</b></div>
+<nav style="display:flex;gap:20px;font-size:15px;flex-wrap:wrap;flex:1"><a href="#piliers" style="color:#1E1B18;text-decoration:none">Fonctionnalités</a><a href="#conformite" style="color:#1E1B18;text-decoration:none">Conformité FEC</a><a href="#hors-ligne" style="color:#1E1B18;text-decoration:none">Hors-ligne</a><a href="#tarifs" style="color:#1E1B18;text-decoration:none">Tarifs</a><a href="#experts" style="color:#1E1B18;text-decoration:none">Experts-comptables</a><a href="#histoire" style="color:#1E1B18;text-decoration:none">Notre histoire</a></nav>
+<a href="#demo" style="padding:12px 18px;background:#B4532A;color:#FFFFFF;font-weight:700;font-size:15px;text-decoration:none;white-space:nowrap">Demander une démonstration</a>
+</header>
+
+<section style="max-width:1240px;margin:0 auto;padding:32px 24px 56px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:40px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:22px">
+<span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#8E3507">Gestion d'entreprise · conçue au Burkina Faso</span>
+<h1 style="margin:0;font-family:'Archivo',sans-serif;font-stretch:115%;font-weight:800;font-size:clamp(40px,6vw,72px);line-height:.98;text-transform:uppercase;text-wrap:balance">Solide ici. Prête pour demain.</h1>
+<p style="margin:0;font-size:19px;line-height:1.55;color:#443F3A;max-width:560px;text-wrap:pretty">Caisse, factures certifiées DGI, stock et comptabilité SYSCOHADA dans une seule suite. Vos ventes continuent même sans réseau, vos clients paient par Mobile Money.</p>
+<div style="display:flex;gap:12px;flex-wrap:wrap"><a href="#demo" style="padding:15px 22px;background:#B4532A;color:#FFFFFF;font-weight:700;font-size:16px;text-decoration:none">Demander une démonstration</a><a href="#tarifs" style="padding:13px 22px;border:2px solid #1E1B18;color:#1E1B18;font-weight:700;font-size:16px;text-decoration:none">Voir les tarifs</a></div>
+<div style="display:flex;gap:18px;flex-wrap:wrap;font-size:14px;font-weight:600;padding-top:6px;border-top:2px solid #1E1B18"><span>Prix en FCFA</span><span>Abonnement payable par Mobile Money</span><span>Données hébergées au Burkina Faso</span></div>
+</div>
+<div style="display:flex;flex-direction:column;min-height:420px">
+<div style="height:16px;background-color:#B4532A;background-image:linear-gradient(135deg,#1E1B18 25%,transparent 25%),linear-gradient(225deg,#1E1B18 25%,transparent 25%);background-size:16px 16px"></div>
+<div style="flex:1;min-height:400px;background:repeating-linear-gradient(135deg,#C46A44 0 12px,#B4532A 12px 24px);display:flex;align-items:flex-end;padding:18px;box-sizing:border-box;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#FFFFFF;line-height:1.5">photo à réaliser : caissière de quincaillerie à Ouagadougou, tablette de caisse sur le comptoir, lumière naturelle de midi, client qui tend son téléphone pour payer</div>
+</div>
+</section>
+
+<section style="background:#1E1B18;color:#FFFFFF">
+<div style="max-width:1240px;margin:0 auto;padding:56px 24px;display:flex;flex-direction:column;gap:28px">
+<h2 style="margin:0;font-family:'Archivo',sans-serif;font-stretch:115%;font-weight:800;font-size:clamp(28px,4vw,40px);text-transform:uppercase">Une journée ordinaire, sans mauvaise surprise</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:2px;background:#443F3A">
+<sc-for list="{{ situations }}" as="s" hint-placeholder-count="4">
+<div style="background:#1E1B18;padding:22px 20px 26px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:'Archivo',sans-serif;font-weight:800;font-size:34px;color:#F4A485">{{ s.heure }}</span>
+<b style="font-size:18px;line-height:1.3">{{ s.titre }}</b>
+<span style="font-size:15px;line-height:1.55;color:#D8D3CE">{{ s.texte }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+
+<section id="piliers" style="max-width:1240px;margin:0 auto;padding:64px 24px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px;max-width:720px"><h2 style="margin:0;font-family:'Archivo',sans-serif;font-stretch:115%;font-weight:800;font-size:clamp(28px,4vw,40px);text-transform:uppercase">Huit piliers, une seule base</h2><p style="margin:0;font-size:17px;line-height:1.55;color:#443F3A">Commencez par la caisse et la facturation. Ajoutez les modules quand votre entreprise grandit, sans ressaisir vos données.</p></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));border-top:2px solid #1E1B18;border-left:2px solid #1E1B18">
+<sc-for list="{{ piliers }}" as="p" hint-placeholder-count="8">
+<div style="padding:20px;border-right:2px solid #1E1B18;border-bottom:2px solid #1E1B18;display:flex;flex-direction:column;gap:8px;background:{{ p.fond }}">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#8E3507">{{ p.n }}</span><span style="font-size:12px;font-weight:700;padding:2px 7px;border:1.5px solid #1E1B18">{{ p.dispo }}</span></div>
+<b style="font-size:18px">{{ p.nom }}</b>
+<span style="font-size:14px;line-height:1.5;color:#443F3A">{{ p.texte }}</span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section id="conformite" style="background:#FFFFFF;border-top:2px solid #1E1B18;border-bottom:2px solid #1E1B18">
+<div style="max-width:1240px;margin:0 auto;padding:64px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:40px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:16px">
+<span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#1B4332">Conformité native</span>
+<h2 style="margin:0;font-family:'Archivo',sans-serif;font-stretch:115%;font-weight:800;font-size:clamp(28px,4vw,40px);text-transform:uppercase">Chaque facture certifiée par la DGI</h2>
+<p style="margin:0;font-size:17px;line-height:1.55;color:#443F3A">La Facture Électronique Certifiée est intégrée : QR code de vérification, identifiant et horodatage de certification sur chaque facture. Sans réseau, la facture attend et se certifie dès le retour de la connexion.</p>
+<div style="display:flex;flex-direction:column;gap:8px;font-size:16px"><span>✓ Plan comptable et états financiers SYSCOHADA révisé</span><span>✓ IFU, RCCM et régime fiscal de chaque client</span><span>✓ Journal d'audit inaltérable</span></div>
+</div>
+<div style="border:2px solid #1B4332;padding:22px;display:grid;grid-template-columns:120px minmax(0,1fr);gap:18px;align-items:center;background:#F5F1EA">
+<div style="width:120px;height:120px;background:repeating-linear-gradient(0deg,#1E1B18 0 5px,#FFFFFF 5px 9px),#1E1B18;border:6px solid #FFFFFF;outline:1px solid #1E1B18;box-sizing:border-box;display:flex;align-items:center;justify-content:center"><span style="background:#FFFFFF;font-family:'IBM Plex Mono',monospace;font-size:9px;padding:2px 4px">QR DGI</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="display:flex;align-items:center;gap:6px;align-self:flex-start;padding:5px 10px;background:#CEF2DD;color:#1B4332;border:1.5px solid #98C8AD;font-size:14px;font-weight:600">✓ Certifiée DGI</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px">FEC-BF-7Q4K-2207-88A1</span><span style="font-size:13px;color:#443F3A">Exemple fictif — Quincaillerie Wend-Panga (démo)</span></div>
+</div>
+</div>
+</section>
+
+<section id="hors-ligne" style="max-width:1240px;margin:0 auto;padding:64px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:40px">
+<div style="display:flex;flex-direction:column;gap:14px;padding:28px;background:#EBE7E3">
+<h2 style="margin:0;font-family:'Archivo',sans-serif;font-stretch:115%;font-weight:800;font-size:clamp(26px,3.4vw,34px);text-transform:uppercase">Hors-ligne pendant des jours</h2>
+<p style="margin:0;font-size:16px;line-height:1.55;color:#2E2B26">Caisse, facturation et stock fonctionnent sans réseau. L'écran indique toujours clairement ce qui est enregistré sur l'appareil et ce qui reste à envoyer.</p>
+<div style="display:flex;flex-direction:column;gap:6px;margin-top:6px">
+<span style="padding:9px 12px;background:#FFFFFF;font-size:15px;font-weight:600">○ Hors-ligne — 3 ventes sur l'appareil</span>
+<span style="padding:9px 12px;background:#D5EBFF;color:#21435E;font-size:15px;font-weight:600">↻ Envoi en cours — 7 sur 12</span>
+<span style="padding:9px 12px;background:#CEF2DD;color:#1B4332;font-size:15px;font-weight:600">✓ En ligne — tout est synchronisé</span>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:14px;padding:28px;background:#FFFFFF;border:2px solid #1E1B18">
+<h2 style="margin:0;font-family:'Archivo',sans-serif;font-stretch:115%;font-weight:800;font-size:clamp(26px,3.4vw,34px);text-transform:uppercase">Mobile Money partout</h2>
+<p style="margin:0;font-size:16px;line-height:1.55;color:#2E2B26">Encaissement en caisse, liens de paiement sur les factures, rapprochement automatique, paiement de l'abonnement : tout se règle par Mobile Money.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><span style="padding:8px 14px;border:2px solid #1E1B18;font-weight:600">Orange Money</span><span style="padding:8px 14px;border:2px solid #1E1B18;font-weight:600">Moov Money</span><span style="padding:8px 14px;border:2px solid #1E1B18;font-weight:600">Wave</span></div>
+<span style="font-size:13px;color:#5A544E">Sans réseau : la référence du SMS de confirmation est saisie et vérifiée plus tard.</span>
+</div>
+</section>
+
+<section id="tarifs" style="background:#FFFFFF;border-top:2px solid #1E1B18">
+<div style="max-width:1240px;margin:0 auto;padding:64px 24px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:8px"><h2 style="margin:0;font-family:'Archivo',sans-serif;font-stretch:115%;font-weight:800;font-size:clamp(28px,4vw,40px);text-transform:uppercase">Tarifs en francs CFA</h2><span style="font-size:15px;color:#443F3A">Paiement mensuel ou annuel par Mobile Money. <b>Prix paramétrables dans l'application.</b></span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:16px">
+<sc-for list="{{ packs }}" as="p" hint-placeholder-count="4">
+<div style="border:{{ p.bord }};padding:22px;display:flex;flex-direction:column;gap:12px;background:#FFFFFF">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-family:'Archivo',sans-serif;font-stretch:112%;font-size:22px;text-transform:uppercase">{{ p.nom }}</b><span style="font-size:12px;font-weight:700;color:#8E3507">{{ p.badge }}</span></div>
+<span style="font-size:14px;color:#443F3A;min-height:40px">{{ p.cible }}</span>
+<div style="display:flex;align-items:baseline;gap:6px"><b style="font-family:'Archivo',sans-serif;font-weight:800;font-size:22px;color:#8E3507">{{ p.prix }}</b><span style="font-size:14px;color:#443F3A">{{ p.unite }}</span></div>
+<div style="display:flex;flex-direction:column;gap:6px;font-size:14px;border-top:1.5px solid #D8D3CE;padding-top:10px"><sc-for list="{{ p.inclus }}" as="i" hint-placeholder-count="4"><span>✓ {{ i }}</span></sc-for></div>
+<a href="#demo" style="margin-top:auto;padding:12px;text-align:center;font-weight:700;text-decoration:none;background:{{ p.ctaFond }};color:{{ p.ctaEncre }};border:2px solid #1E1B18">{{ p.cta }}</a>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+
+<section id="experts" style="max-width:1240px;margin:0 auto;padding:64px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:40px;align-items:center">
+<div style="min-height:300px;background:repeating-linear-gradient(135deg,#E9E1D4 0 10px,#F0EAE0 10px 20px);display:flex;align-items:flex-end;padding:16px;box-sizing:border-box;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#443F3A;line-height:1.5">photo à réaliser : comptable dans un cabinet de Bobo-Dioulasso, écran large avec la balance, dossiers clients sur le bureau</div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#8E3507">Experts-comptables et partenaires</span>
+<h2 style="margin:0;font-family:'Archivo',sans-serif;font-stretch:115%;font-weight:800;font-size:clamp(26px,3.4vw,36px);text-transform:uppercase">Tous vos dossiers clients, au clavier</h2>
+<p style="margin:0;font-size:16px;line-height:1.55;color:#443F3A">Accès multi-entreprises, saisie rapide au clavier, lettrage, balance et états SYSCOHADA prêts pour la DSF. Les écritures des ventes et des caisses arrivent déjà passées.</p>
+<a href="#demo" style="align-self:flex-start;padding:12px 18px;border:2px solid #1E1B18;color:#1E1B18;font-weight:700;text-decoration:none">Devenir cabinet partenaire</a>
+</div>
+</section>
+
+<section style="max-width:1240px;margin:0 auto;padding:0 24px 64px">
+<div style="border:2px dashed #88827B;padding:28px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px">
+<sc-for list="{{ temoignages }}" as="t" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:8px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5A544E">TÉMOIGNAGE À VENIR</span><span style="font-size:15px;color:#443F3A;line-height:1.5">{{ t }}</span></div></sc-for>
+</div>
+</section>
+
+<section id="histoire" style="background:#B4532A;color:#FFFFFF">
+<div style="max-width:900px;margin:0 auto;padding:64px 24px;display:flex;flex-direction:column;gap:18px">
+<span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase">Notre histoire</span>
+<h2 style="margin:0;font-family:'Archivo',sans-serif;font-stretch:115%;font-weight:800;font-size:clamp(28px,4vw,44px);text-transform:uppercase;line-height:1.05">Ambawbio : « celui qui connaît demain »</h2>
+<p style="margin:0;font-size:18px;line-height:1.6;text-wrap:pretty">Ce nom rend hommage à une personne qui a marqué la vie de notre fondateur. Il dit ce que nous voulons offrir à chaque dirigeant : une vision claire de son entreprise aujourd'hui, pour anticiper demain plutôt que le subir.</p>
+<a href="#histoire" style="align-self:flex-start;color:#FFFFFF;font-weight:700">Lire l'histoire complète →</a>
+</div>
+</section>
+
+<section id="demo" style="max-width:1240px;margin:0 auto;padding:64px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:40px">
+<div style="display:flex;flex-direction:column;gap:12px"><h2 style="margin:0;font-family:'Archivo',sans-serif;font-stretch:115%;font-weight:800;font-size:clamp(28px,4vw,40px);text-transform:uppercase">Demander une démonstration</h2><p style="margin:0;font-size:17px;line-height:1.55;color:#443F3A">Un conseiller vous rappelle sous 24 h ouvrées pour une démonstration dans votre boutique ou en visio.</p><span style="font-size:15px">Ou appelez-nous : <b>+226 25 00 00 00</b> (numéro à confirmer)</span></div>
+<form style="display:flex;flex-direction:column;gap:12px;background:#FFFFFF;border:2px solid #1E1B18;padding:24px">
+<label style="display:flex;flex-direction:column;gap:5px;font-size:14px;font-weight:600">Nom et prénom<input style="height:46px;border:1.5px solid #88827B;padding:0 12px;font:inherit;font-weight:400"></label>
+<label style="display:flex;flex-direction:column;gap:5px;font-size:14px;font-weight:600">Entreprise<input style="height:46px;border:1.5px solid #88827B;padding:0 12px;font:inherit;font-weight:400"></label>
+<label style="display:flex;flex-direction:column;gap:5px;font-size:14px;font-weight:600">Téléphone (WhatsApp)<div style="display:flex;border:1.5px solid #88827B"><span style="padding:0 12px;display:flex;align-items:center;background:#EBE7E3;font-weight:600">+226</span><input style="flex:1;height:44px;border:0;padding:0 12px;font:inherit;font-weight:400;min-width:0"></div></label>
+<label style="display:flex;flex-direction:column;gap:5px;font-size:14px;font-weight:600">Activité<select style="height:46px;border:1.5px solid #88827B;padding:0 10px;font:inherit;font-weight:400;background:#FFFFFF"><option>Commerce / boutique</option><option>Distribution</option><option>Pharmacie</option><option>Atelier, agro-transformation</option><option>Cabinet comptable</option><option>Administration, ONG</option></select></label>
+<span style="margin-top:6px;padding:15px;background:#B4532A;color:#FFFFFF;font-weight:700;text-align:center;font-size:16px">Être rappelé</span>
+</form>
+</section>
+
+<footer style="background:#1E1B18;color:#D8D3CE">
+<div style="height:12px;background-color:#1E1B18;background-image:linear-gradient(135deg,#B4532A 25%,transparent 25%),linear-gradient(225deg,#B4532A 25%,transparent 25%);background-size:12px 12px"></div>
+<div style="max-width:1240px;margin:0 auto;padding:36px 24px;display:flex;gap:32px;flex-wrap:wrap;justify-content:space-between;font-size:14px">
+<div style="display:flex;flex-direction:column;gap:10px"><div style="display:flex;align-items:center;gap:10px"><dc-import name="Symbole" dir="c" mode="blanc" taille="26" fond="#1E1B18" hint-size="26px,26px"></dc-import><b style="font-family:'Archivo',sans-serif;font-stretch:120%;font-size:17px;letter-spacing:.04em;color:#FFFFFF">AMBAWBIO</b></div><span>Ouagadougou, Burkina Faso</span></div>
+<div style="display:flex;gap:40px;flex-wrap:wrap"><div style="display:flex;flex-direction:column;gap:6px"><b style="color:#FFFFFF">Produit</b><span>Fonctionnalités</span><span>Hors-ligne</span><span>Mobile Money</span><span>Tarifs</span></div><div style="display:flex;flex-direction:column;gap:6px"><b style="color:#FFFFFF">Société</b><span>Notre histoire</span><span>Partenaires</span><span>Contact</span></div><div style="display:flex;flex-direction:column;gap:6px"><b style="color:#FFFFFF">Légal</b><span>Mentions légales</span><span>Confidentialité</span></div></div>
+</div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const situations = [
+      { heure: '07 h 30', titre: 'Ouverture', texte: 'Awa saisit son fonds de caisse. Le terminal a reçu les nouveaux prix pendant la nuit.' },
+      { heure: '11 h 00', titre: 'Coupure de réseau', texte: 'La caisse continue. Les ventes sont enregistrées sur l\'appareil et partiront au retour du réseau.' },
+      { heure: '15 h 20', titre: 'Paiement Orange Money', texte: 'Le client valide sur son téléphone. Le paiement est rapproché automatiquement.' },
+      { heure: '19 h 00', titre: 'Le point du soir', texte: 'Moussa voit sur son téléphone ce qu\'il a vendu, ce qu\'il a en stock et ce qu\'on lui doit.' }
+    ];
+    const P = (n, nom, texte, dispo) => ({ n, nom, texte, dispo, fond: dispo === 'Disponible' ? '#FFFFFF' : 'transparent' });
+    const piliers = [
+      P('01', 'Ventes et relation client', 'Caisse, devis, commandes, factures certifiées, suivi des impayés.', 'Disponible'),
+      P('02', 'Finance et comptabilité', 'SYSCOHADA, rapprochement Mobile Money, états financiers.', 'Disponible'),
+      P('03', 'Opérations et logistique', 'Stock multi-dépôts, achats, réceptions, inventaires.', 'Disponible'),
+      P('04', 'Ressources humaines', 'Dossiers, congés, pointage mobile, paie par Mobile Money.', 'Bientôt'),
+      P('05', 'Site web et e-commerce', 'Boutique en ligne légère, paiement Mobile Money ou à la livraison.', 'Bientôt'),
+      P('06', 'Marketing et communication', 'Campagnes SMS et WhatsApp vers vos clients.', 'Plus tard'),
+      P('07', 'Productivité et projets', 'Projets, feuilles de temps, documents.', 'Bientôt'),
+      P('08', 'Studio No-Code', 'Champs personnalisés, puis vos propres écrans.', 'Disponible')
+    ];
+    const K = (nom, cible, prix, unite, inclus, badge, fort) => ({ nom, cible, prix, unite, inclus, badge, bord: fort ? '3px solid #1E1B18' : '1.5px solid #BFBAB4', ctaFond: fort ? '#B4532A' : '#FFFFFF', ctaEncre: fort ? '#FFFFFF' : '#1E1B18', cta: nom === 'Institution' || nom === 'Enterprise' ? 'Nous contacter' : 'Commencer' });
+    const packs = [
+      K('Essentiel', 'Micro-entreprises et commerces', '[PRIX À DÉFINIR]', '', ['1 caisse Android', 'Factures certifiées FEC', 'Stock simple', 'Mobile Money'], '', false),
+      K('Business', 'PME, plusieurs points de vente', '[PRIX À DÉFINIR]', '', ['Jusqu\'à 5 caisses', 'Comptabilité SYSCOHADA', 'Achats et multi-dépôts', 'Accès expert-comptable'], 'Le plus choisi', true),
+      K('Enterprise', 'Groupes et grandes entreprises', '[PRIX À DÉFINIR]', '', ['Multi-sociétés', 'Caisses illimitées', 'Studio No-Code', 'Accompagnement dédié'], '', false),
+      K('Institution', 'Administrations et ONG', '[PRIX À DÉFINIR]', '', ['Gestion budgétaire', 'Multi-projets', 'Hébergement au Burkina', 'Formation des équipes'], '', false)
+    ];
+    const temoignages = ['Emplacement réservé à un client pilote — quincaillerie ou commerce de détail.', 'Emplacement réservé à un client pilote — distribution ou PME multi-sites.', 'Emplacement réservé à un cabinet d\'expertise comptable partenaire.'];
+    return { situations, piliers, packs, temoignages };
+  }
+}
+</script>
+</body>
+</html>

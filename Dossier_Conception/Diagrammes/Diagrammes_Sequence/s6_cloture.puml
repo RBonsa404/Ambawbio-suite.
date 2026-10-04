@@ -1,0 +1,35 @@
+@startuml
+!include style.iuml
+title SD-06 : Clôturer une session de caisse (UC-POS-07, UC-POS-08)
+autonumber
+actor Caissier as C
+actor "Responsable\nde magasin" as R
+participant "Application\nde caisse" as A
+participant "SessionCaisse\n(domaine)" as S
+database "Base locale /\nserveur" as DB
+
+C -> A : Clôturer la session
+A -> S : totauxAttendus()
+S -> DB : Ventes, retours et paiements\nde la session
+DB --> S : Données
+S --> A : Attendu par moyen de paiement
+C -> A : Saisit le comptage réel
+A -> S : cloturer(comptage)
+S -> S : Calcule les écarts
+alt Écart inférieur ou égal au seuil
+  S -> DB : Statut CLOTUREE, rapport Z
+  S -> DB : Opération SESSION_CLOTUREE (outbox)
+  A --> C : Rapport Z imprimé
+else Écart supérieur au seuil
+  S -> DB : Statut ECART_A_VALIDER
+  A --> C : Validation du responsable requise
+  R -> A : S'identifie (PIN) et saisit le motif
+  A -> S : validerEcart(responsable, motif)
+  S -> DB : Statut CLOTUREE, motif,\nJournalAudit (VALIDATION_ECART)
+  A --> R : Rapport Z imprimé
+end
+note over DB
+  À la synchronisation, le serveur génère les écritures
+  de caisse et d'écart (RG-08, RG-09)
+end note
+@enduml

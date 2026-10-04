@@ -1,0 +1,39 @@
+@startuml
+!include style.iuml
+title SD-11 : Enregistrer un terminal et charger ses données (UC-SOC-04)
+autonumber
+actor "Administrateur\nentreprise" as ADM
+actor Caissier as C
+participant "Application\nweb" as W
+participant "Application\nAndroid" as AND
+database "SQLite\nchiffrée" as L
+box "Serveur Ambawbio"
+participant "TerminalService" as TS
+participant "SyncService" as SS
+database "PostgreSQL" as DB
+end box
+
+ADM -> W : Ajouter un terminal\n(établissement, point de vente, type)
+W -> TS : POST /api/v1/socle/terminaux
+TS -> DB : Terminal EN_ATTENTE\n+ code d'appairage à usage unique (15 min)
+TS --> W : QR code d'appairage
+C -> AND : Première ouverture : scanne le QR code
+AND -> AND : Génère une paire de clés\n(clé privée dans le coffre Android)
+AND -> TS : POST /terminaux/appairage\n(code, clé publique, modèle)
+TS -> DB : Vérifie le code, enregistre la clé publique,\nstatut ACTIF, JournalAudit
+TS -> DB : Réserve les plages de numéros\n(TICKET, FACTURE, AVOIR)
+TS --> AND : Identifiant du terminal + plages
+AND -> L : Crée la base locale chiffrée\n(clé protégée par le coffre Android)
+AND -> SS : GET /sync/pull?curseur=0\n(chargement initial)
+loop par lots compressés
+  SS -> DB : Catalogue, prix, taxes, clients,\nstock du dépôt, utilisateurs autorisés
+  SS --> AND : Lot de données
+  AND -> L : Enregistre
+end
+AND --> C : Terminal prêt à fonctionner hors-ligne
+note right of TS
+  L'administrateur peut révoquer un terminal
+  perdu ou volé : ses synchronisations sont
+  alors refusées (UC-SOC-05, E2).
+end note
+@enduml
