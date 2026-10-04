@@ -16,12 +16,30 @@ class OrganisationService implements Organisation {
 
     private final EtablissementDepot etablissements;
     private final EntrepriseDepot entreprises;
+    private final SocieteDepot societes;
     private final TransactionTemplate transaction;
 
-    OrganisationService(EtablissementDepot etablissements, EntrepriseDepot entreprises, TransactionTemplate transaction) {
+    OrganisationService(EtablissementDepot etablissements, EntrepriseDepot entreprises, SocieteDepot societes, TransactionTemplate transaction) {
         this.etablissements = etablissements;
+        this.societes = societes;
         this.entreprises = entreprises;
         this.transaction = transaction;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Emetteur> emetteur(UUID societeId) {
+        return societes.findById(societeId).map(s -> {
+            var e = entreprises.findById(s.tenantId()).orElseThrow();
+            return new Emetteur(s.getId(), s.nom(), s.ifu() != null ? s.ifu() : e.ifu(), s.rccm() != null ? s.rccm() : e.rccm(), s.regimeFiscal(),
+                    s.adresse() != null ? s.adresse() : e.adresse(), e.ville(), e.telephone(), e.courriel());
+        });
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<UUID> societePrincipale() {
+        return societes.findAll().stream().filter(Societe::principale).map(Societe::getId).findFirst();
     }
 
     @Override

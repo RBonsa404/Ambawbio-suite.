@@ -1,0 +1,159 @@
+@if (adaptateur()?.adaptateur === 'simulateur') {
+  <div class="mb-4 flex flex-wrap items-center gap-3 border-2 border-dashed border-banco-600 bg-banco-50 px-4 py-2 text-sm" role="note">
+    <strong>Mode démonstration</strong> : certification simulée, sans valeur fiscale.
+    @if (contexte.peut('facturation:valider')) {
+      <label class="ml-auto flex items-center gap-2">Service de certification
+        <select class="champ-saisie min-h-9 py-0" [ngModel]="adaptateur()?.mode" (ngModelChange)="changerSimulateur($event)" aria-label="État du simulateur">
+          <option value="DISPONIBLE">disponible</option><option value="INDISPONIBLE">indisponible (file d'attente)</option><option value="REJET">rejette</option>
+        </select>
+      </label>
+    }
+  </div>
+}
+
+<div class="liste-fiche" [class.fiche-ouverte]="selection() || edition()">
+  <section class="min-w-0">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <h1 class="titre-page">Factures et avoirs</h1>
+      @if (compteurs().enFile) { <span class="badge" data-testid="en-file">{{ compteurs().enFile }} en file de certification</span> }
+      @if (contexte.peut('facturation:creer')) { <button ambBouton variante="principal" type="button" (click)="nouvelle()">Nouvelle facture</button> }
+    </div>
+    <div class="mt-4 flex flex-wrap gap-2" role="group" aria-label="Filtrer">
+      @for (f of [['toutes', 'Toutes', null], ['brouillons', 'Brouillons', compteurs().brouillons], ['en-file', 'En file', compteurs().enFile],
+        ['rejetees', 'Rejetées', compteurs().rejetees], ['avoirs', 'Avoirs', compteurs().avoirs]]; track f[0]) {
+        <button type="button" class="onglet" [class.onglet-actif]="filtre() === f[0]" [attr.aria-pressed]="filtre() === f[0]" (click)="filtre.set($any(f[0]))">
+          {{ f[1] }} @if (f[2]) { {{ f[2] }} }</button>
+      }
+    </div>
+    <table class="tableau mt-3">
+      <thead><tr><th scope="col">N°</th><th scope="col">Client</th><th scope="col" class="nombre">TTC</th><th scope="col">Paiement</th>
+        <th scope="col">Certification</th></tr></thead>
+      <tbody>
+        @for (d of visibles(); track d.id) {
+          <tr [class.ligne-selectionnee]="selection()?.id === d.id">
+            <td><button type="button" class="font-code underline-offset-2 hover:underline" (click)="ouvrir(d)">{{ d.numero ?? 'Brouillon' }}</button></td>
+            <td>{{ d.clientNom ?? '—' }}</td>
+            <td class="nombre">{{ (d.type === 'AVOIR' ? -d.totalTtc : d.totalTtc) | nombre }}</td>
+            <td>{{ d.type === 'AVOIR' ? 'Avoir' : statuts[d.statut] }}</td>
+            <td><amb-badge-fec [statut]="statutFec(d)" /></td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5" class="text-texte-secondaire">Aucune pièce.</td></tr>
+        }
+      </tbody>
+    </table>
+  </section>
+
+  @if (edition()) {
+    <section class="liste-fiche-fiche carte flex flex-col gap-4" aria-label="Facture">
+      <div class="flex items-center justify-between"><h2 class="sous-titre">{{ editionId ? 'Modifier le brouillon' : 'Nouvelle facture' }}</h2>
+        <button type="button" class="bouton-icone" (click)="edition.set(false)" aria-label="Fermer">✕</button></div>
+      <div class="relative">
+        <label class="champ-libelle" for="facture-client">Client</label>
+        <input id="facture-client" class="champ-saisie" [(ngModel)]="rechercheClient" (input)="chercherClients()" autocomplete="off" placeholder="Nom ou code" />
+        @if (clients().length) {
+          <ul class="absolute z-10 mt-1 w-full border border-bordure bg-surface shadow-2" role="listbox">
+            @for (t of clients(); track t.id) {
+              <li><button type="button" class="w-full px-3 py-2 text-left hover:bg-banco-50" (click)="choisirClient(t)">{{ t.nom }}
+                <span class="font-code text-xs text-texte-secondaire">{{ t.ifu ?? '' }}</span></button></li>
+            }
+          </ul>
+        }
+        @if (client) { <p class="mt-1 text-sm">{{ client.nom }} @if (client.ifu) { · IFU <span class="font-code">{{ client.ifu }}</span> }</p> }
+      </div>
+      <div class="relative">
+        <label class="champ-libelle" for="facture-produit">Ajouter un produit</label>
+        <input id="facture-produit" class="champ-saisie" [(ngModel)]="rechercheProduit" (input)="chercherProduits()" autocomplete="off" />
+        @if (produits().length) {
+          <ul class="absolute z-10 mt-1 w-full border border-bordure bg-surface shadow-2" role="listbox">
+            @for (p of produits(); track p.id) {
+              <li><button type="button" class="flex w-full justify-between px-3 py-2 text-left hover:bg-banco-50" (click)="ajouterProduit(p)">
+                <span>{{ p.nom }}</span><span>{{ p.prixVente | nombre }} F</span></button></li>
+            }
+          </ul>
+        }
+        <button type="button" class="mt-1 text-sm underline" (click)="ajouterLigneLibre()">Ligne libre (prestation)</button>
+      </div>
+      <table class="tableau">
+        <thead><tr><th scope="col">Désignation</th><th scope="col" class="nombre">Qté</th><th scope="col" class="nombre">Prix</th><th scope="col"><span class="sr-only">Retirer</span></th></tr></thead>
+        <tbody>
+          @for (l of lignes(); track $index; let i = $index) {
+            <tr>
+              <td><input class="champ-saisie min-h-9" [(ngModel)]="l.designation" [attr.aria-label]="'Désignation ligne ' + (i + 1)" /></td>
+              <td class="nombre"><input type="number" min="0.001" step="any" class="champ-saisie min-h-9 w-20 text-right" [(ngModel)]="l.quantite"
+                [attr.aria-label]="'Quantité ligne ' + (i + 1)" /></td>
+              <td class="nombre"><input type="number" min="0" class="champ-saisie min-h-9 w-28 text-right" [(ngModel)]="l.prixUnitaire"
+                [attr.aria-label]="'Prix ligne ' + (i + 1)" /> <span class="text-xs">{{ l.prixTtc ? 'TTC' : 'HT' }}</span></td>
+              <td><button type="button" class="bouton-icone-petit" (click)="retirerLigne(i)" [attr.aria-label]="'Retirer la ligne ' + (i + 1)">✕</button></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      @if (erreur()) { <p class="alerte-erreur" role="alert">{{ erreur() }}</p> }
+      <button ambBouton variante="principal" type="button" (click)="enregistrer()">Enregistrer le brouillon</button>
+    </section>
+  } @else if (selection(); as d) {
+    <section class="liste-fiche-fiche carte flex flex-col gap-3" aria-label="Fiche de la pièce">
+      <div class="flex items-start justify-between gap-2">
+        <div>
+          <h2 class="font-code text-xl font-bold">{{ d.numero ?? 'Brouillon' }}</h2>
+          <p>{{ d.clientNom }} @if (d.clientIfu) { · IFU <span class="font-code">{{ d.clientIfu }}</span> }</p>
+          @if (d.type === 'AVOIR') { <p class="text-sm">Avoir sur <span class="font-code">{{ numeroOrigine(d) }}</span> — {{ d.motif }}</p> }
+        </div>
+        <button type="button" class="bouton-icone" (click)="selection.set(null)" aria-label="Fermer la fiche">✕</button>
+      </div>
+      <amb-badge-fec [statut]="statutFec(d)" taille="md" />
+      @if (d.fecIdentifiant) { <p class="text-sm">Identifiant <span class="font-code">{{ d.fecIdentifiant }}</span></p> }
+      @if (d.fecStatut === 'REJETEE') { <p class="alerte-erreur">{{ d.fecMessage }} Annulez la facture par un avoir, puis émettez-en une nouvelle.</p> }
+      <ul class="border-t-2 border-texte">
+        @for (l of d.lignes; track l.id) {
+          <li class="flex justify-between gap-2 border-b border-bordure py-2"><span>{{ l.designation }} · {{ l.quantite }}</span>
+            <span class="tabular-nums">{{ l.montantTtc | nombre }}</span></li>
+        }
+      </ul>
+      <dl class="ml-auto grid w-64 grid-cols-2 gap-1 text-sm">
+        <dt>Total HT</dt><dd class="text-right tabular-nums">{{ d.totalHt | nombre }}</dd>
+        <dt>TVA</dt><dd class="text-right tabular-nums">{{ d.totalTaxes | nombre }}</dd>
+        <dt class="font-bold">Total TTC</dt><dd class="text-right text-xl font-bold tabular-nums">{{ d.totalTtc | fcfa }}</dd>
+        @if (d.totalAvoirs) { <dt>Avoirs</dt><dd class="text-right tabular-nums">−{{ d.totalAvoirs | nombre }}</dd> }
+      </dl>
+      @if (apercu(); as url) {
+        <iframe [src]="url" title="Aperçu PDF de la pièce" class="h-96 w-full border border-bordure bg-blanc"></iframe>
+      }
+      @if (erreur()) { <p class="alerte-erreur" role="alert">{{ erreur() }}</p> }
+
+      @if (avoirOuvert()) {
+        <form class="flex flex-col gap-2 border-2 border-texte p-3" (ngSubmit)="emettreAvoir(d, false)" aria-label="Avoir">
+          <h3 class="font-semibold">Avoir sur {{ d.numero }}</h3>
+          <label class="champ-libelle" for="motif-avoir">Motif</label>
+          <input id="motif-avoir" name="motif" class="champ-saisie" [(ngModel)]="motifAvoir" />
+          @for (l of d.lignes; track l.id) {
+            <label class="flex items-center justify-between gap-2 text-sm">{{ l.designation }} (facturé {{ l.quantite }})
+              <input type="number" min="0" [max]="l.quantite" step="any" class="champ-saisie min-h-9 w-24 text-right" [name]="'q' + l.id" [(ngModel)]="quantitesAvoir[l.id]" /></label>
+          }
+          <div class="flex flex-wrap gap-2">
+            <button ambBouton variante="principal" type="submit">Avoir partiel</button>
+            <button ambBouton variante="danger" type="button" (click)="emettreAvoir(d, true)">Annuler tout le reste</button>
+            <button ambBouton variante="tertiaire" type="button" (click)="avoirOuvert.set(false)">Fermer</button>
+          </div>
+        </form>
+      }
+
+      <div class="mt-auto flex flex-wrap gap-2">
+        @if (d.statut === 'BROUILLON') {
+          @if (contexte.peut('facturation:valider')) {
+            <button ambBouton variante="principal" class="flex-1" type="button" [chargement]="enCours()" (click)="valider(d)">Valider la facture</button>
+          }
+          <button ambBouton variante="secondaire" type="button" (click)="modifier(d)">Modifier</button>
+          <button ambBouton variante="tertiaire" type="button" (click)="supprimer(d)">Supprimer</button>
+        } @else {
+          <button ambBouton variante="secondaire" type="button" (click)="telecharger(d)">Télécharger le PDF</button>
+          @if (d.type === 'FACTURE' && d.statut !== 'ANNULEE_PAR_AVOIR' && contexte.peut('facturation:valider')) {
+            <button ambBouton variante="secondaire" type="button" (click)="ouvrirAvoir(d)">Créer un avoir</button>
+          }
+          @if (d.fecStatut === 'EN_FILE') { <button ambBouton variante="tertiaire" type="button" (click)="relancer(d)">Relancer la certification</button> }
+        }
+      </div>
+    </section>
+  }
+</div>

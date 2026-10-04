@@ -189,6 +189,23 @@
           <amb-pave-caisse [totalAPayer]="resteEspeces()" [valeur]="recu()" (valeurChange)="recu.set($event)" (valider)="validerPaiement()" />
         }
         <label class="flex items-center gap-2"><input type="checkbox" class="h-5 w-5" [(ngModel)]="factureDemandee" /> Le client demande une facture certifiée</label>
+        @if (factureDemandee) {
+          <div class="carte flex flex-col gap-2">
+            <label class="champ-libelle" for="client-facture">Client à facturer</label>
+            <input id="client-facture" class="champ-saisie" [(ngModel)]="rechercheClient" placeholder="Nom, code ou IFU" autocomplete="off" />
+            @if (clientFacture(); as c) {
+              <p class="font-semibold">{{ c.nom }} @if (c.ifu) { · IFU <span class="font-code">{{ c.ifu }}</span> }
+                <button type="button" class="ml-2 text-sm underline" (click)="clientFacture.set(null)">Changer</button></p>
+            } @else {
+              <ul class="flex flex-col">
+                @for (c of caisse.rechercherClients(rechercheClient); track c.id) {
+                  <li><button type="button" class="w-full border-b border-bordure px-2 py-2 text-left" (click)="clientFacture.set(c)">{{ c.nom }}
+                    <span class="font-code text-xs text-texte-secondaire">{{ c.ifu ?? '' }}</span></button></li>
+                } @empty { <li class="text-sm text-texte-secondaire">Aucun client : créez-le au bureau puis synchronisez.</li> }
+              </ul>
+            }
+          </div>
+        }
         @if (erreur()) { <p class="alerte-erreur" role="alert">{{ erreur() }}</p> }
         <button ambBouton variante="principal" type="button" class="min-h-14 text-lg" [disabled]="!peutValider()" [chargement]="enCours()"
           (click)="validerPaiement()">Valider le paiement</button>
@@ -212,7 +229,10 @@
           </div>
           @if (ticketImprime() === true) { <p class="alerte-succes">Ticket imprimé</p> }
           @if (ticketImprime() === false) { <p class="alerte-erreur">Impression impossible : vérifiez l'imprimante, puis réimprimez.</p> }
-          @if (d.factureDemandee) { <p class="carte">Facture certifiée demandée : elle sera établie et certifiée au retour du réseau.</p> }
+          @if (d.numeroFacture) {
+            <p class="border border-or-800 bg-or-50 p-3" data-testid="facture-caisse"><strong>Facture {{ d.numeroFacture }} en attente de certification.</strong>
+              Elle sera certifiée au retour du réseau.</p>
+          }
           <button ambBouton variante="secondaire" type="button" (click)="imprimer(d)">Réimprimer</button>
           <button ambBouton variante="caisse" type="button" (click)="nouvelleVente()">Nouvelle vente</button>
           @if (retourAuto() > 0) { <p class="text-center text-sm text-texte-secondaire">Retour automatique à la vente dans {{ retourAuto() }} s</p> }

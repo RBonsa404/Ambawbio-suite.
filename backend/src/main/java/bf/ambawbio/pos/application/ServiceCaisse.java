@@ -106,6 +106,17 @@ public class ServiceCaisse {
             throw new RegleMetierException("NUMERO_DEJA_UTILISE", "Ce numéro de pièce est déjà utilisé par une autre pièce.");
         }
         var libelleNumero = "%s-%d-%06d".formatted(plages.prefixe(op.terminalId(), typePiece), annee, sequence);
+        String numeroFacture = null;
+        boolean factureDemandee = c.path("factureDemandee").asBoolean(false);
+        if (type == Vente.Type.VENTE && factureDemandee) {
+            // RG-03 : numéro de facture pris hors-ligne dans la plage FACTURE du terminal ; client obligatoire.
+            var f = c.path("facture");
+            if (uuidOuNull(c, "clientId") == null || f.isMissingNode()
+                    || !plages.couvre(op.terminalId(), "FACTURE", f.path("annee").asInt(), f.path("sequence").asLong())) {
+                throw new RegleMetierException("FACTURE_INVALIDE", "Facture demandée sans client ou sans numéro de facture du terminal.");
+            }
+            numeroFacture = "%s-%d-%06d".formatted(plages.prefixe(op.terminalId(), "FACTURE"), f.path("annee").asInt(), f.path("sequence").asLong());
+        }
 
         Vente origine = null;
         if (type == Vente.Type.RETOUR) {
@@ -120,18 +131,19 @@ public class ServiceCaisse {
         var encaissements = encaissements(c);
         var vente = new Vente(new Vente.Entete(id, session.getId(), societe, op.etablissementId(), op.terminalId(), caissier(op), type, typePiece,
                 annee, sequence, libelleNumero, instant(c, "horodatage", op.horodatageLocal()), uuidOuNull(c, "clientId"),
-                origine == null ? null : origine.getId(), c.path("factureDemandee").asBoolean(false)), lignes, encaissements);
+                origine == null ? null : origine.getId(), factureDemandee, numeroFacture), lignes, encaissements);
         verifierTotaux(c, vente);
         ventes.saveAndFlush(vente);
 
         var resume = vente.lignes().stream()
-                .map(l -> new VenteEnregistree.Ligne(l.produitId(), l.quantiteUniteStock(), l.montantHt(), l.montantTaxe(), l.taxeCode())).toList();
+                .map(l -> new VenteEnregistree.Ligne(l.getId(), l.produitId(), l.libelle(), l.quantite(), l.quantiteUniteStock(), l.prixUnitaire(),
+                        l.prixTtc(), l.remise(), l.taxeCode(), l.taux(), l.montantHt(), l.montantTaxe(), l.montantTtc(), l.ligneOrigineId())).toList();
         if (type == Vente.Type.VENTE) {
-            evenements.publishEvent(new VenteEnregistree(1, id, societe, op.etablissementId(), session.getId(), libelleNumero, vente.totalTtc(),
-                    vente.totalTaxes(), vente.clientId(), vente.factureDemandee(), resume));
+            evenements.publishEvent(new VenteEnregistree(1, id, societe, op.etablissementId(), session.getId(), libelleNumero, vente.horodatage(),
+                    vente.totalTtc(), vente.totalTaxes(), vente.clientId(), vente.factureDemandee(), numeroFacture, resume));
         } else {
             evenements.publishEvent(new RetourEnregistre(1, id, origine.getId(), societe, op.etablissementId(), session.getId(), libelleNumero,
-                    vente.totalTtc(), resume));
+                    vente.horodatage(), vente.totalTtc(), resume));
         }
     }
 
@@ -192,7 +204,7 @@ public class ServiceCaisse {
             long remiseLigne = l.path("remise").asLong(0);
             if (remiseLigne > 0) {
                 remise = true;
-                if (remiseLigne * 100 > bf.ambawbio.pos.domaine.CalculVente.brut(quantite, prix).valeur() * remiseMax) {
+                if (remiseLigne * 100 > bf.ambawbio.shared.domaine.CalculLigne.brut(quantite, prix).valeur() * remiseMax) {
                     throw new RegleMetierException("REMISE_EXCESSIVE",
                             "Remise supérieure au maximum autorisé pour ce point de vente (" + remiseMax + " %).");
                 }

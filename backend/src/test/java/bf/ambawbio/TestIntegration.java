@@ -58,9 +58,14 @@ public abstract class TestIntegration {
     protected ServiceIdentite identite;
 
     protected EntrepriseTest creerEntreprise(String nom, Pack pack) {
+        return creerEntreprise(nom, pack, null);
+    }
+
+    /** {@code ifu} : IFU de la société principale, obligatoire pour valider une facture (RG-02). */
+    protected EntrepriseTest creerEntreprise(String nom, Pack pack, String ifu) {
         var id = Uuid7.nouveau();
         var suffixe = id.toString().substring(30);
-        plateforme.creer(new ServicePlateforme.NouvelleEntreprise(id, nom, pack, null, "Ouagadougou",
+        plateforme.creer(new ServicePlateforme.NouvelleEntreprise(id, nom, pack, ifu, "Ouagadougou",
                 "admin-" + suffixe, "Admin", nom, "admin-" + suffixe + "@test.bf"));
         var admin = ContexteTenant.executerPour(id, () -> identite.utilisateurs().getFirst());
         return new EntrepriseTest(id, admin.keycloakId());

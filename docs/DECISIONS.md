@@ -131,3 +131,16 @@ Format ADR court : contexte, décision, conséquences. Une décision n'est remis
 
 ## D-34 — Configuration lue à l'exécution
 - **Décision** : `public/config.js` (`window.AMBAWBIO_CONFIG`) donne les adresses de l'API et de Keycloak ; le conteneur nginx le régénère au démarrage à partir de `AMBAWBIO_API_URL` et `AMBAWBIO_KEYCLOAK_URL`, et le workflow **android** l'écrit avant de construire l'APK. Une seule image de l'application pour tous les environnements ; `config.js` n'est jamais mis en cache.
+
+## D-35 — PDF à partir d'un gabarit HTML (OpenHTMLtoPDF) plutôt que JasperReports
+- **Contexte** : le guide §4 cite JasperReports ; le paquet de design (gabarits D-01 et D-02) est pensé en HTML/CSS.
+- **Décision** : gabarit HTML généré par le serveur et rendu en PDF par OpenHTMLtoPDF (LGPL, PDFBox), polices de la charte embarquées (versions statiques renommées conformément à l'OFL, `resources/documents/polices`), QR codes par ZXing. Plus proche des maquettes, pas d'outil de conception de rapports. JasperReports reste envisageable pour les états comptables volumineux (LOT 10) si besoin.
+
+## D-36 — Archives PDF dans PostgreSQL
+- **Décision** : chaque version du PDF (validation, certification) est conservée dans `facturation.archive_pdf` avec son empreinte SHA-256 ; le rôle applicatif ne peut ni la modifier ni la supprimer. Avantages : sauvegarde unique, pas de service S3 à exploiter en démonstration (Railway), intégrité vérifiable. Passage au stockage d'objets (SeaweedFS, Q-14) si le volume l'exige, avec la même empreinte.
+
+## D-37 — Certification dans le module `conformite`, sans dépendance circulaire
+- **Décision** : `facturation` soumet la pièce à `conformite` (interface `FileCertification`) dans la transaction de validation et écoute ses événements `CertificationObtenue` et `CertificationRejetee` ; `conformite` ignore tout de la facturation. La première tentative part sur un fil séparé (au plus 4 à la fois), pour ne jamais retenir deux connexions dans le fil de la requête. Le résultat est reporté sur la pièce par une écriture ciblée des seules colonnes de certification, sans conflit de version avec un avoir saisi au même moment.
+
+## D-38 — Facture de caisse numérotée par le terminal
+- **Décision** : quand le client demande une facture en caisse, le terminal prend un numéro dans sa plage FACTURE (`FA-C01-2026-000001`, guide §6.7 et §8.6), obligatoirement avec un client du catalogue local. La facture est établie par le serveur à la réception de la vente (déjà payée) puis certifiée. Les factures du bureau gardent la série centrale `FA-2026-…` ; la contrainte d'unicité porte sur le numéro complet. Le format exigé par la DGI sera appliqué dès réception des spécifications (Q-01).
