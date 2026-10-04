@@ -36,6 +36,22 @@
     </tbody>
   </table>
 
+  <h2 class="sous-titre mt-8">Imprimante de tickets</h2>
+  @if (impression.bluetooth) {
+    @if (impression.imprimante(); as i) {
+      <p>{{ i.nom }} — {{ i.largeur === 32 ? '58 mm' : '80 mm' }}
+        <button ambBouton variante="tertiaire" type="button" (click)="impression.oublier()">Oublier</button></p>
+    } @else {
+      <div class="flex flex-wrap gap-2">
+        <button ambBouton variante="secondaire" type="button" (click)="choisirImprimante(32)">Choisir une imprimante Bluetooth 58 mm</button>
+        <button ambBouton variante="secondaire" type="button" (click)="choisirImprimante(48)">Choisir une imprimante Bluetooth 80 mm</button>
+      </div>
+    }
+    @if (erreurImprimante()) { <p class="alerte-erreur mt-2" role="alert">{{ erreurImprimante() }}</p> }
+  } @else {
+    <p class="text-texte-secondaire">Dans le navigateur, les tickets s'impriment avec l'imprimante du poste (boîte d'impression du système).</p>
+  }
+
   @if (enConflit().length) {
     <h2 class="sous-titre mt-8">{{ 'synchro.aTraiter' | transloco }}</h2>
     <ul class="flex flex-col gap-2">

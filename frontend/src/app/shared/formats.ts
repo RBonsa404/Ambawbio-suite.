@@ -6,10 +6,15 @@ const nombres = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 });
 
 /** 12500 → « 12 500 FCFA » (montant entier en francs CFA, sans décimales). */
 export function formaterFcfa(montant: number): string {
+  return `${formaterNombre(montant)}${ESPACE_INSECABLE}FCFA`;
+}
+
+/** 12500 → « 12 500 » (montant entier, sans unité : affichages de caisse). */
+export function formaterNombre(montant: number): string {
   if (!Number.isSafeInteger(montant)) {
     throw new RangeError(`Montant FCFA invalide : ${montant}`);
   }
-  return `${nombres.format(montant).replace(ESPACE_FINE, ESPACE_INSECABLE)}${ESPACE_INSECABLE}FCFA`;
+  return nombres.format(montant).replace(ESPACE_FINE, ESPACE_INSECABLE);
 }
 
 /** Numéro burkinabè saisi sur 8 chiffres → « +226 70 00 00 00 ». */

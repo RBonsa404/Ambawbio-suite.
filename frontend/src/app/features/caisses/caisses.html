@@ -1,0 +1,113 @@
+<div class="flex flex-wrap items-center justify-between gap-3">
+  <h1 class="titre-page">Caisses</h1>
+  @if (contexte.peut('pos:parametrer')) {
+    <button ambBouton variante="principal" type="button" (click)="formulaire.set(!formulaire())">Nouvelle caisse</button>
+  }
+</div>
+@if (erreur() && !rapport()) { <p class="alerte-erreur mt-3" role="alert">{{ erreur() }}</p> }
+
+@if (formulaire()) {
+  <form class="carte mt-4 grid gap-4 petite-tablette:grid-cols-2" (ngSubmit)="creer()" aria-label="Nouvelle caisse">
+    <amb-champ libelle="Code" pour="pdv-code" aide="Court, unique : CAISSE1, COMPTOIR…">
+      <input id="pdv-code" name="code" class="champ-saisie uppercase" [(ngModel)]="nouveau.code" />
+    </amb-champ>
+    <amb-champ libelle="Nom" pour="pdv-nom">
+      <input id="pdv-nom" name="nom" class="champ-saisie" [(ngModel)]="nouveau.nom" />
+    </amb-champ>
+    <amb-champ libelle="Établissement" pour="pdv-etab">
+      <select id="pdv-etab" name="etab" class="champ-saisie" [(ngModel)]="nouveau.etablissementId">
+        @for (e of contexte.contexte()?.etablissements ?? []; track e.id) { <option [value]="e.id">{{ e.nom }}</option> }
+      </select>
+    </amb-champ>
+    <amb-champ libelle="Seuil d'écart à faire valider" pour="pdv-seuil" aide="Au-delà, un responsable valide l'écart avec son code PIN.">
+      <amb-champ-montant identifiant="pdv-seuil" name="seuil" [(ngModel)]="nouveau.seuilEcart" />
+    </amb-champ>
+    <amb-champ libelle="Remise maximale (%)" pour="pdv-remise">
+      <input id="pdv-remise" name="remise" type="number" min="0" max="100" class="champ-saisie" [(ngModel)]="nouveau.remiseMaxPourcent" />
+    </amb-champ>
+    <label class="flex items-center gap-2 self-end pb-3"><input type="checkbox" name="aveugle" class="h-5 w-5" [(ngModel)]="nouveau.comptageAveugle" />
+      Comptage à l'aveugle à la clôture</label>
+    <div class="petite-tablette:col-span-2"><button ambBouton variante="principal" type="submit">Créer la caisse</button></div>
+  </form>
+}
+
+<div class="mt-6 grid gap-4 petite-tablette:grid-cols-2 bureau:grid-cols-4">
+  @for (p of pointsDeVente(); track p.id) {
+    <article class="carte" [class.border-texte]="ouvertes().has(p.id)" [class.border-2]="ouvertes().has(p.id)">
+      <h2 class="font-bold">{{ p.nom }}</h2>
+      <p class="text-sm">{{ nomEtablissement(p.etablissementId) }}</p>
+      @if (ouvertes().get(p.id); as s) {
+        <p class="mt-1 font-semibold">Session ouverte · {{ s.caissier }}</p>
+      } @else {
+        <p class="mt-1 text-texte-secondaire">Fermée</p>
+      }
+      <p class="text-sm text-texte-secondaire">Seuil d'écart {{ p.seuilEcart | fcfa }} · remise max. {{ p.remiseMaxPourcent }} %</p>
+    </article>
+  } @empty {
+    <p class="text-texte-secondaire">Aucune caisse : créez la première pour commencer à vendre.</p>
+  }
+</div>
+
+<h2 class="sous-titre mt-8">Sessions récentes</h2>
+<table class="tableau">
+  <thead><tr>
+    <th scope="col">Date</th><th scope="col">Caisse</th><th scope="col">Caissier</th><th scope="col">Établissement</th>
+    <th scope="col" class="nombre">Ventes</th><th scope="col" class="nombre">Attendu</th><th scope="col" class="nombre">Écart</th><th scope="col">Rapport Z</th>
+  </tr></thead>
+  <tbody>
+    @for (s of sessions(); track s.id) {
+      <tr>
+        <td>{{ date(s.ouverteLe) }}</td><td>{{ s.pointDeVente }}</td><td>{{ s.caissier ?? '—' }}</td><td>{{ nomEtablissement(s.etablissementId) }}</td>
+        <td class="nombre">{{ s.ventes | nombre }}</td><td class="nombre">{{ s.especesTheoriques ?? null | nombre }}</td>
+        <td class="nombre font-bold">
+          @if (s.statut === 'OUVERTE' || s.statut === 'EN_CONFLIT') { {{ statuts[s.statut] }} } @else { {{ s.ecart | nombre }} }
+          @if (s.statut === 'ECART_A_VALIDER') { <span class="badge ml-1">à valider</span> }
+        </td>
+        <td><button type="button" class="underline" (click)="ouvrirRapport(s)">Voir</button></td>
+      </tr>
+    } @empty {
+      <tr><td colspan="8" class="text-texte-secondaire">Aucune session.</td></tr>
+    }
+  </tbody>
+</table>
+
+@if (rapport(); as r) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-noir/60 p-4" role="dialog" aria-modal="true" aria-labelledby="titre-rapport">
+    <div class="carte flex w-full max-w-lg flex-col gap-3">
+      <h2 id="titre-rapport" class="sous-titre">Rapport Z — {{ r.pointDeVente }} · {{ date(r.session.ouverteLe) }}</h2>
+      <dl class="grid grid-cols-2 gap-1 text-sm">
+        <dt>Ventes</dt><dd class="text-right">{{ r.nombreVentes }} · {{ r.totalVentes | fcfa }}</dd>
+        <dt>Retours</dt><dd class="text-right">{{ r.nombreRetours }} · {{ r.totalRetours | fcfa }}</dd>
+        <dt>Espèces</dt><dd class="text-right">{{ r.especes | fcfa }}</dd>
+        <dt>Mobile Money</dt><dd class="text-right">{{ r.mobileMoney | fcfa }}</dd>
+        <dt>Carte</dt><dd class="text-right">{{ r.carte | fcfa }}</dd>
+        <dt>Dont taxes</dt><dd class="text-right">{{ r.taxes | fcfa }}</dd>
+        <dt>Remises</dt><dd class="text-right">{{ r.remises | fcfa }}</dd>
+        <dt>Espèces attendues</dt><dd class="text-right">{{ r.especesTheoriques | fcfa }}</dd>
+        <dt>Écart</dt><dd class="text-right font-bold">{{ r.session.ecart ?? null | fcfa }}</dd>
+        <dt>Statut</dt><dd class="text-right">{{ statuts[r.session.statut] }}</dd>
+      </dl>
+      @if (r.session.statut === 'ECART_A_VALIDER' && contexte.peut('pos:valider-ecart')) {
+        <form class="flex flex-col gap-2" (ngSubmit)="validerEcart()">
+          <label class="champ-libelle" for="motif-ecart">Raison de l'écart</label>
+          <input id="motif-ecart" name="motif" class="champ-saisie" [(ngModel)]="motif" />
+          <label class="champ-libelle" for="pin-ecart">Votre code PIN de responsable</label>
+          <input id="pin-ecart" name="pin" type="password" inputmode="numeric" maxlength="6" class="champ-saisie font-code" [(ngModel)]="pinValidation" />
+          @if (erreur()) { <p class="alerte-erreur" role="alert">{{ erreur() }}</p> }
+          <button ambBouton variante="principal" type="submit">Valider l'écart</button>
+        </form>
+      }
+      <button ambBouton variante="secondaire" type="button" (click)="rapport.set(null)">Fermer</button>
+    </div>
+  </div>
+}
+
+@if (contexte.peut('pos:valider-ecart')) {
+  <form class="carte mt-8 flex max-w-md flex-col gap-3" (ngSubmit)="definirPin()" aria-labelledby="titre-pin">
+    <h2 id="titre-pin" class="sous-titre">Mon code PIN de responsable</h2>
+    <p class="text-sm text-texte-secondaire">6 chiffres, pour valider un écart de caisse sur un terminal ou ici.</p>
+    <label class="champ-libelle" for="mon-pin">Nouveau code PIN</label>
+    <input id="mon-pin" name="pin" type="password" inputmode="numeric" maxlength="6" class="champ-saisie font-code" [(ngModel)]="pin" autocomplete="new-password" />
+    <button ambBouton variante="secondaire" type="submit">Enregistrer</button>
+  </form>
+}

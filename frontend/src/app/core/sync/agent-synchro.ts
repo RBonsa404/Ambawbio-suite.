@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 
 import { configuration } from '../configuration';
 import { uuid7 } from '../identifiant';
+import { marquerTerminal } from '../jetons';
 import { ServiceReseau } from '../service-reseau';
 import { ClesTerminal } from './cles-terminal';
 import { Changement, DexieStore, LocalStore, OperationSortante } from './local-store';
@@ -67,6 +68,8 @@ export class AgentSynchro {
   readonly revoque = signal(false);
   readonly plages = signal<PlageLocale[]>([]);
   readonly erreur = signal<string | null>(null);
+  /** Incrémenté quand des changements ont été reçus : les écrans rechargent leurs données locales. */
+  readonly version = signal(0);
 
   readonly plageEnAlerte = computed(() =>
     this.plages().some((p) => p.prochain - p.debut >= (p.fin - p.debut + 1) * 0.8 && !this.plages().some((q) => q !== p && q.typePiece === p.typePiece && q.debut > p.debut)),
@@ -135,6 +138,7 @@ export class AgentSynchro {
     await this.enregistrerPlages(reponse.plages);
     this.terminal.set(reponse.terminal);
     this.revoque.set(false);
+    marquerTerminal();
     return reponse.terminal;
   }
 
@@ -221,11 +225,33 @@ export class AgentSynchro {
       await this.store.ecrireMeta('curseur', curseur);
       await this.enregistrerPlages(page.plages);
       recus += page.changements.length;
+      if (page.changements.length) {
+        this.version.update((v) => v + 1);
+      }
       surProgression?.(recus);
       if (!page.encore) {
         return;
       }
     }
+  }
+
+  /**
+   * Prochain numéro hors-ligne pour un type de pièce (guide §8.6) : plage active de l'année la plus ancienne non
+   * épuisée ; la consommation est enregistrée avant l'utilisation du numéro (jamais deux pièces avec le même numéro).
+   */
+  async consommerNumero(typePiece: PlageLocale['typePiece']): Promise<{ plage: PlageLocale; sequence: number }> {
+    const annee = new Date().getFullYear();
+    const plage = this.plages()
+      .filter((p) => p.typePiece === typePiece && p.annee === annee && p.prochain <= p.fin)
+      .sort((a, b) => a.debut - b.debut)[0];
+    if (!plage) {
+      throw new Error('Plus aucun numéro disponible pour cette pièce : synchronisez le terminal pour recevoir une nouvelle plage.');
+    }
+    const sequence = Math.max(plage.prochain, plage.debut);
+    const mises = this.plages().map((p) => (p.id === plage.id ? { ...p, prochain: sequence + 1 } : p));
+    this.plages.set(mises);
+    await this.store.ecrireMeta('plages', mises);
+    return { plage, sequence };
   }
 
   /** Les plages reçues remplacent les locales ; le prochain numéro local ne recule jamais. */

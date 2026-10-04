@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import bf.ambawbio.sync.api.PlagesNumerotation;
 import bf.ambawbio.shared.domaine.Uuid7;
 import bf.ambawbio.shared.tenant.ContexteTenant;
 
@@ -22,16 +23,20 @@ import bf.ambawbio.shared.tenant.ContexteTenant;
  * par un verrou consultatif.
  */
 @Service
-public class ServicePlages {
+public class ServicePlages implements PlagesNumerotation {
 
     private final PlageDepot plages;
     private final JdbcTemplate jdbc;
     private final int taille;
+    private final int tailleTicket;
 
-    ServicePlages(PlageDepot plages, JdbcTemplate jdbc, @Value("${ambawbio.sync.taille-plage:500}") int taille) {
+    /** Les tickets ont des plages plus grandes : 7 jours de caisse hors-ligne sans épuiser la plage (D-32). */
+    ServicePlages(PlageDepot plages, JdbcTemplate jdbc, @Value("${ambawbio.sync.taille-plage:500}") int taille,
+            @Value("${ambawbio.sync.taille-plage-ticket:2000}") int tailleTicket) {
         this.plages = plages;
         this.jdbc = jdbc;
         this.taille = taille;
+        this.tailleTicket = tailleTicket;
     }
 
     @Transactional(readOnly = true)
@@ -68,12 +73,29 @@ public class ServicePlages {
         Long dernier = jdbc.queryForObject("select max(fin) from sync.plage_numerotation where societe_id = ? and type_piece = ? and annee = ?",
                 Long.class, societeId, type.name(), annee);
         long debut = dernier == null ? 1 : dernier + 1;
-        return plages.saveAndFlush(new PlageNumerotation(Uuid7.nouveau(), societeId, terminalId, type, annee, debut, debut + taille - 1));
+        return plages.saveAndFlush(new PlageNumerotation(Uuid7.nouveau(), societeId, terminalId, type, annee, debut,
+                debut + (type == PlageNumerotation.TypePiece.TICKET ? tailleTicket : taille) - 1));
     }
 
     /** Révocation : les plages du terminal sont clôturées (numéros non utilisés perdus, traçables). */
     @Transactional
     public void cloturer(UUID terminalId) {
         actives(terminalId).forEach(PlageNumerotation::cloturer);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean couvre(UUID terminalId, String typePiece, int annee, long numero) {
+        return Boolean.TRUE.equals(jdbc.queryForObject("""
+                select exists (select 1 from sync.plage_numerotation
+                  where terminal_id = ? and type_piece = ? and annee = ? and ? between debut and fin)""",
+                Boolean.class, terminalId, typePiece, annee, numero));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String prefixe(UUID terminalId, String typePiece) {
+        var code = jdbc.queryForObject("select code from sync.terminal where id = ?", String.class, terminalId);
+        return PlageNumerotation.TypePiece.valueOf(typePiece).prefixe() + "-" + code;
     }
 }

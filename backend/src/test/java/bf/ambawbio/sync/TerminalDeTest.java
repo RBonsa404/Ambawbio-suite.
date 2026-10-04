@@ -58,6 +58,6 @@ public final class TerminalDeTest {
     }
 
     static String enChaineJson(String texte) {
-        return "\"" + texte.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
+        return "\"" + texte.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n") + "\"";
     }
 }

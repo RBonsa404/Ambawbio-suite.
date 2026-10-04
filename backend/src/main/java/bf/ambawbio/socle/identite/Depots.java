@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 interface UtilisateurDepot extends JpaRepository<Utilisateur, UUID> {
     Optional<Utilisateur> findByKeycloakId(String keycloakId);
 
+    Optional<Utilisateur> findByNomUtilisateur(String nomUtilisateur);
+
     List<Utilisateur> findAllByOrderByNomAscPrenomAsc();
 }
 

@@ -1,0 +1,55 @@
+# Répétition locale du déploiement Railway (mêmes images, mêmes variables) avant de pousser.
+# docker compose -f infra/railway/docker-compose.essai.yml up --build
+# Application : http://localhost:9000 · Keycloak : http://localhost:9180 · Serveur : http://localhost:9080
+name: ambawbio-railway-essai
+
+services:
+  postgres:
+    build: { context: ../.., dockerfile: infra/railway/postgres/Dockerfile }
+    environment:
+      POSTGRES_DB: ambawbio
+      POSTGRES_USER: ambawbio
+      POSTGRES_PASSWORD: proprietaire-essai
+      AMBAWBIO_BD_MOT_DE_PASSE: application-essai
+      KEYCLOAK_BD_MOT_DE_PASSE: keycloak-essai
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ambawbio -d ambawbio"]
+      interval: 5s
+      retries: 20
+
+  keycloak:
+    build: { context: ../.., dockerfile: infra/railway/keycloak/Dockerfile }
+    environment:
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak-essai
+      KC_HOSTNAME: http://localhost:9180
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin-essai
+      AMBAWBIO_URL_APPLICATION: http://localhost:9000
+      AMBAWBIO_KEYCLOAK_SECRET: secret-serveur-essai
+    ports: ["9180:8080"]
+    depends_on: { postgres: { condition: service_healthy } }
+
+  serveur:
+    build: { context: ../.., dockerfile: backend/Dockerfile }
+    environment:
+      SPRING_PROFILES_ACTIVE: prod,demo
+      AMBAWBIO_BD_URL: jdbc:postgresql://postgres:5432/ambawbio
+      AMBAWBIO_BD_MOT_DE_PASSE: application-essai
+      AMBAWBIO_BD_PROPRIETAIRE: ambawbio
+      AMBAWBIO_BD_PROPRIETAIRE_MOT_DE_PASSE: proprietaire-essai
+      AMBAWBIO_KEYCLOAK_EMETTEUR: http://localhost:9180/realms/ambawbio
+      AMBAWBIO_KEYCLOAK_JWKS: http://keycloak:8080/realms/ambawbio/protocol/openid-connect/certs
+      AMBAWBIO_KEYCLOAK_URL: http://keycloak:8080
+      AMBAWBIO_KEYCLOAK_SECRET: secret-serveur-essai
+      AMBAWBIO_CORS_ORIGINES: http://localhost:9000
+    ports: ["9080:8080"]
+    depends_on: { postgres: { condition: service_healthy } }
+
+  application:
+    build: { context: ../.., dockerfile: frontend/Dockerfile }
+    environment:
+      AMBAWBIO_API_URL: http://localhost:9080/api
+      AMBAWBIO_KEYCLOAK_URL: http://localhost:9180
+    ports: ["9000:8080"]

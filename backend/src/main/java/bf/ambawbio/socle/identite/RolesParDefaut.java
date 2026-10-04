@@ -30,7 +30,9 @@ public final class RolesParDefaut {
     public static final List<Modele> MODELES = List.of(
             new Modele("administrateur", "Administrateur", Permissions.TOUTES),
             new Modele("dirigeant", "Dirigeant", List.of(SOCLE_CONSULTER, AUDIT_CONSULTER, FACTURATION_VALIDER, POS_VALIDER_ECART)),
-            new Modele("gerant", "Gérant", List.of(SOCLE_CONSULTER, Permissions.TERMINAUX_GERER, POS_VENDRE, POS_CLOTURER, POS_VALIDER_ECART, VENTES_GERER,
+            new Modele("gerant", "Gérant", List.of(SOCLE_CONSULTER, Permissions.TERMINAUX_GERER, POS_VENDRE, POS_CLOTURER, POS_VALIDER_ECART,
+                    Permissions.POS_REMISER,
+                    Permissions.POS_PARAMETRER, VENTES_GERER,
                     FACTURATION_CREER, FACTURATION_VALIDER, PAIEMENT_ENCAISSER, STOCK_GERER, REFERENTIEL_GERER, AUDIT_CONSULTER)),
             new Modele("comptable", "Comptable", List.of(SOCLE_CONSULTER, COMPTABILITE_SAISIR, COMPTABILITE_CLOTURER,
                     PAIEMENT_RAPPROCHER, FACTURATION_CREER, FACTURATION_VALIDER, AUDIT_CONSULTER)),

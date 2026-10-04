@@ -41,6 +41,11 @@ public class ServiceIdentite {
         return utilisateurs.findByKeycloakId(keycloakId).map(this::profilDe);
     }
 
+    @Transactional(readOnly = true)
+    public Optional<ProfilAcces> profilParId(UUID utilisateurId) {
+        return utilisateurs.findById(utilisateurId).map(this::profilDe);
+    }
+
     private ProfilAcces profilDe(Utilisateur utilisateur) {
         var liste = affectations.findByUtilisateurId(utilisateur.getId());
         Map<UUID, Role> parId = new HashMap<>();

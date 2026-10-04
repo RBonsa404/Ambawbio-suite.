@@ -1,5 +1,7 @@
 import Dexie, { Table } from 'dexie';
 
+import { Chiffre, Chiffreur, cleStockage } from './chiffrement';
+
 /** Opération en attente d'envoi (outbox, guide §8.7). */
 export interface OperationSortante {
   idOperation: string;
@@ -44,13 +46,15 @@ export interface LocalStore {
   compterAEnvoyer(): Promise<number>;
   appliquerChangements(changements: Changement[]): Promise<void>;
   entites(entite: string): Promise<EntiteLocale[]>;
+  /** Entité propre au terminal (pièces de caisse, session) : jamais écrasée par la réception. */
+  enregistrerLocale(entite: string, id: string, donnees: Record<string, unknown>): Promise<void>;
   compterEntites(entite: string): Promise<number>;
   vider(): Promise<void>;
 }
 
 class BaseTerminal extends Dexie {
-  operations!: Table<OperationSortante, string>;
-  entites!: Table<EntiteLocale, [string, string]>;
+  operations!: Table<Omit<OperationSortante, 'charge'> & { charge: string | Chiffre }, string>;
+  entites!: Table<{ entite: string; id: string; donnees: Record<string, unknown> | Chiffre }, [string, string]>;
   meta!: Table<{ cle: string; valeur: unknown }, string>;
 
   constructor(nom: string) {
@@ -63,11 +67,25 @@ class BaseTerminal extends Dexie {
   }
 }
 
+/** Stockage IndexedDB (Dexie) chiffré : charges des opérations et données des entités en AES-GCM (D-33). */
 export class DexieStore implements LocalStore {
   private readonly base: BaseTerminal;
+  private readonly chiffreur: Chiffreur;
 
-  constructor(nom = 'ambawbio-terminal') {
+  constructor(nom = 'ambawbio-terminal', chiffreur?: Chiffreur) {
     this.base = new BaseTerminal(nom);
+    this.chiffreur =
+      chiffreur ??
+      new Chiffreur(() =>
+        cleStockage(
+          () => this.lireMeta<CryptoKey>('cle-stockage'),
+          (cle) => this.ecrireMeta('cle-stockage', cle),
+        ),
+      );
+  }
+
+  private async ouvrirOperation(o: Omit<OperationSortante, 'charge'> & { charge: string | Chiffre }): Promise<OperationSortante> {
+    return { ...o, charge: await this.chiffreur.dechiffrer<string>(o.charge) };
   }
 
   async lireMeta<T>(cle: string): Promise<T | undefined> {
@@ -79,15 +97,16 @@ export class DexieStore implements LocalStore {
   }
 
   async ajouterOperation(operation: OperationSortante): Promise<void> {
-    await this.base.operations.add(operation);
+    await this.base.operations.add({ ...operation, charge: await this.chiffreur.chiffrer(operation.charge) });
   }
 
   async operationsAEnvoyer(limite: number): Promise<OperationSortante[]> {
-    return this.base.operations.where('statut').equals('EN_ATTENTE').sortBy('horodatageLocal').then((l) => l.slice(0, limite));
+    const lot = await this.base.operations.where('statut').equals('EN_ATTENTE').sortBy('horodatageLocal').then((l) => l.slice(0, limite));
+    return Promise.all(lot.map((o) => this.ouvrirOperation(o)));
   }
 
   async toutesLesOperations(): Promise<OperationSortante[]> {
-    return this.base.operations.orderBy('horodatageLocal').toArray();
+    return Promise.all((await this.base.operations.orderBy('horodatageLocal').toArray()).map((o) => this.ouvrirOperation(o)));
   }
 
   async retirerOperations(ids: string[]): Promise<void> {
@@ -104,19 +123,27 @@ export class DexieStore implements LocalStore {
 
   /** Application des changements reçus : la dernière version reçue l'emporte (le serveur est la source de vérité). */
   async appliquerChangements(changements: Changement[]): Promise<void> {
+    // Chiffrement avant la transaction : une transaction IndexedDB se termine dès qu'on attend autre chose qu'elle.
+    const derniers = new Map(changements.map((c) => [`${c.entite}|${c.entiteId}`, c]));
+    const aEcrire = await Promise.all(
+      [...derniers.values()]
+        .filter((c) => c.operation !== 'SUPPRESSION')
+        .map(async (c) => ({ entite: c.entite, id: c.entiteId, donnees: await this.chiffreur.chiffrer(c.donnees ?? {}) })),
+    );
+    const aSupprimer = [...derniers.values()].filter((c) => c.operation === 'SUPPRESSION').map((c) => [c.entite, c.entiteId] as [string, string]);
     await this.base.transaction('rw', this.base.entites, async () => {
-      for (const c of changements) {
-        if (c.operation === 'SUPPRESSION') {
-          await this.base.entites.delete([c.entite, c.entiteId]);
-        } else {
-          await this.base.entites.put({ entite: c.entite, id: c.entiteId, donnees: c.donnees ?? {} });
-        }
-      }
+      await this.base.entites.bulkDelete(aSupprimer);
+      await this.base.entites.bulkPut(aEcrire);
     });
   }
 
   async entites(entite: string): Promise<EntiteLocale[]> {
-    return this.base.entites.where('entite').equals(entite).toArray();
+    const lignes = await this.base.entites.where('entite').equals(entite).toArray();
+    return Promise.all(lignes.map(async (l) => ({ ...l, donnees: await this.chiffreur.dechiffrer<Record<string, unknown>>(l.donnees) })));
+  }
+
+  async enregistrerLocale(entite: string, id: string, donnees: Record<string, unknown>): Promise<void> {
+    await this.base.entites.put({ entite, id, donnees: await this.chiffreur.chiffrer(donnees) });
   }
 
   async compterEntites(entite: string): Promise<number> {

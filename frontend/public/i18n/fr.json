@@ -14,7 +14,9 @@
     "tiers": "Clients et fournisseurs",
     "import": "Import de données",
     "synchronisation": "Synchronisation",
-    "terminaux": "Terminaux"
+    "terminaux": "Terminaux",
+    "caisse": "Caisse",
+    "caisses": "Caisses"
   },
   "coquille": {
     "allerAuContenu": "Aller au contenu",
@@ -24,7 +26,8 @@
     "entreprise": "Entreprise",
     "etablissement": "Établissement",
     "profil": "Mon profil",
-    "deconnexion": "Se déconnecter"
+    "deconnexion": "Se déconnecter",
+    "plus": "Plus"
   },
   "accueil": {
     "bonjour": "Bonjour, {{ nom }}",

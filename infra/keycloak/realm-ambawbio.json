@@ -255,7 +255,8 @@
         }
       ],
       "realmRoles": [
-        "caissier"
+        "caissier",
+        "offline_access"
       ],
       "attributes": {
         "tenant_id": [
@@ -280,7 +281,8 @@
       ],
       "realmRoles": [
         "gerant",
-        "administrateur"
+        "administrateur",
+        "offline_access"
       ],
       "attributes": {
         "tenant_id": [
@@ -304,7 +306,8 @@
         }
       ],
       "realmRoles": [
-        "comptable"
+        "comptable",
+        "offline_access"
       ],
       "attributes": {
         "tenant_id": [
@@ -328,7 +331,8 @@
         }
       ],
       "realmRoles": [
-        "magasinier"
+        "magasinier",
+        "offline_access"
       ],
       "attributes": {
         "tenant_id": [
@@ -352,7 +356,8 @@
         }
       ],
       "realmRoles": [
-        "commercial"
+        "commercial",
+        "offline_access"
       ],
       "attributes": {
         "tenant_id": [
@@ -376,7 +381,8 @@
         }
       ],
       "realmRoles": [
-        "gerant"
+        "gerant",
+        "offline_access"
       ],
       "attributes": {
         "tenant_id": [
@@ -400,7 +406,8 @@
         }
       ],
       "realmRoles": [
-        "administrateur"
+        "administrateur",
+        "offline_access"
       ],
       "attributes": {
         "tenant_id": [
@@ -424,7 +431,8 @@
         }
       ],
       "realmRoles": [
-        "admin-plateforme"
+        "admin-plateforme",
+        "offline_access"
       ]
     },
     {
@@ -438,7 +446,10 @@
           "query-users",
           "view-realm"
         ]
-      }
+      },
+      "realmRoles": [
+        "offline_access"
+      ]
     }
   ],
   "loginTheme": "ambawbio",

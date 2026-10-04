@@ -74,7 +74,7 @@
   </div>
 </div>
 
-<!-- Navigation basse (téléphone) : 4 entrées, libellés toujours visibles -->
+<!-- Navigation basse (téléphone) : 4 emplacements, libellés toujours visibles ; « Plus » au-delà -->
 <nav class="navigation-basse petite-tablette:hidden" [attr.aria-label]="'coquille.navigation' | transloco">
   @for (e of entreesBasses(); track e.lien) {
     <a [routerLink]="e.lien" routerLinkActive="navigation-basse-active" [routerLinkActiveOptions]="{ exact: e.lien === '/' }">
@@ -82,4 +82,20 @@
       <span>{{ e.cle | transloco }}</span>
     </a>
   }
+  @if (entreesPlus().length) {
+    <button type="button" (click)="menuPlus.set(!menuPlus())" [attr.aria-expanded]="menuPlus()" aria-controls="menu-plus">
+      <amb-icone nom="menu" [taille]="22" />
+      <span>{{ 'coquille.plus' | transloco }}</span>
+    </button>
+  }
 </nav>
+@if (menuPlus()) {
+  <nav id="menu-plus" class="fixed inset-x-0 bottom-16 z-40 flex flex-col border-t-2 border-texte bg-surface p-2 shadow-2 petite-tablette:hidden"
+    [attr.aria-label]="'coquille.plus' | transloco">
+    @for (e of entreesPlus(); track e.lien) {
+      <a [routerLink]="e.lien" class="flex min-h-12 items-center gap-3 px-3 font-semibold" (click)="menuPlus.set(false)">
+        <amb-icone [nom]="e.icone" /> {{ e.cle | transloco }}
+      </a>
+    }
+  </nav>
+}
