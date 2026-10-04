@@ -18,6 +18,9 @@ Règle : ne jamais inventer une spécification officielle (DGI, opérateurs). En
 | Q-08 | Prix des packs en FCFA (Essentiel, Business, Enterprise, Institution) | Abonnement, site vitrine (Tarifs), écrans W-01, W-02, W-22 | Prix paramétrables depuis la console de l'éditeur (W-23). Dans l'interface et le site, zone réservée **« [PRIX À DÉFINIR] »**, jamais de montant en dur | 2026-10 |
 | Q-09 | IFU et RCCM de la société éditrice d'Ambawbio Suite (société non encore créée) | En-tête de lettre, factures d'abonnement, mentions légales du site, pied des courriels | Paramètres de la plateforme. Zones réservées **« [IFU EN COURS] »** et **« [RCCM EN COURS] »**, jamais en dur | 2026-10 |
 | Q-14 | Stockage d'objets : MinIO ne publie plus d'image communautaire sur Docker Hub. Garder MinIO (image quay.io ou construite depuis les sources), ou passer à une alternative compatible S3 (Garage, SeaweedFS) ? | Documents (PDF des factures), LOT 6 ; exploitation sur site | Code écrit contre l'API S3 standard ; service MinIO en profil Compose « documents » ; décision au LOT 6 | 2026-10-04 |
+| Q-15 | Format officiel de l'IFU (longueur, lettre finale, clé de contrôle éventuelle) | Validation des fiches entreprise, clients, fournisseurs | Format guidé « 8 chiffres + 1 lettre », sans clé de contrôle | 2026-10-04 |
+| Q-16 | Contenu exact de chaque pack (modules inclus, limites : utilisateurs, établissements, terminaux) | Activation des modules (F-SOC-05), abonnement (LOT 11) | Valeurs par défaut dans `Pack.java`, paramétrables : Essentiel = caisse, ventes, facturation, paiement, stock ; Business et Enterprise = + achats, comptabilité ; Institution = sans caisse | 2026-10-04 |
+| Q-17 | Délai légal de réponse aux demandes sur les données personnelles (loi n° 001-2021/AN) et formalités auprès de la CIL | Échéance des demandes (UC-SOC-11) | Échéance à 30 jours, paramètre unique dans le code | 2026-10-04 |
 
 ## Réglées
 

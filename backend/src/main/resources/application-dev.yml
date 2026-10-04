@@ -1,7 +1,14 @@
 # Profil de développement local (infra/docker-compose.dev.yml). Simulateurs activés à partir du LOT 6.
 spring:
   datasource:
-    password: ${AMBAWBIO_BD_MOT_DE_PASSE:ambawbio-dev}
+    password: ${AMBAWBIO_BD_MOT_DE_PASSE:ambawbio-app-dev}
+  flyway:
+    password: ${AMBAWBIO_BD_PROPRIETAIRE_MOT_DE_PASSE:ambawbio-dev}
+    locations: classpath:db/migration/socle
+
+ambawbio:
+  annuaire:
+    secret: ${AMBAWBIO_KEYCLOAK_SECRET:ambawbio-serveur-dev}
 
 springdoc:
   api-docs:

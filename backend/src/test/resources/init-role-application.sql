@@ -1,0 +1,1 @@
+CREATE ROLE ambawbio_app LOGIN PASSWORD 'ambawbio-app-test' NOSUPERUSER NOBYPASSRLS;

@@ -4,6 +4,7 @@
     "bonjour": "Bonjour, {{ nom }}",
     "sousTitre": "Votre entreprise, claire aujourd'hui, prête pour demain.",
     "roles": "Vos rôles",
+    "etablissements": "Vos établissements",
     "aucunRole": "Aucun rôle attribué",
     "serveur": "Serveur",
     "serveurOk": "Connecté — identité vérifiée par le serveur",

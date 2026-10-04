@@ -4,16 +4,13 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import Keycloak from 'keycloak-js';
 
 import { configuration } from '../../core/configuration';
-
-interface UtilisateurConnecte {
-  identifiant: string;
-  nomUtilisateur: string;
-  nomComplet: string | null;
-  courriel: string | null;
-  roles: string[];
-}
+import { Contexte } from '../../core/contexte';
 
 type EtatServeur = 'attente' | 'ok' | 'erreur';
+
+interface ErreurApi {
+  error?: { detail?: string };
+}
 
 /** Page d'accueil du LOT 0 : prouve la chaîne Keycloak → application → API. */
 @Component({
@@ -26,20 +23,26 @@ export class Accueil {
   private readonly keycloak = inject(Keycloak);
   private readonly http = inject(HttpClient);
 
-  protected readonly utilisateur = signal<UtilisateurConnecte | null>(null);
+  protected readonly contexte = signal<Contexte | null>(null);
+  protected readonly messageErreur = signal<string | null>(null);
   protected readonly etatServeur = signal<EtatServeur>('attente');
   protected readonly nom = computed(() => {
     const jeton = this.keycloak.tokenParsed as { name?: string; preferred_username?: string } | undefined;
-    return this.utilisateur()?.nomComplet ?? jeton?.name ?? jeton?.preferred_username ?? '';
+    return this.contexte()?.utilisateur.nomComplet || jeton?.name || jeton?.preferred_username || '';
   });
 
   constructor() {
-    this.http.get<UtilisateurConnecte>(`${configuration.api}/moi`).subscribe({
-      next: (u) => {
-        this.utilisateur.set(u);
+    this.http.get<Contexte>(`${configuration.api}/v1/socle/contexte`).subscribe({
+      next: (c) => {
+        this.contexte.set(c);
         this.etatServeur.set('ok');
+        // SD-01 : la connexion est journalisée côté serveur (RG-11).
+        this.http.post(`${configuration.api}/v1/socle/connexions`, null).subscribe({ error: () => undefined });
       },
-      error: () => this.etatServeur.set('erreur'),
+      error: (e: ErreurApi) => {
+        this.messageErreur.set(e.error?.detail ?? null);
+        this.etatServeur.set('erreur');
+      },
     });
   }
 
