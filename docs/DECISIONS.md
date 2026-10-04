@@ -68,3 +68,16 @@ Format ADR court : contexte, décision, conséquences. Une décision n'est remis
 
 ## D-16 — Pas de dépendance pour l'UUID v7 ni pour le client Keycloak
 - **Décision** : générateur UUID v7 interne (`Uuid7`, RFC 9562, 30 lignes testées) au lieu d'`uuid-creator` ; API d'administration Keycloak appelée avec `RestClient` (pas de `keycloak-admin-client`, qui embarque RESTEasy). Seule dépendance ajoutée au LOT 1 : ShedLock (prévu par le guide §4).
+
+## D-17 — Prix de vente saisi TTC ou HT
+- **Contexte** : en caisse, le prix affiché et payé inclut les taxes (5 500 F le sac) ; entre entreprises, les devis se font hors taxes. Stocker uniquement un HT entier ne permet pas de retrouver un TTC « rond ».
+- **Décision** : le produit porte `prix_vente` (francs entiers) et `prix_vente_ttc` (vrai par défaut). Le calcul HT/TVA par ligne (guide §11.3) est fait par la facturation (LOT 6) selon ce drapeau, arrondi au franc demi supérieur.
+
+## D-18 — Import : tout ou rien par défaut, rejouable
+- **Décision** : chaque ligne est entièrement contrôlée (y compris par le domaine) avant tout enregistrement ; par défaut, un fichier comportant une erreur n'importe rien, ce qui évite les imports à moitié faits ; l'option « lignes valides seulement » existe pour les gros fichiers. Une ligne dont le code existe met à jour la fiche (rejeu sans doublon). Un seul enregistrement dans le journal d'audit par import (`IMPORT_REALISE`) plutôt qu'une entrée par ligne.
+
+## D-19 — Champs personnalisés typés et filtrés par inclusion JSON
+- **Décision** : valeurs normalisées (nombre sans zéros inutiles, date ISO, oui/non en booléen, liste fermée) pour que le filtre `champs_perso @> {...}` (index GIN `jsonb_path_ops`) retrouve exactement les valeurs. Seuls les champs déclarés « filtrables » sont acceptés en filtre. Les méthodes de validation ne sont pas transactionnelles, pour qu'une erreur de saisie pendant un import ne fasse pas échouer la transaction de l'import.
+
+## D-20 — Données de démarrage par événement
+- **Décision** : le socle publie `EntrepriseCreee` (registre d'événements Spring Modulith, R-03) ; chaque module charge ses valeurs par défaut dans sa propre transaction, après validation de la création (référentiel au LOT 2, plan comptable au LOT 10). Le contexte d'entreprise est positionné avant l'ouverture de la transaction pour que la connexion porte `app.tenant_id`.

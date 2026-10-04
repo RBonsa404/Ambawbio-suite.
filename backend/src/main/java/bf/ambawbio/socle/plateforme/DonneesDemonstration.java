@@ -10,11 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import bf.ambawbio.shared.tenant.ContexteTenant;
 import bf.ambawbio.socle.api.JournalAudit;
+import bf.ambawbio.socle.api.evenements.EntrepriseCreee;
 import bf.ambawbio.socle.identite.Role;
 import bf.ambawbio.socle.identite.ServiceIdentite;
 import bf.ambawbio.socle.parametrage.ServiceBaremes;
@@ -30,6 +32,7 @@ import bf.ambawbio.socle.tenancy.ServicePlateformeEntreprises;
  */
 @Component
 @Profile("dev")
+@org.springframework.core.annotation.Order(10)
 class DonneesDemonstration implements ApplicationRunner {
 
     static final UUID WEND_PANGA = UUID.fromString("01920000-0000-7000-8000-000000000001");
@@ -46,15 +49,17 @@ class DonneesDemonstration implements ApplicationRunner {
     private final ServiceBaremes baremes;
     private final JournalAudit audit;
     private final TransactionTemplate transaction;
+    private final ApplicationEventPublisher evenements;
 
     DonneesDemonstration(ServicePlateformeEntreprises entreprises, ServiceEntreprise parametrage, ServiceIdentite identite,
-            ServiceBaremes baremes, JournalAudit audit, TransactionTemplate transaction) {
+            ServiceBaremes baremes, JournalAudit audit, TransactionTemplate transaction, ApplicationEventPublisher evenements) {
         this.entreprises = entreprises;
         this.parametrage = parametrage;
         this.identite = identite;
         this.baremes = baremes;
         this.audit = audit;
         this.transaction = transaction;
+        this.evenements = evenements;
     }
 
     @Override
@@ -100,6 +105,7 @@ class DonneesDemonstration implements ApplicationRunner {
                 }
             }
             audit.enregistrer("ENTREPRISE_CREEE", "entreprise", tenant, null, Map.of("nom", nom, "pack", pack.name(), "demonstration", true));
+            evenements.publishEvent(new EntrepriseCreee(tenant, pack.name()));
             return entreprise;
         }));
         JOURNAL.info("Données de démonstration créées : {}", nom);
