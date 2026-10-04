@@ -22,14 +22,15 @@ docs/design/
   tokens.json              Jetons W3C Design Tokens (primitives, sémantiques, plein soleil, typo, espacements, rayons, ombres, durées, ruptures)
   theme.css                Bloc @theme Tailwind CSS 4 + [data-theme="plein-soleil"] + reduced-motion
   logo/                    Horizontal, vertical, symbole — couleur / noir / blanc ; symbole thermique (texte vectorisé) ; source/ avec texte modifiable
-  icones-app/              Favicon, PWA, Apple, icône Android adaptative (+ README d'export PNG)
+  icones-app/              Favicon, PWA, Apple, icône Android adaptative (SVG) ; png/ : exports générés
   icones/                  Icônes métier sur mesure (grille Lucide) + liste des icônes Lucide utilisées
-  polices/LICENCES.md      Archivo, IBM Plex Sans, IBM Plex Mono (OFL 1.1) + intégration
+  polices/                 Archivo, IBM Plex Sans, IBM Plex Mono en WOFF2 + polices.css (OFL 1.1, LICENCES.md, OFL.txt)
   gabarits/README.md       Facture A4, avoir, devis/BC/BL, tickets 58/80 mm, rapport Z, courriels, SMS — zones variables nommées
   composants/              Fiches : indicateur de synchro, attente Mobile Money, badge FEC, pavé de caisse
   references/              Maquettes HTML (.dc.html) des phases 2 à 6
   references/exploration/  Phase 1 : les trois directions de marque (historique)
-  references/captures/     PNG de chaque écran haute fidélité, nommés par code (A-06.png, D-01.png…)
+  references/captures/     PNG des écrans haute fidélité de la caisse, nommés par code (A-06.png…)
+  VERIFICATION.md          Contrôle du paquet par rapport au guide AMB-CONC-09 (écarts E-01 à E-09)
 ```
 
 ## Jetons (résumé — source de vérité : tokens.json / theme.css)
@@ -56,6 +57,8 @@ Frise de chevrons (deux `linear-gradient` 135°/225° à 25 %) : 6–8 px sous l
 Quincaillerie Wend-Panga (IFU 00012345 A), Pharmacie du Progrès (démo), Awa Kaboré (caissière), Moussa Sawadogo (gérant), Mariam Ilboudo (comptable), Issouf (magasinier), Boukary, Aminata, Salimata. Toutes fictives.
 
 ## Points ouverts
+Suivis dans `docs/QUESTIONS.md` (Q-01, Q-08, Q-09) ; écarts techniques dans `VERIFICATION.md`.
+
 Zones réservées, clairement marquées dans les maquettes — **à implémenter comme valeurs paramétrables, jamais en dur** :
 - `[PRIX À DÉFINIR]` : prix des packs (site, W-01, W-02, W-22). Les prix sont paramétrables dans l'application (console éditeur W-23).
 - `[MENTIONS DGI À CONFIRMER]` : mentions obligatoires de la facture certifiée (D-01, D-02), en attente des spécifications officielles de la FEC.
