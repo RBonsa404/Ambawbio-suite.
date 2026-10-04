@@ -1,6 +1,6 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, isDevMode, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideTransloco } from '@jsverse/transloco';
 import {
   createInterceptorCondition,
@@ -15,6 +15,7 @@ import {
 
 import { routes } from './app.routes';
 import { configuration } from './core/configuration';
+import { intercepteurErreurs } from './core/intercepteur-erreurs';
 import { TranslocoChargeur } from './core/transloco-chargeur';
 
 const appelsApi = createInterceptorCondition<IncludeBearerTokenCondition>({
@@ -35,8 +36,8 @@ export const appConfig: ApplicationConfig = {
       providers: [AutoRefreshTokenService, UserActivityService],
     }),
     { provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG, useValue: [appelsApi] },
-    provideHttpClient(withInterceptors([includeBearerTokenInterceptor])),
-    provideRouter(routes),
+    provideHttpClient(withInterceptors([includeBearerTokenInterceptor, intercepteurErreurs])),
+    provideRouter(routes, withComponentInputBinding()),
     provideTransloco({
       config: {
         availableLangs: ['fr'],

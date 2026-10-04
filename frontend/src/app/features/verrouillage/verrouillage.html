@@ -1,0 +1,27 @@
+<div class="flex min-h-dvh flex-col bg-banco-950 text-blanc">
+  <amb-indicateur-sync variante="bandeau" [etat]="reseau.enLigne() ? 'en-ligne' : 'hors-ligne'" />
+  <div class="mx-auto flex w-full max-w-sm flex-1 flex-col items-center justify-center gap-6 px-4 py-8">
+    <img src="logo/ambawbio-symbole-blanc.svg" alt="" class="h-12 w-12" />
+    <div class="text-center">
+      <p class="etiquette text-banco-300">{{ contexte.etablissement()?.nom }}</p>
+      <h1 class="font-titre text-3xl font-extrabold">{{ contexte.contexte()?.utilisateur?.nomComplet }}</h1>
+      <p class="mt-1 text-banco-200">{{ (definition() ? 'pin.definir' : 'pin.saisir') | transloco }}</p>
+    </div>
+    <div class="flex gap-3" aria-hidden="true">
+      @for (p of points(); track $index) { <span class="h-4 w-4 rounded-pilule border-2 border-blanc" [class.bg-blanc]="p"></span> }
+    </div>
+    <p class="sr-only" aria-live="polite">{{ saisie().length }} chiffres saisis</p>
+    @if (message()) { <p class="text-center font-semibold text-or-300" role="alert">{{ message() }}</p> }
+    <div class="grid w-full grid-cols-3 gap-3">
+      @for (t of touches; track $index) {
+        @if (t === '') { <span></span> } @else if (t === 'effacer') {
+          <button type="button" class="touche-pin" (click)="appuyer(t)" aria-label="Effacer"><amb-icone nom="delete" [taille]="28" /></button>
+        } @else {
+          <button type="button" class="touche-pin" (click)="appuyer(t)">{{ t }}</button>
+        }
+      }
+    </div>
+    <button type="button" class="bouton bouton-caisse w-full" (click)="valider()">
+      <amb-icone nom="lock" /> {{ 'pin.deverrouiller' | transloco }}</button>
+  </div>
+</div>

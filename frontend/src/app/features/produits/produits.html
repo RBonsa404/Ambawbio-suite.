@@ -1,0 +1,172 @@
+<div class="liste-fiche" [class.fiche-ouverte]="ficheOuverte()">
+  <section class="liste-fiche-liste" [attr.aria-label]="'produits.titre' | transloco">
+    <div class="flex flex-wrap items-end gap-3">
+      <h1 class="titre-page">{{ 'produits.titre' | transloco }}</h1>
+      <span class="tabular-nums text-texte-secondaire">{{ resultat()?.total ?? 0 }}</span>
+      @if (peutModifier()) {
+        <div class="ml-auto flex gap-2">
+          <a ambBouton variante="tertiaire" routerLink="/import" [queryParams]="{ type: 'produits' }">{{ 'produits.importer' | transloco }}</a>
+          <button ambBouton variante="principal" type="button" (click)="nouveau()"><amb-icone nom="plus" /> {{ 'produits.nouveau' | transloco }}</button>
+        </div>
+      }
+    </div>
+    <div class="mt-4">
+      <label class="sr-only" for="recherche-produits">{{ 'produits.rechercher' | transloco }}</label>
+      <div class="champ-saisie flex items-center gap-2">
+        <amb-icone nom="search" class="text-texte-secondaire" />
+        <input #recherche id="recherche-produits" class="w-full bg-transparent outline-none" type="search"
+          [placeholder]="'produits.rechercher' | transloco" [value]="q()" (input)="q.set($any($event.target).value); rechercher()" />
+      </div>
+    </div>
+
+    @if (resultat(); as r) {
+      @if (r.total === 0 && !q()) {
+        <amb-etat-vide class="mt-4 block" [titre]="'produits.videTitre' | transloco" [message]="'produits.videMessage' | transloco">
+          @if (peutModifier()) {
+            <div class="flex gap-2">
+              <button ambBouton variante="principal" type="button" (click)="nouveau()">{{ 'produits.nouveau' | transloco }}</button>
+              <a ambBouton variante="secondaire" routerLink="/import" [queryParams]="{ type: 'produits' }">{{ 'produits.importer' | transloco }}</a>
+            </div>
+          }
+        </amb-etat-vide>
+      } @else {
+        <table class="tableau mt-4">
+          <thead>
+            <tr>
+              <th scope="col">{{ 'produits.code' | transloco }}</th>
+              <th scope="col">{{ 'produits.designation' | transloco }}</th>
+              <th scope="col" class="nombre">{{ 'produits.prix' | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of r.elements; track p.id) {
+              <tr [class.ligne-selectionnee]="selection()?.id === p.id" (click)="ouvrir(p)">
+                <td class="font-code">{{ p.code }}</td>
+                <td><button type="button" class="text-left hover:underline" (click)="ouvrir(p)">{{ p.nom }}</button></td>
+                <td class="nombre">{{ p.prixVente | fcfa }}</td>
+              </tr>
+            } @empty {
+              <tr><td colspan="3" class="text-texte-secondaire">{{ 'produits.aucunResultat' | transloco }}</td></tr>
+            }
+          </tbody>
+        </table>
+        <amb-pagination class="mt-3 block" [page]="page()" [total]="r.total" (changer)="rechercher($event)" />
+      }
+    } @else {
+      <div class="squelette mt-4 h-64" aria-hidden="true"></div>
+    }
+  </section>
+
+  @if (ficheOuverte()) {
+    <section class="liste-fiche-fiche carte" [attr.aria-label]="'produits.fiche' | transloco">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <p class="etiquette">{{ (creation() ? 'produits.nouveau' : 'produits.fiche') | transloco }}</p>
+          <h2 class="font-titre text-2xl font-extrabold">{{ selection()?.nom ?? ('produits.nouveau' | transloco) }}</h2>
+          @if (selection(); as s) { <p class="font-code text-sm text-texte-secondaire">{{ s.code }}</p> }
+        </div>
+        <button type="button" class="bouton-icone" (click)="fermer()" [attr.aria-label]="'commun.fermer' | transloco"><amb-icone nom="x" /></button>
+      </div>
+
+      <form class="mt-4 flex flex-col gap-6" [formGroup]="formulaire" (ngSubmit)="enregistrer()" novalidate>
+        <fieldset class="grid gap-4 petite-tablette:grid-cols-2">
+          <legend class="sous-titre">{{ 'produits.identification' | transloco }}</legend>
+          <amb-champ [libelle]="'produits.code' | transloco" pour="p-code" [obligatoire]="true"
+            [erreur]="formulaire.controls.code.touched && formulaire.controls.code.invalid ? ('commun.obligatoire' | transloco) : null">
+            <input id="p-code" class="champ-saisie font-code" formControlName="code" autocomplete="off" />
+          </amb-champ>
+          <amb-champ [libelle]="'produits.designation' | transloco" pour="p-nom" [obligatoire]="true"
+            [erreur]="formulaire.controls.nom.touched && formulaire.controls.nom.invalid ? ('commun.obligatoire' | transloco) : null">
+            <input id="p-nom" class="champ-saisie" formControlName="nom" />
+          </amb-champ>
+          <amb-champ [libelle]="'produits.categorie' | transloco" pour="p-categorie">
+            <select id="p-categorie" class="champ-saisie" formControlName="categorieId">
+              <option [ngValue]="null">—</option>
+              @for (c of categories(); track c.id) { <option [ngValue]="c.id">{{ c.nom }}</option> }
+            </select>
+          </amb-champ>
+          <amb-champ [libelle]="'produits.unite' | transloco" pour="p-unite">
+            <select id="p-unite" class="champ-saisie" formControlName="uniteCode">
+              @for (u of unites(); track u.id) { <option [value]="u.code">{{ u.libelle }}</option> }
+            </select>
+          </amb-champ>
+        </fieldset>
+
+        <fieldset class="grid gap-4 petite-tablette:grid-cols-2">
+          <legend class="sous-titre">{{ 'produits.prixTaxes' | transloco }}</legend>
+          <amb-champ [libelle]="'produits.prixVente' | transloco" pour="p-prix" [obligatoire]="true"
+            [erreur]="formulaire.controls.prixVente.touched && formulaire.controls.prixVente.invalid ? ('commun.obligatoire' | transloco) : null">
+            <amb-champ-montant identifiant="p-prix" formControlName="prixVente" />
+          </amb-champ>
+          <amb-champ [libelle]="'produits.taxe' | transloco" pour="p-taxe" [obligatoire]="true">
+            <select id="p-taxe" class="champ-saisie" formControlName="taxeCode">
+              @for (t of taxes(); track t.id) { <option [value]="t.code">{{ t.libelle }}</option> }
+            </select>
+          </amb-champ>
+          <label class="flex min-h-12 items-center gap-3"><input type="checkbox" class="case" formControlName="prixVenteTtc" />
+            {{ 'produits.prixTtc' | transloco }}</label>
+          <amb-champ [libelle]="'produits.prixAchat' | transloco" pour="p-achat">
+            <amb-champ-montant identifiant="p-achat" formControlName="prixAchat" />
+          </amb-champ>
+        </fieldset>
+
+        <fieldset>
+          <legend class="sous-titre">{{ 'produits.conditionnements' | transloco }}</legend>
+          <div class="overflow-x-auto" tabindex="0" role="region" [attr.aria-label]="'produits.conditionnements' | transloco">
+          <table class="tableau">
+            <thead>
+              <tr>
+                <th scope="col">{{ 'produits.conditionnement' | transloco }}</th>
+                <th scope="col" class="nombre">{{ 'produits.quantite' | transloco }}</th>
+                <th scope="col" class="nombre">{{ 'produits.prix' | transloco }}</th>
+                <th scope="col"><span class="sr-only">{{ 'commun.actions' | transloco }}</span></th>
+              </tr>
+            </thead>
+            <tbody formArrayName="conditionnements">
+              @for (c of conditionnements.controls; track $index; let i = $index) {
+                <tr [formGroupName]="i">
+                  <td>
+                    <select class="champ-saisie" formControlName="code" [attr.aria-label]="'produits.conditionnement' | transloco">
+                      @for (t of typesConditionnement(); track t.id) { <option [value]="t.code">{{ t.libelle }}</option> }
+                    </select>
+                  </td>
+                  <td><input class="champ-saisie text-right tabular-nums" formControlName="quantite" inputmode="decimal"
+                    [attr.aria-label]="'produits.quantite' | transloco" /></td>
+                  <td><amb-champ-montant [identifiant]="'p-cond-prix-' + i" formControlName="prixVente" /></td>
+                  <td><button type="button" class="bouton-icone" (click)="conditionnements.removeAt(i)" [attr.aria-label]="'commun.supprimer' | transloco">
+                    <amb-icone nom="trash-2" /></button></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+          </div>
+          @if (peutModifier()) {
+            <button ambBouton variante="tertiaire" type="button" class="mt-2" (click)="ajouterConditionnement()">
+              <amb-icone nom="plus" /> {{ 'produits.ajouterConditionnement' | transloco }}</button>
+          }
+        </fieldset>
+
+        <amb-champ [libelle]="'produits.codesBarres' | transloco" pour="p-codes" [aide]="'produits.codesBarresAide' | transloco">
+          <input id="p-codes" class="champ-saisie font-code" formControlName="codesBarres" inputmode="numeric" />
+        </amb-champ>
+
+        @if (definitions().length) {
+          <fieldset>
+            <legend class="sous-titre">{{ 'commun.champsPersonnalises' | transloco }}</legend>
+            <amb-champs-dynamiques [definitions]="definitions()" [groupe]="champs" />
+          </fieldset>
+        }
+
+        @if (erreur()) { <p class="alerte-erreur" role="alert">{{ erreur() }}</p> }
+
+        @if (peutModifier()) {
+          <div class="flex justify-end gap-3">
+            <button ambBouton variante="secondaire" type="button" (click)="fermer()">{{ 'commun.annuler' | transloco }}</button>
+            <button ambBouton variante="principal" type="submit" [chargement]="enregistrement()" [disabled]="enregistrement()">
+              {{ 'commun.enregistrer' | transloco }}</button>
+          </div>
+        }
+      </form>
+    </section>
+  }
+</div>

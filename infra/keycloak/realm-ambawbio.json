@@ -361,6 +361,30 @@
       }
     },
     {
+      "id": "01920000-0000-7000-8000-0000000000a6",
+      "username": "aminata",
+      "firstName": "Aminata",
+      "lastName": "Zongo",
+      "email": "aminata@demo.ambawbio.bf",
+      "emailVerified": true,
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "demo-ambawbio",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "gerant"
+      ],
+      "attributes": {
+        "tenant_id": [
+          "01920000-0000-7000-8000-000000000001"
+        ]
+      }
+    },
+    {
       "id": "01920000-0000-7000-8000-0000000000b1",
       "username": "salimata",
       "firstName": "Salimata",
@@ -416,5 +440,7 @@
         ]
       }
     }
-  ]
+  ],
+  "loginTheme": "ambawbio",
+  "emailTheme": "keycloak"
 }

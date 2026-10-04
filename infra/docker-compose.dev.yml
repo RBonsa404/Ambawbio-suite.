@@ -40,7 +40,8 @@ services:
     ports:
       - "8180:8180"
     volumes:
-      - ./keycloak:/opt/keycloak/data/import:ro
+      - ./keycloak/realm-ambawbio.json:/opt/keycloak/data/import/realm-ambawbio.json:ro
+      - ./keycloak/themes/ambawbio:/opt/keycloak/themes/ambawbio:ro
     depends_on:
       postgres:
         condition: service_healthy

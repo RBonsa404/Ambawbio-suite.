@@ -70,6 +70,7 @@ class DonneesDemonstration implements ApplicationRunner {
             new Compte("01920000-0000-7000-8000-0000000000a3", "mariam", "Mariam", "Ilboudo", Set.of("comptable"), false),
             new Compte("01920000-0000-7000-8000-0000000000a4", "issouf", "Issouf", "Ouédraogo", Set.of("magasinier"), false),
             new Compte("01920000-0000-7000-8000-0000000000a5", "boukary", "Boukary", "Compaoré", Set.of("commercial"), false),
+            new Compte("01920000-0000-7000-8000-0000000000a6", "aminata", "Aminata", "Zongo", Set.of("gerant"), false),
         });
         creer(PHARMACIE, "Pharmacie du Progrès (démo)", Pack.ESSENTIEL, "00067890B", 0xB0, new Compte[] {
             new Compte("01920000-0000-7000-8000-0000000000b1", "salimata", "Salimata", "Traoré", Set.of("administrateur"), false),

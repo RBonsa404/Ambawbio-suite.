@@ -81,3 +81,16 @@ Format ADR court : contexte, décision, conséquences. Une décision n'est remis
 
 ## D-20 — Données de démarrage par événement
 - **Décision** : le socle publie `EntrepriseCreee` (registre d'événements Spring Modulith, R-03) ; chaque module charge ses valeurs par défaut dans sa propre transaction, après validation de la création (référentiel au LOT 2, plan comptable au LOT 10). Le contexte d'entreprise est positionné avant l'ouverture de la transaction pour que la connexion porte `app.tenant_id`.
+
+## D-21 — Icônes : paquet `lucide` plutôt que `lucide-angular`
+- **Contexte** : `lucide-angular` ne déclare pas encore Angular 22.
+- **Décision** : composant `amb-icone` qui dessine les nœuds du paquet `lucide` (licence ISC), importés un par un (seules les icônes utilisées sont embarquées).
+
+## D-22 — Points de rupture de la charte dans Tailwind
+- **Décision** : `theme.css` remplace les points de rupture par ceux de la charte ; les classes s'écrivent `petite-tablette:` (600 px), `tablette:` (900 px), `bureau:` (1280 px), `large:` (1600 px) — jamais `sm:`/`md:`/`lg:`, qui n'existent pas dans ce thème.
+
+## D-23 — Thème de connexion Keycloak par surcharge CSS
+- **Décision** : thème `ambawbio` héritant de `keycloak.v2` (PatternFly 5), limité à une feuille de style, au logo et aux polices de la charte : pas de gabarit FreeMarker recopié, donc pas de maintenance à chaque version de Keycloak.
+
+## D-24 — Code PIN du terminal
+- **Décision** : empreinte PBKDF2-SHA-256 (150 000 itérations, sel aléatoire de 16 octets) conservée dans le stockage sécurisé Android (`@aparajita/capacitor-secure-storage`, Keystore) ; 5 essais au plus, puis reconnexion complète obligatoire ; verrouillage au démarrage et après 5 minutes en arrière-plan.
