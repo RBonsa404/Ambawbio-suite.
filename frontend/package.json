@@ -35,7 +35,7 @@
     "dexie": "^4.4.6",
     "keycloak-angular": "^22.0.0",
     "keycloak-js": "^26.2.4",
-    "lucide": "^1.52.0",
+    "lucide": "^1.53.0",
     "qrcode": "^1.5.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
