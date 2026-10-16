@@ -17,7 +17,7 @@ const apercu = process.argv.includes('--apercu');
 mkdirSync(sortie, { recursive: true });
 const IPS = 30;
 const scenes = minuter();
-const duree = scenes.at(-1).debut + scenes.at(-1).duree;
+const duree = process.env.DUREE ? +process.env.DUREE : scenes.at(-1).debut + scenes.at(-1).duree;
 
 // --- Sous-titres et script ---------------------------------------------------------------------
 const hms = (s) => {
@@ -91,10 +91,12 @@ if (apercu) {
 const fichier = join(sortie, 'ambawbio-suite-lancement.mp4');
 const ffmpeg = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(IPS), '-c:v', 'mjpeg', '-i', '-',
   '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', fichier], { stdio: ['pipe', 'inherit', 'inherit'] });
+const cdp = await page.context().newCDPSession(page);
 const images = Math.round(duree * IPS);
 for (let f = 0; f < images; f++) {
   await page.evaluate((t) => window.rendre(t), f / IPS);
-  const img = await page.screenshot({ type: 'jpeg', quality: 92 });
+  const { data } = await cdp.send('Page.captureScreenshot', { format: 'jpeg', quality: 92 });
+  const img = Buffer.from(data, 'base64');
   if (!ffmpeg.stdin.write(img)) await new Promise((r) => ffmpeg.stdin.once('drain', r));
   if (f % 300 === 0) console.log(`${mm(f / IPS)} / ${mm(duree)}`);
 }
