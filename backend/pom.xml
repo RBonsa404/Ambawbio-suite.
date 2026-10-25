@@ -23,7 +23,7 @@
     <spring-modulith.version>2.1.1</spring-modulith.version>
     <springdoc.version>3.1.1</springdoc.version>
     <shedlock.version>7.10.1</shedlock.version>
-    <poi.version>5.5.1</poi.version>
+    <poi.version>6.0.0</poi.version>
     <checkstyle.version>14.3.0</checkstyle.version>
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
   </properties>
